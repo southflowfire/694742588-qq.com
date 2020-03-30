@@ -1,0 +1,21 @@
+{
+  "name": "mock",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": " node src/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^15.1.1",
+    "apollo-server": "^2.11.0",
+    "apollo-server-koa": "^2.8.1",
+    "graphql": "^14.4.2",
+    "graphql-scalars": "^1.0.2",
+    "lodash":"^4.17.15"
+  }
+}

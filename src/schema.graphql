@@ -1,0 +1,5123 @@
+# 用户交互行为类型
+"""
+用户交互行为类型
+"""
+enum UserAction {
+  
+  # 点赞
+  """
+  点赞
+  """
+  favour
+  
+  # 不喜欢
+  """
+  不喜欢
+  """
+  unlike
+  
+  # 读过
+  """
+  读过
+  """
+  read
+  
+  # 订阅
+  """
+  订阅
+  """
+  subscribe
+}
+
+
+# 用户行为统计，比如一篇文章被某个用户点赞，那么该文章的点赞数+1
+"""
+用户行为统计，比如一篇文章被某个用户点赞，那么该文章的点赞数+1
+"""
+type UserActionCount {
+  
+  # 点赞数
+  """
+  点赞数
+  """
+  favour: NonNegativeInt
+  
+  # 不喜欢数
+  """
+  不喜欢数
+  """
+  unlike: NonNegativeInt
+  
+  # 收藏数
+  """
+  收藏数
+  """
+  store: NonNegativeInt
+  
+  # 订阅数
+  """
+  订阅数
+  """
+  subscribe: NonNegativeInt
+}
+
+
+# 用户交互行为通用参数
+"""
+用户交互行为通用参数
+"""
+input UserActionInput {
+  targetId: BigInt!
+  targetType: ObjectType!
+}
+
+type Mutation {
+  
+  # 点赞或取消点赞
+  """
+  点赞或取消点赞
+  """
+  toggleFavour(input: UserActionInput): CommonMutationResult!
+  
+  # "不喜欢"或取消
+  """
+  "不喜欢"或取消
+  """
+  toggleUnlike(input: UserActionInput): CommonMutationResult!
+  
+  # 收藏或取消
+  """
+  收藏或取消
+  """
+  toggleStore(input: UserActionInput): CommonMutationResult!
+  
+  # 订阅或取消订阅
+  """
+  订阅或取消订阅
+  """
+  toggleSubscribe(input: UserActionInput): CommonMutationResult!
+  
+  # 创建文章
+  """
+  创建文章
+  """
+  requestNewArticle(article: NewArticleInput!): CommonMutationResult!
+  
+  # 修改文章
+  """
+  修改文章
+  """
+  requestUpdateArticle(article: UpdateArticleInput!): CommonMutationResult!
+  
+  # 合并文章
+  """
+  合并文章
+  """
+  requestMergeArticle(leftId: BigInt!, rightId: BigInt!, resultArticle: NewArticleInput): CommonMutationResult!
+  
+  # 删除文章
+  """
+  删除文章
+  """
+  requestDeleteArticle(articleId: BigInt!): CommonMutationResult!
+  
+  # 申请创建作者信息
+  """
+  申请创建作者信息
+  """
+  requestNewAuthor(input: NewAuthorInput!): CommonMutationResult!
+  
+  # 申请修改作者信息
+  """
+  申请修改作者信息
+  """
+  requestUpdateAuthor(input: UpdateAuthorInput!): CommonMutationResult!
+  
+  # 发起合并作者信息的申请
+  """
+  发起合并作者信息的申请
+  """
+  requestMergeAuthor(authorId1: BigInt!, authorId2: BigInt!, mergedAuthor: MergedAuthorInput!): CommonMutationResult!
+  
+  # 创建聊天对话框 (DEPRECATED)
+  """
+  创建聊天对话框 (DEPRECATED)
+  """
+  findOrCreateChatBoard(authorID: BigInt!): String!
+  
+  # 新增留言 (DEPRECATED)
+  """
+  新增留言 (DEPRECATED)
+  """
+  postBoardMsg(key: String!, body: String!): Boolean!
+  
+  # 删除留言板 (DEPRECATED)
+  """
+  删除留言板 (DEPRECATED)
+  """
+  removeChatBoard(key: String!): Boolean!
+  
+  # 反馈消息通知或警告 (DEPRECATED)
+  """
+  反馈消息通知或警告 (DEPRECATED)
+  """
+  feedbackMsgNotice(msgID: BigInt!): Boolean!
+  
+  # 创建论文集
+  """
+  创建论文集
+  """
+  createCollection(collectionName: String!): CommonMutationResult!
+  
+  # 修改论文集名称
+  """
+  修改论文集名称
+  """
+  updateCollection(collectionID: BigInt!, collectionName: String!): CommonMutationResult!
+  
+  # 删除论文集
+  """
+  删除论文集
+  """
+  deleteCollection(collectionID: BigInt!): CommonMutationResult!
+  
+  # 将文章加入论文集
+  """
+  将文章加入论文集
+  """
+  storeArticleInCollection(articleID: BigInt!, collectionID: BigInt!): CommonMutationResult!
+  
+  # 将文章从论文集中移除
+  """
+  将文章从论文集中移除
+  """
+  removeArticleFromCollection(articleID: BigInt!, collectionID: BigInt!): CommonMutationResult!
+  
+  # 评论 (DEPRECATED)
+  """
+  评论 (DEPRECATED)
+  """
+  postComment(
+  # 评论对象类型
+  """
+  评论对象类型
+  """
+  targetType: commentTargets!, 
+  # 评论对象ID
+  """
+  评论对象ID
+  """
+  targetID: NonNegativeInt!, 
+  # 内容
+  """
+  内容
+  """
+  content: String!): CreateMutationResult
+  
+  # 跟评 (DEPRECATED)
+  """
+  跟评 (DEPRECATED)
+  """
+  followComment(
+  # 跟评ID
+  """
+  跟评ID
+  """
+  followID: NonNegativeInt!, 
+  # 内容
+  """
+  内容
+  """
+  content: String!): Boolean
+  
+  # 修改评论 (DEPRECATED)
+  """
+  修改评论 (DEPRECATED)
+  """
+  modifyComment(
+  # 评论id
+  """
+  评论id
+  """
+  commentID: BigInt!, 
+  # 评论内容
+  """
+  评论内容
+  """
+  content: String!): Boolean!
+  
+  # 删除评论 (DEPRECATED)
+  """
+  删除评论 (DEPRECATED)
+  """
+  removeComment(
+  # 评论ID
+  """
+  评论ID
+  """
+  commentID: NonNegativeInt!): Boolean
+  
+  # 订阅数据对象的变动消息
+  """
+  订阅数据对象的变动消息
+  """
+  subscribeObject(objectId: BigInt!, type: ObjectType!): CommonMutationResult!
+  
+  # 分享数据对象给好友
+  """
+  分享数据对象给好友
+  """
+  shareObject(objectId: BigInt!, type: ObjectType!, userId: BigInt!): CommonMutationResult!
+  
+  # 申请创建会议
+  """
+  申请创建会议
+  """
+  requestNewConference(conference: NewConferenceInput!): CommonMutationResult!
+  
+  # 申请修改会议
+  """
+  申请修改会议
+  """
+  requestUpdateConference(conference: UpdateConferenceInput!): CommonMutationResult!
+  
+  # 申请合并会议
+  """
+  申请合并会议
+  """
+  requestMergeConference(leftId: BigInt!, rightId: BigInt!, resultConf: NewConferenceInput): CommonMutationResult!
+  
+  # 申请删除会议
+  """
+  申请删除会议
+  """
+  requestDeleteConference(conferenceId: BigInt!): CommonMutationResult!
+  
+  # 请求进行添加或删除关联的操作
+  """
+  请求进行添加或删除关联的操作
+  """
+  requestConnection(input: RequestConnectionInput!): CommonMutationResult!
+  
+  # 创建教程
+  """
+  创建教程
+  """
+  createCourse(course: NewCourseInput!): CreateMutationResult!
+  
+  # 修改教程
+  """
+  修改教程
+  """
+  updateCourse(course: UpdateCourseInput!): CommonMutationResult!
+  
+  # 删除教程
+  """
+  删除教程
+  """
+  deleteCourse(courseId: Int!): CommonMutationResult!
+  
+  # 关联文章
+  """
+  关联文章
+  """
+  relateToArticle(articleId: Int!): CommonMutationResult!
+  
+  # 关联课题
+  """
+  关联课题
+  """
+  relateToTopic(topicId: Int!): CommonMutationResult!
+  
+  # 发布教程
+  """
+  发布教程
+  """
+  publishCourse(courseId: Int!): CommonMutationResult!
+  
+  # 填写更新日志
+  """
+  填写更新日志
+  """
+  addCourseUpdateLog(courseId: Int!, updateLog: String!): CommonMutationResult!
+  
+  # 下架教程
+  """
+  下架教程
+  """
+  hideCourse(courseId: Int!): CommonMutationResult!
+  
+  # 上架教程
+  """
+  上架教程
+  """
+  showCourse(courseId: Int!): CommonMutationResult!
+  
+  # 购买教程
+  """
+  购买教程
+  """
+  purchaseCourse(courseId: Int!): CommonMutationResult!
+  
+  # 评价教程
+  """
+  评价教程
+  """
+  commentCourse(courseId: Int!, comment: String!): CommonMutationResult!
+  
+  # 分享教程
+  """
+  分享教程
+  """
+  shareCourse(courseId: Int!): CommonMutationResult!
+  
+  # 举报教程
+  """
+  举报教程
+  """
+  reportCourse(courseId: Int!, content: String!): CommonMutationResult!
+  
+  # 申请创建机构
+  """
+  申请创建机构
+  """
+  requestNewInstitution(input: NewInstitutionInput!): CommonMutationResult!
+  
+  # 申请修改机构
+  """
+  申请修改机构
+  """
+  requestUpdateInstitution(input: UpdateInstitutionInput!): CommonMutationResult!
+  
+  # 申请删除机构
+  """
+  申请删除机构
+  """
+  requestDeleteInstitution(institutionId: BigInt!): CommonMutationResult!
+  
+  # 申请合并机构
+  """
+  申请合并机构
+  """
+  requestMergeInstitution(leftId: BigInt!, rightId: BigInt!, resultInstitution: NewInstitutionInput): CommonMutationResult!
+  
+  # 创建期刊
+  """
+  创建期刊
+  """
+  requestNewJournal(journal: NewJournalInput!): CommonMutationResult!
+  
+  # 修改期刊
+  """
+  修改期刊
+  """
+  requestUpdateJournal(journal: UpdateJournalInput!): CommonMutationResult!
+  
+  # 删除期刊
+  """
+  删除期刊
+  """
+  requestDeleteJournal(journalId: BigInt!): CommonMutationResult!
+  
+  # 合并机构
+  """
+  合并机构
+  """
+  requestMergeJournal(leftId: BigInt!, rightId: BigInt!, resultJournal: NewJournalInput): CommonMutationResult!
+  
+  # 新建思维导图草稿
+  """
+  新建思维导图草稿
+  """
+  newMindMapDraft(input: NewMindMapDraftInput!): MindMap!
+  
+  # 编辑思维导图草稿
+  """
+  编辑思维导图草稿
+  """
+  updateMindMapDraft(input: UpdateMindMapInput!): MindMap!
+  
+  # 删除思维导图草稿
+  """
+  删除思维导图草稿
+  """
+  deleteMindMapDraft(mindMapId: BigInt!): CommonMutationResult!
+  
+  # 申请发布思维导图，该思维导图来自于申请者的草稿
+  """
+  申请发布思维导图，该思维导图来自于申请者的草稿
+  """
+  requestPostMindMap(mindMapId: BigInt!): CommonMutationResult!
+  
+  # 申请修改思维导图，包括任何已经发布的思维导图
+  """
+  申请修改思维导图，包括任何已经发布的思维导图
+  """
+  requestUpdateMindMap(input: UpdateTimeLineInput!): CommonMutationResult!
+  
+  # 添加笔记 (DEPRECATED)
+  """
+  添加笔记 (DEPRECATED)
+  """
+  createNote(input: createNoteInput): CreateMutationResult
+  
+  # 修改笔记 (DEPRECATED)
+  """
+  修改笔记 (DEPRECATED)
+  """
+  updateNote(noteID: BigInt!, input: updateNoteInput): Boolean
+  
+  # 发布笔记 (DEPRECATED)
+  """
+  发布笔记 (DEPRECATED)
+  """
+  publishNote(noteID: BigInt): Boolean
+  
+  # 删除笔记 (DEPRECATED)
+  """
+  删除笔记 (DEPRECATED)
+  """
+  removeNote(noteID: BigInt): Boolean
+  
+  # 创建问题
+  """
+  创建问题
+  """
+  newQuestion(input: NewQuestionInput!): Question!
+  
+  # 删除问题
+  """
+  删除问题
+  """
+  deleteQuestion(questionId: BigInt!): CommonMutationResult!
+  
+  # 更新问题
+  """
+  更新问题
+  """
+  updateQuestion(input: UpdateQuestionInput!): Question!
+  
+  # 发布问题
+  """
+  发布问题
+  """
+  postQuestion(questionId: BigInt!): CommonMutationResult!
+  
+  # 分享问题给好友
+  """
+  分享问题给好友
+  """
+  shareQuestion(questionId: BigInt!, userId: BigInt!): CommonMutationResult!
+  
+  # 提问者确认回答者已经清除理解问题
+  """
+  提问者确认回答者已经清除理解问题
+  """
+  questionerConfirm(input: ConfirmInput!): CommonMutationResult!
+  
+  # 选择一位回答者，并完成支付
+  """
+  选择一位回答者，并完成支付
+  """
+  selectAndPay(input: SelectAndPayInput!): PaymentInfo!
+  
+  # 发起追问
+  """
+  发起追问
+  """
+  addSubQuestion(questionId: BigInt!): CommonMutationResult!
+  
+  # 确认并接受答案
+  """
+  确认并接受答案
+  """
+  acceptAnswer(answerId: BigInt!): CommonMutationResult!
+  
+  # 加入回答者列表
+  """
+  加入回答者列表
+  """
+  addToAnswerers(questionId: BigInt!): CommonMutationResult!
+  
+  # 移出回答者列表
+  """
+  移出回答者列表
+  """
+  removeFromAnswerers(questionId: BigInt!): CommonMutationResult!
+  
+  # 回答者确认已经清楚理解问题
+  """
+  回答者确认已经清楚理解问题
+  """
+  answererConfirm(input: ConfirmInput!): CommonMutationResult!
+  
+  # 创建回答
+  """
+  创建回答
+  """
+  newAnswer(input: NewAnswerInput!): Answer!
+  
+  # 更新回答
+  """
+  更新回答
+  """
+  updateAnswer(input: UpdateAnswerInput!): Answer!
+  
+  # 提交回答
+  """
+  提交回答
+  """
+  submitAnswer(answerId: BigInt!): CommonMutationResult!
+  
+  # 针对追问的补充回答
+  """
+  针对追问的补充回答
+  """
+  addSubAnswer(questionId: BigInt!, subQuestionId: BigInt!): CommonMutationResult!
+  
+  # 回答者发布完整问答，并旁听价格等信息
+  """
+  回答者发布完整问答，并旁听价格等信息
+  """
+  releaseAnswer(input: ReleaseAnswerInput!): CommonMutationResult!
+  
+  # 旁听者购买问答
+  """
+  旁听者购买问答
+  """
+  buyAnswer(answerId: BigInt!): PaymentInfo!
+  
+  # 对回答发表评价
+  """
+  对回答发表评价
+  """
+  postAnswerReview(input: PostAnswerReviewInput!): CommonMutationResult!
+  
+  # 举报数据对象的不恰当行为
+  """
+  举报数据对象的不恰当行为
+  """
+  reportIssueOnObject(input: NewReportInput!): CommonMutationResult!
+  
+  # 创建课题
+  """
+  创建课题
+  """
+  requestNewResearch(input: NewResearchInput!): CommonMutationResult!
+  
+  # 修改课题
+  """
+  修改课题
+  """
+  requestUpdateResearch(input: UpdateResearchInput!): CommonMutationResult!
+  
+  # 删除课题
+  """
+  删除课题
+  """
+  requestDeleteResearch(researchId: BigInt!): CommonMutationResult!
+  
+  # 新建时间线草稿
+  """
+  新建时间线草稿
+  """
+  newTimeLineDraft(input: NewTimeLineDraftInput!): TimeLine!
+  
+  # 编辑时间线草稿
+  """
+  编辑时间线草稿
+  """
+  updateTimeLineDraft(input: UpdateTimeLineInput!): TimeLine!
+  
+  # 删除时间线草稿
+  """
+  删除时间线草稿
+  """
+  deleteTimeLineDraft(timeLineId: BigInt!): CommonMutationResult!
+  
+  # 申请发布时间线，该时间线来自于申请者的草稿
+  """
+  申请发布时间线，该时间线来自于申请者的草稿
+  """
+  requestPostTimeLine(timeLineId: BigInt!): CommonMutationResult!
+  
+  # 申请修改时间线，包括任何已经发布的时间线
+  """
+  申请修改时间线，包括任何已经发布的时间线
+  """
+  requestUpdateTimeLine(input: UpdateTimeLineInput!): CommonMutationResult!
+  
+  # 完善个人资料
+  """
+  完善个人资料
+  """
+  updateMyProfile(input: UpdateMyProfileInput!): CommonMutationResult
+  
+  # 添加好友
+  """
+  添加好友
+  """
+  addFriend(userId: BigInt!): CommonMutationResult
+  
+  # 关注用户
+  """
+  关注用户
+  """
+  followUser(userId: BigInt!): CommonMutationResult
+  
+  # 提交反馈
+  """
+  提交反馈
+  """
+  submitUserFeedback(input: SubmitUserFeedbackInput!): CommonMutationResult!
+  
+  # 撤销反馈
+  """
+  撤销反馈
+  """
+  cancelUserFeedback(feedbackId: BigInt!): CommonMutationResult!
+}
+
+
+# 贡献(DEPRECATED)
+"""
+贡献(DEPRECATED)
+"""
+type Contribute {
+  
+  # id
+  """
+  id
+  """
+  id: BigInt!
+  
+  # 类型
+   # 1. 文章修改 2. 期刊修改 3. 会议修改 4. 话题修改  5. 修改话题相关文章 6. 修改话题相关作者
+   # 7. 修改话题相关会议 8. 修改话题相关期刊 9. 修改机构申请 10. 合并文章 11. 合并作者 12. 合并期刊
+   # 13. 合并话题 14. 合并机构 15. 新增文章 16. 新增机构 17. 新增作者 18. 新增会议 19. 新增机构 20. 新增话题
+  """
+  类型
+  1. 文章修改 2. 期刊修改 3. 会议修改 4. 话题修改  5. 修改话题相关文章 6. 修改话题相关作者
+  7. 修改话题相关会议 8. 修改话题相关期刊 9. 修改机构申请 10. 合并文章 11. 合并作者 12. 合并期刊
+  13. 合并话题 14. 合并机构 15. 新增文章 16. 新增机构 17. 新增作者 18. 新增会议 19. 新增机构 20. 新增话题
+  """
+  apply_type: NonNegativeInt!
+  
+  # 基本数据
+  """
+  基本数据
+  """
+  base_info: JSONObject
+  
+  # 审核时间
+  """
+  审核时间
+  """
+  check_at: DateTime
+  
+  # 申请人
+  """
+  申请人
+  """
+  applyer: Author
+}
+
+
+# 文章
+"""
+文章
+"""
+type Article {
+  id: BigInt!
+  
+  # 文章标题
+  """
+  文章标题
+  """
+  title: String!
+  
+  # 文章副标题（ DEPRECATED ）
+  """
+  文章副标题（ DEPRECATED ）
+  """
+  subTitle: String
+  
+  # 索引类型, 包括EI、SCI
+  """
+  索引类型, 包括EI、SCI
+  """
+  indexType: ArticleIndex
+  
+  # 摘要
+  """
+  摘要
+  """
+  abstract: String!
+  
+  # 关键词
+  """
+  关键词
+  """
+  keywords: [String]!
+  
+  # 资助单位（ DEPRECATED ）
+  """
+  资助单位（ DEPRECATED ）
+  """
+  sponsor: [String]
+  
+  # 文章doi（唯一数字标识）
+  """
+  文章doi（唯一数字标识）
+  """
+  doi: String
+  
+  # 文章链接
+  """
+  文章链接
+  """
+  links: [URL]
+  
+  # 发表日期
+  """
+  发表日期
+  """
+  publishDate: DateTime
+  
+  # 出版期刊
+  """
+  出版期刊
+  """
+  journal: Journal
+  
+  # 出版会议
+  """
+  出版会议
+  """
+  conference: Conference
+  
+  # 文章作者
+  """
+  文章作者
+  """
+  authors(pageParam: PageParam): AuthorConnection
+  
+  # 关联课题
+  """
+  关联课题
+  """
+  researches(pageParam: PageParam): ResearchConnection
+  
+  # 关联教程
+  """
+  关联教程
+  """
+  courses(pageParam: PageParam): CourseConnection
+  
+  # 关联问答
+  """
+  关联问答
+  """
+  questionAnswers(pageParam: PageParam): QuestionAnswerConnection
+  
+  # 行为统计
+  """
+  行为统计
+  """
+  actionCount: UserActionCount
+  
+  # 文章状态
+  """
+  文章状态
+  """
+  status: MetaDataStatus!
+}
+
+
+# 新建文章 输入参数
+"""
+新建文章 输入参数
+"""
+input NewArticleInput {
+  
+  # 文章标题
+  """
+  文章标题
+  """
+  title: String!
+  
+  # 文章副标题（ DEPRECATED ）
+  """
+  文章副标题（ DEPRECATED ）
+  """
+  subTitle: String
+  
+  # 索引类型, 包括EI、SCI
+  """
+  索引类型, 包括EI、SCI
+  """
+  indexType: ArticleIndex
+  
+  # 摘要
+  """
+  摘要
+  """
+  abstract: String!
+  
+  # 关键词
+  """
+  关键词
+  """
+  keywords: [String]!
+  
+  # 资助单位（ DEPRECATED ）
+  """
+  资助单位（ DEPRECATED ）
+  """
+  sponsor: [String]
+  
+  # 文章doi（唯一数字标识）
+  """
+  文章doi（唯一数字标识）
+  """
+  doi: String
+  
+  # 文章链接
+  """
+  文章链接
+  """
+  links: [URL]
+  
+  # 发表日期
+  """
+  发表日期
+  """
+  publishDate: DateTime
+  
+  # 出版期刊
+  """
+  出版期刊
+  """
+  journalId: BigInt
+  
+  # 出版会议
+  """
+  出版会议
+  """
+  conferenceId: BigInt
+  
+  # 文章作者
+  """
+  文章作者
+  """
+  authorIds: [BigInt]
+}
+
+
+# 更新文章 输入参数
+"""
+更新文章 输入参数
+"""
+input UpdateArticleInput {
+  id: BigInt!
+  
+  # 文章标题
+  """
+  文章标题
+  """
+  title: String
+  
+  # 文章副标题（ DEPRECATED ）
+  """
+  文章副标题（ DEPRECATED ）
+  """
+  subTitle: String
+  
+  # 索引类型, 包括EI、SCI
+  """
+  索引类型, 包括EI、SCI
+  """
+  indexType: ArticleIndex
+  
+  # 摘要
+  """
+  摘要
+  """
+  abstract: String
+  
+  # 关键词
+  """
+  关键词
+  """
+  keywords: [String]
+  
+  # 资助单位（ DEPRECATED ）
+  """
+  资助单位（ DEPRECATED ）
+  """
+  sponsor: [String]
+  
+  # 文章doi（唯一数字标识）
+  """
+  文章doi（唯一数字标识）
+  """
+  doi: String
+  
+  # 文章链接
+  """
+  文章链接
+  """
+  links: [URL]
+  
+  # 发表日期
+  """
+  发表日期
+  """
+  publishDate: DateTime
+  
+  # 出版期刊
+  """
+  出版期刊
+  """
+  journalId: BigInt
+  
+  # 出版会议
+  """
+  出版会议
+  """
+  conferenceId: BigInt
+  
+  # 文章作者
+  """
+  文章作者
+  """
+  authorIds: [BigInt]
+  
+  # 文章状态
+  """
+  文章状态
+  """
+  status: MetaDataStatus!
+}
+
+
+# 文章过滤参数
+"""
+文章过滤参数
+"""
+input ArticleFilterParam {
+  
+  # 索引类型, 包括EI、SCI
+  """
+  索引类型, 包括EI、SCI
+  """
+  indexType: ArticleIndex
+  
+  # 关键词
+  """
+  关键词
+  """
+  keywords: [String]
+  
+  # 文章作者
+  """
+  文章作者
+  """
+  authorIds: [BigInt]
+}
+
+
+# 用来排序的字段
+"""
+用来排序的字段
+"""
+enum ArticleSortableField {
+  
+  # 发表日期
+  """
+  发表日期
+  """
+  PUBLISHDATE
+}
+
+
+# 文章排序控制参数
+"""
+文章排序控制参数
+"""
+input ArticleSortParam {
+  field: ArticleSortableField!
+  direction: SortDirection!
+}
+
+
+# 文章集合查询参数
+"""
+文章集合查询参数
+"""
+input ArticleConnectionInput {
+  pageParam: PageParam
+  filterParam: ArticleFilterParam
+  sortParam: ArticleSortParam
+}
+
+type Query {
+  
+  # 查询文章
+  """
+  查询文章
+  """
+  article(id: Int!): Article
+  
+  # 查询文章列表
+  """
+  查询文章列表
+  """
+  articles(input: ArticleConnectionInput): ArticleConnection
+  
+  # 查询作者信息
+  """
+  查询作者信息
+  """
+  author(authorId: BigInt!): Author
+  
+  # 获取留言板列表 (DEPRECATED)
+  """
+  获取留言板列表 (DEPRECATED)
+  """
+  myChatBoardList: [ChatBoard]!
+  
+  # 获取留言板消息 (DEPRECATED)
+  """
+  获取留言板消息 (DEPRECATED)
+  """
+  chatBoardMessages(key: String!, startID: BigInt, size: NonNegativeInt = 15): [BoardMsg]!
+  
+  # 查询评论详情 (DEPRECATED)
+  """
+  查询评论详情 (DEPRECATED)
+  """
+  comment(commentID: BigInt): Comment
+  
+  # 查询评论列表（根据评论对象） (DEPRECATED)
+  """
+  查询评论列表（根据评论对象） (DEPRECATED)
+  """
+  comments(
+  # 作者ID
+  """
+  作者ID
+  """
+  authorID: BigInt, 
+  # 对象类型
+  """
+  对象类型
+  """
+  targetType: commentTargets!, 
+  # 对象id
+  """
+  对象id
+  """
+  targetID: BigInt!, 
+  # 查询开始id
+  """
+  查询开始id
+  """
+  startID: BigInt, 
+  # 查询返回个数
+  """
+  查询返回个数
+  """
+  size: NonNegativeInt): [Comment!]!
+  
+  # 查询评论的子评论 (DEPRECATED)
+  """
+  查询评论的子评论 (DEPRECATED)
+  """
+  subComments(
+  # 父级评论ID
+  """
+  父级评论ID
+  """
+  commentID: BigInt, 
+  # 查询开始id
+  """
+  查询开始id
+  """
+  startID: BigInt, 
+  # 查询返回个数
+  """
+  查询返回个数
+  """
+  size: NonNegativeInt): [Comment!]!
+  
+  # 首页动态 (DEPRECATED)
+  """
+  首页动态 (DEPRECATED)
+  """
+  homeDynamics(startID: BigInt, size: NonNegativeInt = 15): [Dynamics]
+  
+  # 查询会议
+  """
+  查询会议
+  """
+  conference(id: BigInt!): Conference
+  
+  # 查询会议列表
+  """
+  查询会议列表
+  """
+  conferences(input: ConferenceConnectionInput): ConferenceConnection!
+  
+  # 获取教程
+  """
+  获取教程
+  """
+  course(courseId: Int!): Course
+  
+  # 获取教程列表
+  """
+  获取教程列表
+  """
+  courses(input: CourseCollectionInput!): CourseFeed!
+  
+  # 查询机构
+  """
+  查询机构
+  """
+  institution(id: BigInt!): Institution
+  
+  # 查询机构列表
+  """
+  查询机构列表
+  """
+  institutions(input: InstitutionConnectionInput!): InstitutionConnection!
+  
+  # 查询期刊
+  """
+  查询期刊
+  """
+  journal(journalId: BigInt!): Journal
+  
+  # 查询期刊列表
+  """
+  查询期刊列表
+  """
+  journals(input: JournalConnectionInput): JournalConnection!
+  
+  # 查找时间线草稿
+  """
+  查找时间线草稿
+  """
+  mindMapDraft(mindMapId: BigInt!): MindMap
+  
+  # 查询笔记 (DEPRECATED)
+  """
+  查询笔记 (DEPRECATED)
+  """
+  note(noteID: BigInt!, noteType: NoteType!): Note
+  
+  # 查询笔记(问题)列表 (DEPRECATED)
+  """
+  查询笔记(问题)列表 (DEPRECATED)
+  """
+  notes(startID: BigInt, 
+  # 返回个数
+  """
+  返回个数
+  """
+  size: NonNegativeInt = 15, 
+  # 笔记类型(笔记或问题)
+  """
+  笔记类型(笔记或问题)
+  """
+  noteType: NoteType!, 
+  # 文章ID
+  """
+  文章ID
+  """
+  articleID: BigInt, 
+  # 作者ID
+  """
+  作者ID
+  """
+  authorID: BigInt): [Note]
+  
+  # 查询期刊详情 (DEPRECATED)
+  """
+  查询期刊详情 (DEPRECATED)
+  """
+  periodical(id: BigInt!): Periodical
+  
+  # 查询期刊列表 (DEPRECATED)
+  """
+  查询期刊列表 (DEPRECATED)
+  """
+  periodicals(page: NonNegativeInt = 1, size: NonNegativeInt = 15, prd_name: String): [Periodical]!
+  
+  # 查询期刊统计 (DEPRECATED)
+  """
+  查询期刊统计 (DEPRECATED)
+  """
+  prd_stats(prdID: BigInt!): [PrdStats]!
+  
+  # 查看问题列表
+  """
+  查看问题列表
+  """
+  questions(input: QACollectionInput!): QuestionFeed
+  
+  # 查看问题详情
+  """
+  查看问题详情
+  """
+  question(questionId: BigInt!): Question
+  
+  # 查看问答列表
+  """
+  查看问答列表
+  """
+  questionAnswers(input: QACollectionInput!): QuestionAnswerFeed
+  
+  # 查看问题详情，参数分别是首问和首答的ID
+  """
+  查看问题详情，参数分别是首问和首答的ID
+  """
+  questionAnswer(questionId: BigInt!, answerId: BigInt!): QuestionAnswer
+  
+  # 获取课题详情
+  """
+  获取课题详情
+  """
+  research(researchId: BigInt!): Research
+  
+  # 获取课题列表
+  """
+  获取课题列表
+  """
+  researches(pageParam: PageParam!): ResearchConnection
+  
+  # 热搜关键词
+  """
+  热搜关键词
+  """
+  hotKeywords(searchType: SearchTypes!): [HotKeyword]
+  
+  # 搜索补全
+  """
+  搜索补全
+  """
+  completes(
+  # 关键词
+  """
+  关键词
+  """
+  keyword: String!, 
+  # 个数
+  """
+  个数
+  """
+  size: NonNegativeInt = 15, 
+  # 补全类型
+  """
+  补全类型
+  """
+  type: SearchTypes!): [CompleteKeyword!]!
+  
+  # 搜索文章
+  """
+  搜索文章
+  """
+  searchArticle(keyword: String!, startID: BigInt, size: NonNegativeInt = 15, startTime: DateTime, endTime: DateTime): [Article!]!
+  
+  # 搜索作者
+  """
+  搜索作者
+  """
+  searchAuthor(keyword: String!, startID: BigInt, size: NonNegativeInt = 15): [Author!]!
+  
+  # 搜索期刊
+  """
+  搜索期刊
+  """
+  searchPeriodical(keyword: String!, startID: BigInt, size: NonNegativeInt = 15): [Periodical!]!
+  
+  # 搜索话题
+  """
+  搜索话题
+  """
+  searchTopic(keyword: String!, startID: BigInt, size: NonNegativeInt = 15): [Topic!]!
+  
+  # 搜索会议
+  """
+  搜索会议
+  """
+  searchConference(keyword: String!, startID: BigInt, size: NonNegativeInt = 15): [Conference!]!
+  
+  # 搜索机构
+  """
+  搜索机构
+  """
+  searchInstitution(keyword: String!, startID: BigInt, size: NonNegativeInt = 15): [Institution!]!
+  
+  # 获取订阅条件 (DEPRECATED)
+  """
+  获取订阅条件 (DEPRECATED)
+  """
+  subscribeConditions(authorID: BigInt): SubscribeConditions!
+  
+  # 获取订阅文章列表 (DEPRECATED)
+  """
+  获取订阅文章列表 (DEPRECATED)
+  """
+  subscribedArticles(size: NonNegativeInt = 15, authorID: BigInt, page: NonNegativeInt = 1): [ArticleDynamic!]!
+  
+  # 查找时间线草稿
+  """
+  查找时间线草稿
+  """
+  timeLineDraft(timeLineId: BigInt!): TimeLine
+  
+  # 获取话题详情 (DEPRECATED)
+  """
+  获取话题详情 (DEPRECATED)
+  """
+  topic(topicID: NonNegativeInt!): Topic
+  
+  # 获取话题列表 (DEPRECATED)
+  """
+  获取话题列表 (DEPRECATED)
+  """
+  topics(page: NonNegativeInt = 1, size: NonNegativeInt = 15, title: String): [Topic!]!
+  
+  # 获取话题关联文章 (DEPRECATED)
+  """
+  获取话题关联文章 (DEPRECATED)
+  """
+  topicArticles(topicID: BigInt!, size: NonNegativeInt = 15, startID: BigInt, total: Boolean = false): [Article!]!
+  
+  # 获取话题关联期刊 (DEPRECATED)
+  """
+  获取话题关联期刊 (DEPRECATED)
+  """
+  topicPeriodicals(topicID: BigInt!, size: NonNegativeInt = 15, startID: BigInt): [Periodical!]!
+  
+  # 获取话题关联作者 (DEPRECATED)
+  """
+  获取话题关联作者 (DEPRECATED)
+  """
+  topicAuthors(topicID: BigInt!, size: NonNegativeInt = 15, startID: BigInt): [Author!]!
+  
+  # 获取上传所需的token和key (DEPRECATED)
+  """
+  获取上传所需的token和key (DEPRECATED)
+  """
+  uploadAccess: UploadAccess!
+  
+  # 查询自己
+  """
+  查询自己
+  """
+  me: User
+  
+  # 查询其他用户
+  """
+  查询其他用户
+  """
+  user(userId: BigInt!): User
+  
+  # 查询用户列表
+  """
+  查询用户列表
+  """
+  users(input: PageParam!): UserList!
+}
+
+
+# 作者
+"""
+作者
+"""
+type Author {
+  id: BigInt!
+  
+  # 作者名
+  """
+  作者名
+  """
+  fullname: String!
+  
+  # 影响力
+  """
+  影响力
+  """
+  influence: NonNegativeFloat
+  
+  # 头像
+  """
+  头像
+  """
+  avatar: URI
+  
+  # 行为统计
+  """
+  行为统计
+  """
+  actionCount: UserActionCount!
+  
+  # 发表的文章
+  """
+  发表的文章
+  """
+  articles(pageParam: PageParam): ArticleConnection
+  
+  # 所属的机构
+  """
+  所属的机构
+  """
+  institutions(pageParam: PageParam): InstitutionConnection
+  
+  # 创作的教程
+  """
+  创作的教程
+  """
+  courses(pageParam: PageParam): CourseConnection
+  
+  # 作为回答者参与的完整问答
+  """
+  作为回答者参与的完整问答
+  """
+  questionAnswers(pageParam: PageParam): QuestionAnswerConnection
+  
+  # 显示作者研究领域关联关系的思维导图
+  """
+  显示作者研究领域关联关系的思维导图
+  """
+  mindMap: MindMap
+  
+  # 作者研究工作的时间线
+  """
+  作者研究工作的时间线
+  """
+  timeLine: TimeLine
+  
+  # 审核状态
+  """
+  审核状态
+  """
+  status: MetaDataStatus!
+}
+
+input NewAuthorInput {
+  
+  # 作者名
+  """
+  作者名
+  """
+  fullname: String!
+  
+  # 描述信息，用于评审人判断真实性和有效性
+  """
+  描述信息，用于评审人判断真实性和有效性
+  """
+  desc: String!
+}
+
+input UpdateAuthorInput {
+  authorId: BigInt!
+  
+  # 作者名
+  """
+  作者名
+  """
+  fullname: String
+  
+  # 头像
+  """
+  头像
+  """
+  avatar: URI
+}
+
+input MergedAuthorInput {
+  
+  # 作者全名
+  """
+  作者全名
+  """
+  fullname: String!
+  
+  # 头像
+  """
+  头像
+  """
+  avatar: URI
+}
+
+
+# 聊天留言板 (DEPRECATED)
+"""
+聊天留言板 (DEPRECATED)
+"""
+type ChatBoard {
+  
+  # id
+  """
+  id
+  """
+  id: BigInt!
+  
+  # 用户作者ID
+  """
+  用户作者ID
+  """
+  author_id: BigInt!
+  
+  # 唯一key
+  """
+  唯一key
+  """
+  key: String!
+  
+  # 对象是否是后台 1 是 0 不是
+  """
+  对象是否是后台 1 是 0 不是
+  """
+  is_sys: Int!
+  
+  # 用户信息 - author数组
+  """
+  用户信息 - author数组
+  """
+  member_info: [Author!]
+  
+  # 最新消息
+  """
+  最新消息
+  """
+  last_message: BoardMsg
+  
+  # 更新时间
+  """
+  更新时间
+  """
+  updated_at: DateTime
+  
+  # 创建时间
+  """
+  创建时间
+  """
+  created_at: DateTime
+}
+
+
+# 留言板消息 (DEPRECATED)
+"""
+留言板消息 (DEPRECATED)
+"""
+type BoardMsg {
+  id: BigInt!
+  
+  # 消息内容
+  """
+  消息内容
+  """
+  body: String!
+  
+  # 消息来源作者
+  """
+  消息来源作者
+  """
+  from: Author
+  
+  # 附带信息
+  """
+  附带信息
+  """
+  extra_data: BoardMsgExtraData
+  
+  # 创建时间
+  """
+  创建时间
+  """
+  created_at: DateTime
+  
+  # 更新时间
+  """
+  更新时间
+  """
+  updated_at: DateTime
+}
+
+
+# 留言信息附带信息 (DEPRECATED)
+"""
+留言信息附带信息 (DEPRECATED)
+"""
+type BoardMsgExtraData {
+  
+  # 消息特殊类别   1. 整改笔记  2. 整改问题 3. 整改评论
+  """
+  消息特殊类别   1. 整改笔记  2. 整改问题 3. 整改评论
+  """
+  msg_spec_type: PositiveInt
+  
+  # 相关id
+  """
+  相关id
+  """
+  tid: BigInt
+  
+  # 是否完成
+  """
+  是否完成
+  """
+  done: Boolean
+}
+
+
+# 论文集列表 / 论文收藏夹
+"""
+论文集列表 / 论文收藏夹
+"""
+type Collection {
+  id: BigInt!
+  
+  # 论文集名称
+  """
+  论文集名称
+  """
+  title: String!
+  
+  # 描述
+  """
+  描述
+  """
+  description: String
+  
+  # 论文集中的文章
+  """
+  论文集中的文章
+  """
+  articles(pageParam: PageParam): ArticleConnection
+}
+
+
+# 可评论对象 (DEPRECATED)
+"""
+可评论对象 (DEPRECATED)
+"""
+enum commentTargets {
+  
+  # 笔记
+  """
+  笔记
+  """
+  note
+  
+  # 机构
+  """
+  机构
+  """
+  institution
+  
+  # 会议
+  """
+  会议
+  """
+  conference
+  
+  # 期刊
+  """
+  期刊
+  """
+  periodical
+}
+
+
+# 评论 (DEPRECATED)
+"""
+评论 (DEPRECATED)
+"""
+type Comment {
+  id: BigInt!
+  
+  # 评论内容
+  """
+  评论内容
+  """
+  content: String!
+  
+  # 评论者
+  """
+  评论者
+  """
+  from_author: User!
+  
+  # 被评论者
+  """
+  被评论者
+  """
+  to_author: User
+  
+  # 父级评论ID
+  """
+  父级评论ID
+  """
+  comment_id: BigInt
+  
+  # 行为统计
+  """
+  行为统计
+  """
+  actionCount: UserActionCount
+  
+  # 创建时间
+  """
+  创建时间
+  """
+  created_at: DateTime
+  
+  # 更新时间
+  """
+  更新时间
+  """
+  updated_at: DateTime
+}
+
+scalar URI
+
+scalar GENDER
+
+scalar Password
+
+scalar Period
+
+scalar DateTime
+
+scalar EmailAddress
+
+scalar NonNegativeInt
+
+scalar NegativeInt
+
+scalar NonPositiveInt
+
+scalar PhoneNumber
+
+scalar PositiveInt
+
+scalar UnsignedInt
+
+scalar URL
+
+scalar BigInt
+
+scalar Long
+
+scalar GUID
+
+scalar HexColorCode
+
+scalar IPv4
+
+scalar IPv6
+
+scalar MAC
+
+scalar Port
+
+scalar RGB
+
+scalar RGBA
+
+scalar JSON
+
+scalar JSONObject
+
+scalar NonNegativeFloat
+
+
+# 系统中支持的对象类型
+"""
+系统中支持的对象类型
+"""
+enum ObjectType {
+  
+  # 作者
+  """
+  作者
+  """
+  AUTHOR
+  
+  # 文章
+  """
+  文章
+  """
+  ARTICLE
+  
+  # 研究课题
+  """
+  研究课题
+  """
+  RESEARCH
+  
+  # 会议
+  """
+  会议
+  """
+  CONFERENCE
+  
+  # 机构
+  """
+  机构
+  """
+  INSTITUTION
+  
+  # 问答
+  """
+  问答
+  """
+  QUESTIONANSWER
+  
+  # 教程
+  """
+  教程
+  """
+  COURSE
+  
+  # 期刊
+  """
+  期刊
+  """
+  JOURNAL
+}
+
+
+# 元数据状态
+"""
+元数据状态
+"""
+enum MetaDataStatus {
+  
+  # 创建元数据的请求正在审核中
+  """
+  创建元数据的请求正在审核中
+  """
+  CREATE_UNDER_REVIEW
+  
+  # 更新元数据的请求正在审核中
+  """
+  更新元数据的请求正在审核中
+  """
+  UPDATE_UNDER_REVIEW
+  
+  # 关联元数据的请求正在审核中
+  """
+  关联元数据的请求正在审核中
+  """
+  CONNECTION_UNDER_REVIEW
+  
+  # 合并请求正在审核中
+  """
+  合并请求正在审核中
+  """
+  MERGE_UNDER_REVIEW
+  
+  # 创建、更新、关联请求已通过
+  """
+  创建、更新、关联请求已通过
+  """
+  APPROVED
+  
+  # 数据已合并，当前数据已失效
+  """
+  数据已合并，当前数据已失效
+  """
+  DELETED_AFTER_MERGE
+}
+
+
+# 文章索引类型
+"""
+文章索引类型
+"""
+enum ArticleIndex {
+  
+  # SCI 科学引文索引
+  """
+  SCI 科学引文索引
+  """
+  SCI
+  
+  # EI 工程索引
+  """
+  EI 工程索引
+  """
+  EI
+}
+
+
+# 用于在 Query 中限定排序方向
+"""
+用于在 Query 中限定排序方向
+"""
+enum SortDirection {
+  ASCEND
+  DESCEND
+}
+
+
+# 分页请求参数
+"""
+分页请求参数
+"""
+input PageParam {
+  
+  # 分页请求中的每页数量，服务端限制最大值 30
+  """
+  分页请求中的每页数量，服务端限制最大值 30
+  """
+  first: NonNegativeInt! = 20
+  
+  # 分页游标，以 base64 编码的字符串，空字符串表示从头开始
+  """
+  分页游标，以 base64 编码的字符串，空字符串表示从头开始
+  """
+  after: String! = ""
+}
+
+
+# 分页信息，作为分页请求返回对象的一部分
+"""
+分页信息，作为分页请求返回对象的一部分
+"""
+type PageInfo {
+  
+  # 分页游标，本页中的最后一个元素的游标，以 base64 编码的字符串
+  """
+  分页游标，本页中的最后一个元素的游标，以 base64 编码的字符串
+  """
+  endCursor: String!
+  
+  # 是否还有下一页
+  """
+  是否还有下一页
+  """
+  hasNextPage: Boolean!
+}
+
+enum OrderStatus {
+  
+  # 订单已创建
+  """
+  订单已创建
+  """
+  CREATED
+  
+  # 订单已支付
+  """
+  订单已支付
+  """
+  PAID
+  
+  # 订单已取消
+  """
+  订单已取消
+  """
+  CANCEL
+}
+
+
+# Float范围类型
+"""
+Float范围类型
+"""
+input FloatRange {
+  upper: Float
+  lower: Float
+}
+
+
+# DateTime范围类型
+"""
+DateTime范围类型
+"""
+input DateTimeRange {
+  upper: DateTime
+  lower: DateTime
+}
+
+
+# 动态 (DEPRECATED)
+"""
+动态 (DEPRECATED)
+"""
+type Dynamics {
+  
+  # id
+  """
+  id
+  """
+  id: BigInt!
+  
+  # 行为主体id
+  """
+  行为主体id
+  """
+  body_id: BigInt!
+  
+  # 行为主体类型 1. 作者 2. 文章 3. 期刊 4. 会议 5. 机构 6. 话题
+  """
+  行为主体类型 1. 作者 2. 文章 3. 期刊 4. 会议 5. 机构 6. 话题
+  """
+  body_type: Int
+  
+  # 行为主体名称
+  """
+  行为主体名称
+  """
+  body_name: String
+  
+  # 事件 1. 关注 2. 笔记 3. 评论 4. 读过 5. 收藏 6. 修改基本信息 7. 提出问题
+  """
+  事件 1. 关注 2. 笔记 3. 评论 4. 读过 5. 收藏 6. 修改基本信息 7. 提出问题
+  """
+  event: String
+  
+  # 事件数据
+  """
+  事件数据
+  """
+  event_data: JSONObject
+  
+  # 对象id
+  """
+  对象id
+  """
+  target_id: BigInt
+  
+  # 对象类型 1. 作者 2. 文章 3. 期刊 4. 会议 5. 机构 6.话题 7. 笔记 8. 评论， 9. 问题
+  """
+  对象类型 1. 作者 2. 文章 3. 期刊 4. 会议 5. 机构 6.话题 7. 笔记 8. 评论， 9. 问题
+  """
+  target_type: ObjectType
+  
+  # 创建时间
+  """
+  创建时间
+  """
+  created_at: DateTime
+  
+  # 资源
+  """
+  资源
+  """
+  resource: JSONObject
+}
+
+
+# 默认Mutation结果
+"""
+默认Mutation结果
+"""
+type CommonMutationResult {
+  success: Boolean!
+  message: String
+}
+
+
+# 创建类 Mutation 返回类型
+"""
+创建类 Mutation 返回类型
+"""
+type CreateMutationResult {
+  success: Boolean!
+  id: BigInt!
+}
+
+
+# 会议
+"""
+会议
+"""
+type Conference {
+  id: BigInt!
+  
+  # 会议名称
+  """
+  会议名称
+  """
+  localName: String!
+  
+  # 会议名称(英文)
+  """
+  会议名称(英文)
+  """
+  globalName: String
+  
+  # 收录情况
+  """
+  收录情况
+  """
+  indexType: ArticleIndex
+  
+  # 会议地点
+  """
+  会议地点
+  """
+  address: String
+  
+  # 截稿日期
+  """
+  截稿日期
+  """
+  deadline: DateTime
+  
+  # 会议说明
+  """
+  会议说明
+  """
+  summary: String
+  
+  # 联系方式
+  """
+  联系方式
+  """
+  contact: String
+  
+  # 会议状态
+  """
+  会议状态
+  """
+  status: MetaDataStatus!
+  
+  # 行为统计
+  """
+  行为统计
+  """
+  actionCount: UserActionCount
+}
+
+
+# 新建会议 输入参数
+"""
+新建会议 输入参数
+"""
+input NewConferenceInput {
+  
+  # 会议名称
+  """
+  会议名称
+  """
+  localName: String!
+  
+  # 会议名称(英文)
+  """
+  会议名称(英文)
+  """
+  globalName: String
+  
+  # 收录情况
+  """
+  收录情况
+  """
+  indexType: ArticleIndex
+  
+  # 会议地点
+  """
+  会议地点
+  """
+  address: String
+  
+  # 截稿日期
+  """
+  截稿日期
+  """
+  deadline: DateTime
+  
+  # 会议说明
+  """
+  会议说明
+  """
+  summary: String
+  
+  # 联系方式
+  """
+  联系方式
+  """
+  contact: String
+  
+  # 会议状态
+  """
+  会议状态
+  """
+  status: MetaDataStatus!
+}
+
+
+# 更新会议 输入参数
+"""
+更新会议 输入参数
+"""
+input UpdateConferenceInput {
+  id: BigInt!
+  
+  # 会议名称
+  """
+  会议名称
+  """
+  localName: String!
+  
+  # 会议名称(英文)
+  """
+  会议名称(英文)
+  """
+  globalName: String
+  
+  # 收录情况
+  """
+  收录情况
+  """
+  indexType: ArticleIndex
+  
+  # 会议地点
+  """
+  会议地点
+  """
+  address: String
+  
+  # 截稿日期
+  """
+  截稿日期
+  """
+  deadline: DateTime
+  
+  # 会议说明
+  """
+  会议说明
+  """
+  summary: String
+  
+  # 联系方式
+  """
+  联系方式
+  """
+  contact: String
+  
+  # 会议状态
+  """
+  会议状态
+  """
+  status: MetaDataStatus!
+}
+
+
+# 会议过滤参数
+"""
+会议过滤参数
+"""
+input ConferenceFilterParam {
+  indexType: ArticleIndex
+}
+
+
+# 能够用来排序的字段
+"""
+能够用来排序的字段
+"""
+enum ConferenceSortableField {
+  
+  # 会议英文名称
+  """
+  会议英文名称
+  """
+  GLOBAL_NAME
+}
+
+
+# 会议排序控制参数
+"""
+会议排序控制参数
+"""
+input ConferenceSortParam {
+  field: ConferenceSortableField!
+  direction: SortDirection!
+}
+
+
+# 会议集合查询参数
+"""
+会议集合查询参数
+"""
+input ConferenceConnectionInput {
+  pageParam: PageParam!
+  filterParam: ConferenceFilterParam
+  sortParam: ConferenceSortParam
+}
+
+enum ConnectionOperation {
+  ADD
+  REMOVE
+}
+
+
+# 存储作者关联项的分页信息
+"""
+存储作者关联项的分页信息
+"""
+type AuthorEdge {
+  node: Author!
+  cursor: String!
+}
+
+
+# 作者关联项
+"""
+作者关联项
+"""
+type AuthorConnection {
+  edges: [AuthorEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+# 存储文章关联项的分页信息
+"""
+存储文章关联项的分页信息
+"""
+type ArticleEdge {
+  node: Article!
+  cursor: String!
+}
+
+
+# 文章关联项
+"""
+文章关联项
+"""
+type ArticleConnection {
+  edges: [ArticleEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+# 存储研究课题关联项的分页信息
+"""
+存储研究课题关联项的分页信息
+"""
+type ResearchEdge {
+  node: Research!
+  cursor: String!
+}
+
+
+# 研究课题关联项
+"""
+研究课题关联项
+"""
+type ResearchConnection {
+  edges: [ResearchEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+# 存储期刊关联项的分页信息
+"""
+存储期刊关联项的分页信息
+"""
+type JournalEdge {
+  node: Journal!
+  cursor: String!
+}
+
+
+# 期刊关联项
+"""
+期刊关联项
+"""
+type JournalConnection {
+  edges: [JournalEdge]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+# 存储会议关联项的分页信息
+"""
+存储会议关联项的分页信息
+"""
+type ConferenceEdge {
+  node: Conference!
+  cursor: String!
+}
+
+
+# 会议关联项
+"""
+会议关联项
+"""
+type ConferenceConnection {
+  edges: [ConferenceEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+# 存储机构关联项的分页信息
+"""
+存储机构关联项的分页信息
+"""
+type InstitutionEdge {
+  node: Institution!
+  cursor: String!
+}
+
+
+# 机构关联项
+"""
+机构关联项
+"""
+type InstitutionConnection {
+  edges: [InstitutionEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+# 存储问答关联项的分页信息
+
+# 完整问答的分页信息
+"""
+完整问答的分页信息
+"""
+type QuestionAnswerEdge {
+  node: QuestionAnswer!
+  
+  # base64 编码的字符串
+  """
+  base64 编码的字符串
+  """
+  cursor: String!
+}
+
+
+# 问答关联项
+"""
+问答关联项
+"""
+type QuestionAnswerConnection {
+  edges: [QuestionAnswerEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+# 存储教程关联项的分页信息
+
+# 教程及其游标，用于 CourseFeed
+"""
+教程及其游标，用于 CourseFeed
+"""
+type CourseEdge {
+  node: Course!
+  
+  # base64 编码的字符串
+  """
+  base64 编码的字符串
+  """
+  cursor: String!
+}
+
+
+# 教程关联项
+"""
+教程关联项
+"""
+type CourseConnection {
+  edges: [CourseEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+# 存储论文集关联项的分页信息
+"""
+存储论文集关联项的分页信息
+"""
+type CollectionEdge {
+  node: Collection!
+  cursor: String!
+}
+
+
+# 论文集关联项
+"""
+论文集关联项
+"""
+type CollectionConnection {
+  edges: [CollectionEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+# ##############################################################################
+ # # RequestConnectionInput
+ # ##############################################################################
+input RequestConnectionInput {
+  fromItemId: BigInt!
+  fromItemType: ObjectType!
+  toItemId: BigInt!
+  toItemType: ObjectType!
+  operation: ConnectionOperation!
+}
+
+
+# 更新日志
+"""
+更新日志
+"""
+type UpdateLog {
+  id: BigInt!
+  updateTime: DateTime!
+  content: String!
+}
+
+
+# 教程类型
+"""
+教程类型
+"""
+enum CourseType {
+  
+  # 论文复现
+  """
+  论文复现
+  """
+  REPETITION
+  
+  # 论文解读
+  """
+  论文解读
+  """
+  INTERPRETATION
+}
+
+
+# 教程
+"""
+教程
+"""
+type Course {
+  id: BigInt!
+  title: String!
+  biref: String!
+  content: String!
+  type: CourseType!
+  price: Float!
+  score: Float!
+  author: Author!
+  createTime: DateTime!
+  updateTime: DateTime
+  updateLogs: [UpdateLog]
+  relatedArticles: [Article!]!
+  relatedSubjects: [Topic!]!
+  boughtTimes: Int!
+  userActions: [CourseUserAction!]!
+}
+
+
+# 订单
+"""
+订单
+"""
+type CourseOrder {
+  
+  # 订单号
+  """
+  订单号
+  """
+  id: BigInt!
+  
+  # 购买的用户
+  """
+  购买的用户
+  """
+  customer: User!
+  
+  # 实际成交价格
+  """
+  实际成交价格
+  """
+  dealPrice: Float!
+  
+  # 实际成交时间
+  """
+  实际成交时间
+  """
+  dealTime: DateTime!
+  
+  # 购买的课程
+  """
+  购买的课程
+  """
+  course: Course!
+}
+
+
+# 教程的行为
+"""
+教程的行为
+"""
+type CourseUserAction {
+  id: BigInt!
+  
+  # 用户的购买订单
+  """
+  用户的购买订单
+  """
+  order: CourseOrder!
+  
+  # 用户评价
+  """
+  用户评价
+  """
+  comment: CourseComment!
+}
+
+
+# 教程评价
+"""
+教程评价
+"""
+type CourseComment {
+  
+  # 评价ID
+  """
+  评价ID
+  """
+  id: BigInt!
+  
+  # 评价用户
+  """
+  评价用户
+  """
+  commenter: User!
+  
+  # 用户评分
+  """
+  用户评分
+  """
+  score: Float!
+  
+  # 评价内容
+  """
+  评价内容
+  """
+  content: String!
+  
+  # 是否有效。对于论文复现应该是是否能够重现，对于论文解读应该是是否帮助理解
+  """
+  是否有效。对于论文复现应该是是否能够重现，对于论文解读应该是是否帮助理解
+  """
+  useful: Boolean!
+  
+  # 评价对应的教程
+  """
+  评价对应的教程
+  """
+  course: Course!
+}
+
+
+# 教程过滤参数
+"""
+教程过滤参数
+"""
+input CourseFilterParam {
+  
+  # 教程类型：论文解读、论文复现
+  """
+  教程类型：论文解读、论文复现
+  """
+  type: CourseType!
+  
+  # 教程价格区间
+  """
+  教程价格区间
+  """
+  price: FloatRange!
+  
+  # 教程评分区间
+  """
+  教程评分区间
+  """
+  score: FloatRange!
+  
+  # 教程作者ID，可以传入多个
+  """
+  教程作者ID，可以传入多个
+  """
+  authorIds: [BigInt!]
+  
+  # 教程更新时间
+  """
+  教程更新时间
+  """
+  updateTime: DateTimeRange
+  
+  # 教程相关文章ID，可以传入多个
+  """
+  教程相关文章ID，可以传入多个
+  """
+  relatedArticles: [BigInt!]!
+  
+  # 教程相关课题ID，可以传入多个
+  """
+  教程相关课题ID，可以传入多个
+  """
+  relatedSubjects: [BigInt!]!
+}
+
+
+# 教程过滤参数
+"""
+教程过滤参数
+"""
+input IdentifiedCourseFilterParam {
+  
+  # 教程类型：论文解读、论文复现
+  """
+  教程类型：论文解读、论文复现
+  """
+  type: CourseType!
+  
+  # 教程价格区间
+  """
+  教程价格区间
+  """
+  price: FloatRange!
+  
+  # 教程评分区间
+  """
+  教程评分区间
+  """
+  score: FloatRange!
+  
+  # 教程更新时间
+  """
+  教程更新时间
+  """
+  updateTime: DateTimeRange
+}
+
+
+# 能够用来排序的字段
+"""
+能够用来排序的字段
+"""
+enum CourseSortableField {
+  
+  # 创建日期
+  """
+  创建日期
+  """
+  CREATED
+  
+  # 更新日期
+  """
+  更新日期
+  """
+  UPDATED
+  
+  # 用户评分
+  """
+  用户评分
+  """
+  SCORE
+  
+  # 价格
+  """
+  价格
+  """
+  PRICE
+}
+
+
+# 排序控制参数
+"""
+排序控制参数
+"""
+input CourseSortParam {
+  field: CourseSortableField!
+  direction: SortDirection!
+}
+
+
+# 身份无关的教程集合查询参数
+"""
+身份无关的教程集合查询参数
+"""
+input CourseCollectionInput {
+  
+  # 分页请求参数
+  """
+  分页请求参数
+  """
+  pageParam: PageParam
+  
+  # 可选的过滤器参数
+  """
+  可选的过滤器参数
+  """
+  filterParam: CourseFilterParam
+  
+  # 可选的排序参数
+  """
+  可选的排序参数
+  """
+  sortParam: CourseSortParam
+}
+
+
+# 教程列表，以流的方式组织
+"""
+教程列表，以流的方式组织
+"""
+type CourseFeed {
+  edges: [CourseEdge!]!
+  pageInfo: PageInfo!
+}
+
+
+# 新建教程 输入参数
+"""
+新建教程 输入参数
+"""
+input NewCourseInput {
+  title: String!
+  biref: String!
+  content: String!
+  type: CourseType!
+  price: Float!
+  relatedArticles: [BigInt!]
+  relatedSubjects: [BigInt!]
+}
+
+
+# 更新教程 输入参数
+"""
+更新教程 输入参数
+"""
+input UpdateCourseInput {
+  title: String!
+  biref: String!
+  content: String!
+  price: Float!
+  relatedArticles: [BigInt!]
+  relatedSubjects: [BigInt!]
+}
+
+
+# 机构
+"""
+机构
+"""
+type Institution {
+  id: BigInt!
+  
+  # 本地化名称，目前为中文
+  """
+  本地化名称，目前为中文
+  """
+  localName: String
+  
+  # 通用英文名称
+  """
+  通用英文名称
+  """
+  globalName: String!
+  
+  # 机构概述
+  """
+  机构概述
+  """
+  summary: String!
+  
+  # 联系人姓名
+  """
+  联系人姓名
+  """
+  contact: String
+  
+  # 联系电话
+  """
+  联系电话
+  """
+  tel: String
+  
+  # 联系邮箱
+  """
+  联系邮箱
+  """
+  email: String
+  
+  # 机构地址
+  """
+  机构地址
+  """
+  address: String
+  
+  # 机构状态
+  """
+  机构状态
+  """
+  status: MetaDataStatus!
+  
+  # 统计
+  """
+  统计
+  """
+  actionCount: UserActionCount!
+}
+
+
+# 新建机构 输入参数
+"""
+新建机构 输入参数
+"""
+input NewInstitutionInput {
+  
+  # 本地化名称，目前为中文
+  """
+  本地化名称，目前为中文
+  """
+  localName: String
+  
+  # 通用英文名称
+  """
+  通用英文名称
+  """
+  globalName: String!
+  
+  # 机构概述
+  """
+  机构概述
+  """
+  summary: String!
+  
+  # 联系人姓名
+  """
+  联系人姓名
+  """
+  contact: String
+  
+  # 联系电话
+  """
+  联系电话
+  """
+  tel: String
+  
+  # 联系邮箱
+  """
+  联系邮箱
+  """
+  email: String
+  
+  # 机构地址
+  """
+  机构地址
+  """
+  address: String
+}
+
+
+# 更新机构 输入参数
+"""
+更新机构 输入参数
+"""
+input UpdateInstitutionInput {
+  id: BigInt!
+  
+  # 本地化名称，目前为中文
+  """
+  本地化名称，目前为中文
+  """
+  localName: String
+  
+  # 通用英文名称
+  """
+  通用英文名称
+  """
+  globalName: String
+  
+  # 机构概述
+  """
+  机构概述
+  """
+  summary: String
+  
+  # 联系人姓名
+  """
+  联系人姓名
+  """
+  contact: String
+  
+  # 联系电话
+  """
+  联系电话
+  """
+  tel: String
+  
+  # 联系邮箱
+  """
+  联系邮箱
+  """
+  email: String
+  
+  # 机构地址
+  """
+  机构地址
+  """
+  address: String
+}
+
+
+# 机构能够用来排序的字段
+"""
+机构能够用来排序的字段
+"""
+enum InstitutionSortableField {
+  
+  # 通用英文名称
+  """
+  通用英文名称
+  """
+  GLOBAL_NAME
+}
+
+
+# 机构排序控制参数
+"""
+机构排序控制参数
+"""
+input InstitutionSortParam {
+  field: InstitutionSortableField!
+  direction: SortDirection!
+}
+
+
+# 机构集合查询参数
+"""
+机构集合查询参数
+"""
+input InstitutionConnectionInput {
+  pageParam: PageParam!
+  sortParam: InstitutionSortParam
+}
+
+
+# 期刊
+"""
+期刊
+"""
+type Journal {
+  id: BigInt!
+  
+  # 期刊名
+  """
+  期刊名
+  """
+  localName: String
+  
+  # 期刊英文名
+  """
+  期刊英文名
+  """
+  globalName: String!
+  
+  # 影响因子
+  """
+  影响因子
+  """
+  influence: NonNegativeFloat
+  
+  # ISSN
+  """
+  ISSN
+  """
+  issn: String
+  
+  # 收录情况
+  """
+  收录情况
+  """
+  indexType: ArticleIndex
+  
+  # 期刊主页
+  """
+  期刊主页
+  """
+  homePage: URL
+  
+  # 投稿地址
+  """
+  投稿地址
+  """
+  contributionPage: URL
+  
+  # 发刊周期
+  """
+  发刊周期
+  """
+  publication: Period
+  
+  # 期刊状态
+  """
+  期刊状态
+  """
+  status: MetaDataStatus!
+  
+  # 统计
+  """
+  统计
+  """
+  actionCount: UserActionCount
+}
+
+
+# 新建期刊 输入参数
+"""
+新建期刊 输入参数
+"""
+input NewJournalInput {
+  
+  # 期刊名
+  """
+  期刊名
+  """
+  localName: String
+  
+  # 期刊英文名
+  """
+  期刊英文名
+  """
+  globalName: String!
+  
+  # 影响因子
+  """
+  影响因子
+  """
+  influence: NonNegativeFloat
+  
+  # ISSN
+  """
+  ISSN
+  """
+  issn: String
+  
+  # 收录情况
+  """
+  收录情况
+  """
+  indexType: ArticleIndex
+  
+  # 期刊主页
+  """
+  期刊主页
+  """
+  homePage: URL
+  
+  # 投稿地址
+  """
+  投稿地址
+  """
+  contributionPage: URL
+  
+  # 发刊周期
+  """
+  发刊周期
+  """
+  publication: Period
+  
+  # 期刊状态
+  """
+  期刊状态
+  """
+  status: MetaDataStatus!
+}
+
+
+# 更新期刊 输入参数
+"""
+更新期刊 输入参数
+"""
+input UpdateJournalInput {
+  id: BigInt!
+  
+  # 期刊名
+  """
+  期刊名
+  """
+  localName: String
+  
+  # 期刊英文名
+  """
+  期刊英文名
+  """
+  globalName: String!
+  
+  # 影响因子
+  """
+  影响因子
+  """
+  influence: NonNegativeFloat
+  
+  # ISSN
+  """
+  ISSN
+  """
+  issn: String
+  
+  # 收录情况
+  """
+  收录情况
+  """
+  indexType: ArticleIndex
+  
+  # 期刊主页
+  """
+  期刊主页
+  """
+  homePage: URL
+  
+  # 投稿地址
+  """
+  投稿地址
+  """
+  contributionPage: URL
+  
+  # 发刊周期
+  """
+  发刊周期
+  """
+  publication: Period
+  
+  # 期刊状态
+  """
+  期刊状态
+  """
+  status: MetaDataStatus!
+}
+
+
+# 期刊过滤参数
+"""
+期刊过滤参数
+"""
+input JournalFilterParam {
+  indexType: ArticleIndex
+}
+
+
+# 能够用来排序的字段
+"""
+能够用来排序的字段
+"""
+enum JournalSortableField {
+  
+  # 影响因子
+  """
+  影响因子
+  """
+  INFLUENCE
+  
+  # 期刊英文名
+  """
+  期刊英文名
+  """
+  GLOBAL_NAME
+}
+
+
+# 期刊排序控制参数
+"""
+期刊排序控制参数
+"""
+input JournalSortParam {
+  field: JournalSortableField!
+  direction: SortDirection!
+}
+
+
+# 期刊集合查询参数
+"""
+期刊集合查询参数
+"""
+input JournalConnectionInput {
+  pageParam: PageParam
+  filterParam: JournalFilterParam
+  sortParam: JournalSortParam
+}
+
+type MindMap {
+  
+  # ID
+  """
+  ID
+  """
+  id: BigInt!
+  
+  # mind map 所描述的目标对象的类型
+  """
+  mind map 所描述的目标对象的类型
+  """
+  target: MindMapTarget!
+  
+  # mind map 序列化后的字符串表示
+  """
+  mind map 序列化后的字符串表示
+  """
+  content: String!
+}
+
+enum MindMapTarget {
+  
+  # 作者
+  """
+  作者
+  """
+  AUTHOR
+  
+  # 研究课题
+  """
+  研究课题
+  """
+  RESEARCH
+}
+
+input NewMindMapDraftInput {
+  
+  # mind map 所描述的目标对象的ID
+  """
+  mind map 所描述的目标对象的ID
+  """
+  Id: BigInt!
+  
+  # mind map 所描述的目标对象的类型
+  """
+  mind map 所描述的目标对象的类型
+  """
+  target: MindMapTarget!
+}
+
+input UpdateMindMapInput {
+  
+  # mind map 的ID
+  """
+  mind map 的ID
+  """
+  id: BigInt!
+  
+  # mind map 变动部分序列化后的字符串表示
+  """
+  mind map 变动部分序列化后的字符串表示
+  """
+  diff: String!
+}
+
+
+# 笔记类型 Note-笔记 Questin-问答  (DEPRECATED)
+"""
+笔记类型 Note-笔记 Questin-问答  (DEPRECATED)
+"""
+enum NoteType {
+  
+  # 笔记
+  """
+  笔记
+  """
+  NOTE
+  
+  # 问答
+  """
+  问答
+  """
+  ISSUE
+}
+
+
+# 笔记(问答)  (DEPRECATED)
+"""
+笔记(问答)  (DEPRECATED)
+"""
+type Note {
+  id: BigInt!
+  
+  # 笔记(问答)标题
+  """
+  笔记(问答)标题
+  """
+  title: String
+  
+  # 预览内容
+  """
+  预览内容
+  """
+  preview: String
+  
+  # 笔记(问答)内容
+  """
+  笔记(问答)内容
+  """
+  content: String
+  
+  # 作者ID
+  """
+  作者ID
+  """
+  author_id: BigInt!
+  
+  # 文章ID
+  """
+  文章ID
+  """
+  article_id: BigInt!
+  
+  # 笔记类型=笔记或问答
+  """
+  笔记类型=笔记或问答
+  """
+  note_type: NoteType!
+  
+  # 行为统计
+  """
+  行为统计
+  """
+  actionCount: UserActionCount
+  
+  # 作者
+  """
+  作者
+  """
+  author: Author
+  
+  # 创建时间
+  """
+  创建时间
+  """
+  created_at: DateTime
+  
+  # 更新时间
+  """
+  更新时间
+  """
+  updated_at: DateTime
+  
+  # 评论
+  """
+  评论
+  """
+  comments: [Comment!]!
+}
+
+
+# 添加笔记默认参数 (DEPRECATED)
+"""
+添加笔记默认参数 (DEPRECATED)
+"""
+input createNoteInput {
+  
+  # 文章ID
+  """
+  文章ID
+  """
+  article_id: BigInt!
+  
+  # 标题
+  """
+  标题
+  """
+  title: String
+  
+  # 内容
+  """
+  内容
+  """
+  content: String!
+  
+  # 是否发表
+  """
+  是否发表
+  """
+  is_publish: Boolean!
+  
+  # 笔记类型
+  """
+  笔记类型
+  """
+  note_type: NoteType!
+}
+
+
+# 笔记(问题)更新参数 (DEPRECATED)
+"""
+笔记(问题)更新参数 (DEPRECATED)
+"""
+input updateNoteInput {
+  
+  # 标题
+  """
+  标题
+  """
+  title: String
+  
+  # 内容
+  """
+  内容
+  """
+  content: String
+}
+
+
+# 地区 (DEPRECATED)
+"""
+地区 (DEPRECATED)
+"""
+type Area {
+  id: BigInt!
+  content: String!
+  sort: String!
+}
+
+
+# 期刊 (DEPRECATED)
+"""
+期刊 (DEPRECATED)
+"""
+type Periodical {
+  id: BigInt!
+  
+  # 期刊名
+  """
+  期刊名
+  """
+  prd_name: String!
+  
+  # 期刊名缩写
+  """
+  期刊名缩写
+  """
+  short_name: String
+  
+  # 主页地址
+  """
+  主页地址
+  """
+  home_page: URL
+  
+  # 投稿地址
+  """
+  投稿地址
+  """
+  contribute_page: URL
+  
+  # 影响力
+  """
+  影响力
+  """
+  influence: NonNegativeInt
+  
+  # 采用率
+  """
+  采用率
+  """
+  adoption_rate: NonNegativeInt
+  
+  # 月发文量
+  """
+  月发文量
+  """
+  monthly_volume: String
+  
+  # 审核时间，如三天，一月，一周
+  """
+  审核时间，如三天，一月，一周
+  """
+  review_time: String
+  
+  # 发刊周期，1. 季刊 2. 月刊 3. 周刊 4. 日刊
+  """
+  发刊周期，1. 季刊 2. 月刊 3. 周刊 4. 日刊
+  """
+  period: Period
+  
+  # 版面费, 单位元
+  """
+  版面费, 单位元
+  """
+  charge: String
+  
+  # 地区
+  """
+  地区
+  """
+  areas: [Area!]
+  
+  # 统计
+  """
+  统计
+  """
+  actionCount: UserActionCount
+  
+  # 创建时间
+  """
+  创建时间
+  """
+  created_at: DateTime
+  
+  # 更新时间
+  """
+  更新时间
+  """
+  updated_at: DateTime
+}
+
+
+# 期刊当年统计状况 (DEPRECATED)
+"""
+期刊当年统计状况 (DEPRECATED)
+"""
+type PrdStats {
+  
+  # ID
+  """
+  ID
+  """
+  id: BigInt!
+  
+  # 影响力
+  """
+  影响力
+  """
+  influence: Int
+  
+  # 月发文量
+  """
+  月发文量
+  """
+  monthly_volume: Int
+  
+  # 年份
+  """
+  年份
+  """
+  year: Int
+}
+
+
+# 问题状态
+"""
+问题状态
+"""
+enum QuestionStatus {
+  
+  # 问题创建后未发布
+  """
+  问题创建后未发布
+  """
+  CREATED
+  
+  # 问题已发布
+  """
+  问题已发布
+  """
+  POSTED
+  
+  # 提问者支付酬金后回答者开始回答
+  """
+  提问者支付酬金后回答者开始回答
+  """
+  ANSWERSTARTED
+  
+  # 问答过程终止
+  """
+  问答过程终止
+  """
+  TERMINATED
+  
+  # 提问者认可并接受答案
+  """
+  提问者认可并接受答案
+  """
+  ANSWERACCEPTED
+  
+  # 问题已删除
+  """
+  问题已删除
+  """
+  DELETED
+}
+
+
+# 问题
+"""
+问题
+"""
+type Question {
+  
+  # ID
+  """
+  ID
+  """
+  id: BigInt!
+  
+  # 问题概述
+  """
+  问题概述
+  """
+  abstract: String!
+  
+  # 问题详情
+  """
+  问题详情
+  """
+  detail: String!
+  
+  # 问题所属学科
+  """
+  问题所属学科
+  """
+  subject: String!
+  
+  # 关键词
+  """
+  关键词
+  """
+  keywords: [String!]!
+  
+  # 问题定价
+  """
+  问题定价
+  """
+  price: NonNegativeFloat!
+  
+  # 是否匿名发布
+  """
+  是否匿名发布
+  """
+  anonymous: Boolean!
+  
+  # 仅受邀请用户可见
+  """
+  仅受邀请用户可见
+  """
+  inviteeOnly: Boolean!
+  
+  # 创建日期
+  """
+  创建日期
+  """
+  createdAt: DateTime!
+  
+  # 问题状态
+  """
+  问题状态
+  """
+  status: QuestionStatus!
+}
+
+enum AnswerStatus {
+  
+  # 草稿状态，可以反复编辑，仅自己可见
+  """
+  草稿状态，可以反复编辑，仅自己可见
+  """
+  DRAFT
+  
+  # 提交状态，可以反复修改，自己和提问者均可见
+  """
+  提交状态，可以反复修改，自己和提问者均可见
+  """
+  SUBMITTED
+  
+  # 回答被认可，不能继续修改，自己和提问者均可见，如有未尽回答，需要采用追问方式
+  """
+  回答被认可，不能继续修改，自己和提问者均可见，如有未尽回答，需要采用追问方式
+  """
+  ACCEPTED
+}
+
+
+# 回答
+"""
+回答
+"""
+type Answer {
+  
+  # ID
+  """
+  ID
+  """
+  id: BigInt!
+  
+  # 回答详情
+  """
+  回答详情
+  """
+  detail: String!
+  
+  # 创建日期
+  """
+  创建日期
+  """
+  createdAt: DateTime!
+  
+  # 回答状态
+  """
+  回答状态
+  """
+  status: AnswerStatus!
+}
+
+
+# 已经完成的完整问答记录
+"""
+已经完成的完整问答记录
+"""
+type QuestionAnswer {
+  
+  # 问答记录中的所有问题：首问和追问
+  """
+  问答记录中的所有问题：首问和追问
+  """
+  questions: [Question!]!
+  
+  # 问答记录中的所有回答：首答和追问回答
+  """
+  问答记录中的所有回答：首答和追问回答
+  """
+  answers: [Answer!]!
+  
+  # 答案旁听定价
+  """
+  答案旁听定价
+  """
+  price: NonNegativeFloat!
+}
+
+
+# 新建问题 输入参数
+"""
+新建问题 输入参数
+"""
+input NewQuestionInput {
+  
+  # 问题概述
+  """
+  问题概述
+  """
+  abstract: String!
+  
+  # 问题详情
+  """
+  问题详情
+  """
+  detail: String!
+  
+  # 问题所属学科
+  """
+  问题所属学科
+  """
+  subject: String!
+  
+  # 关键词
+  """
+  关键词
+  """
+  keywords: [String!]!
+  
+  # 问题定价
+  """
+  问题定价
+  """
+  price: NonNegativeFloat!
+  
+  # 是否匿名发布
+  """
+  是否匿名发布
+  """
+  anonymous: Boolean! = false
+  
+  # 仅受邀请用户可见
+  """
+  仅受邀请用户可见
+  """
+  inviteeOnly: Boolean! = false
+  
+  # 是否创建后立即发布
+  """
+  是否创建后立即发布
+  """
+  post: Boolean!
+}
+
+
+# 更新问题 输入参数
+"""
+更新问题 输入参数
+"""
+input UpdateQuestionInput {
+  
+  # 要更新的问题的ID
+  """
+  要更新的问题的ID
+  """
+  id: BigInt!
+  
+  # 问题概述
+  """
+  问题概述
+  """
+  abstract: String!
+  
+  # 问题详情
+  """
+  问题详情
+  """
+  detail: String!
+  
+  # 问题所属学科
+  """
+  问题所属学科
+  """
+  subject: String!
+  
+  # 关键词
+  """
+  关键词
+  """
+  keywords: [String!]
+  
+  # 问题定价
+  """
+  问题定价
+  """
+  price: NonNegativeFloat!
+}
+
+
+# 问答确认 输入参数
+"""
+问答确认 输入参数
+"""
+input ConfirmInput {
+  
+  # 问题ID
+  """
+  问题ID
+  """
+  questionId: BigInt!
+  
+  # 提问者用户ID
+  """
+  提问者用户ID
+  """
+  questionerId: BigInt!
+  
+  # 回答者用户ID
+  """
+  回答者用户ID
+  """
+  answererId: BigInt!
+}
+
+
+# 选择回答者与支付 输入参数
+"""
+选择回答者与支付 输入参数
+"""
+input SelectAndPayInput {
+  
+  # 问题ID
+  """
+  问题ID
+  """
+  questionId: BigInt!
+  
+  # 回答者用户ID
+  """
+  回答者用户ID
+  """
+  answererId: BigInt!
+}
+
+
+# 支付信息
+"""
+支付信息
+"""
+type PaymentInfo {
+  
+  # 服务器生成的支付链接，如支付二维码或其他支付途径
+  """
+  服务器生成的支付链接，如支付二维码或其他支付途径
+  """
+  paymentUrl: URL!
+}
+
+
+# 新建回答 输入参数
+"""
+新建回答 输入参数
+"""
+input NewAnswerInput {
+  
+  # 问题ID
+  """
+  问题ID
+  """
+  questionId: BigInt!
+  
+  # 回答详情
+  """
+  回答详情
+  """
+  detail: String!
+  
+  # 是否创建回答时直接提交
+  """
+  是否创建回答时直接提交
+  """
+  submit: Boolean!
+}
+
+
+# 更新回答 输入参数
+"""
+更新回答 输入参数
+"""
+input UpdateAnswerInput {
+  
+  # 回答ID
+  """
+  回答ID
+  """
+  id: BigInt!
+  
+  # 回答详情
+  """
+  回答详情
+  """
+  detail: String!
+}
+
+
+# 发布完整问答 输入参数
+"""
+发布完整问答 输入参数
+"""
+input ReleaseAnswerInput {
+  
+  # 回答ID
+  """
+  回答ID
+  """
+  id: BigInt!
+  
+  # 旁听价格
+  """
+  旁听价格
+  """
+  price: NonNegativeFloat!
+}
+
+
+# 问答评级
+"""
+问答评级
+"""
+enum AnswerReviewRate {
+  ANGRY
+  NOTGOOD
+  ASEXPECTED
+  GOOD
+  AMAZING
+}
+
+
+# 发布问答评价 输入参数
+"""
+发布问答评价 输入参数
+"""
+input PostAnswerReviewInput {
+  
+  # 等级评价
+  """
+  等级评价
+  """
+  rate: AnswerReviewRate!
+  
+  # 评价详情
+  """
+  评价详情
+  """
+  detail: String!
+}
+
+
+# 问答过滤参数
+"""
+问答过滤参数
+"""
+input QAFilterParam {
+  
+  # 所属学科，可传入多项
+  """
+  所属学科，可传入多项
+  """
+  subjects: [String!]
+  
+  # 用户ID，请求问题时表示提问者，请求回答时表示回答者，可传入多项
+  """
+  用户ID，请求问题时表示提问者，请求回答时表示回答者，可传入多项
+  """
+  userIds: [BigInt!]
+  
+  # 关键词，可传入多项
+  """
+  关键词，可传入多项
+  """
+  keywords: [String!]
+}
+
+
+# 能够用来排序的字段
+"""
+能够用来排序的字段
+"""
+enum SortableField {
+  
+  # 创建日期
+  """
+  创建日期
+  """
+  CREATED
+  
+  # 价格
+  """
+  价格
+  """
+  PRICE
+}
+
+
+# 排序控制参数
+"""
+排序控制参数
+"""
+input QASortParam {
+  field: SortableField!
+  direction: SortDirection!
+}
+
+
+# 问题或回答的集合查询参数
+"""
+问题或回答的集合查询参数
+"""
+input QACollectionInput {
+  
+  # 分页请求参数
+  """
+  分页请求参数
+  """
+  pageParam: PageParam!
+  
+  # 可选的过滤器参数
+  """
+  可选的过滤器参数
+  """
+  filterParam: QAFilterParam
+  
+  # 可选的排序参数
+  """
+  可选的排序参数
+  """
+  sortParam: QASortParam
+}
+
+
+# 问题及其游标，用于 QuestionFeed
+"""
+问题及其游标，用于 QuestionFeed
+"""
+type QuestionEdge {
+  node: Question!
+  
+  # base64 编码的字符串
+  """
+  base64 编码的字符串
+  """
+  cursor: String!
+}
+
+
+# 问题列表，以流的方式组织
+"""
+问题列表，以流的方式组织
+"""
+type QuestionFeed {
+  edges: [QuestionEdge!]!
+  pageInfo: PageInfo!
+}
+
+
+# 完整问答列表，以流的方式组织
+"""
+完整问答列表，以流的方式组织
+"""
+type QuestionAnswerFeed {
+  edges: [QuestionAnswerEdge!]!
+  pageInfo: PageInfo!
+}
+
+
+# 举报/投诉类型
+"""
+举报/投诉类型
+"""
+enum ReportIssueType {
+  
+  # 违法违规，如色情、暴力、歧视等低俗信息
+  """
+  违法违规，如色情、暴力、歧视等低俗信息
+  """
+  ILLEGAL
+  
+  # 存在无关学术的政治性言论
+  """
+  存在无关学术的政治性言论
+  """
+  POLITICAL
+  
+  # 其他
+  """
+  其他
+  """
+  OTHERS
+}
+
+
+# 发起举报参数
+"""
+发起举报参数
+"""
+input NewReportInput {
+  
+  # 举报对象ID
+  """
+  举报对象ID
+  """
+  objectId: BigInt!
+  
+  # 举报对象类型
+  """
+  举报对象类型
+  """
+  objectType: ObjectType!
+  
+  # 举报/投诉类型
+  """
+  举报/投诉类型
+  """
+  issueType: ReportIssueType!
+  
+  # 内容描述
+  """
+  内容描述
+  """
+  description: String!
+}
+
+
+# 课题
+"""
+课题
+"""
+type Research {
+  id: BigInt!
+  
+  # 课题标题
+  """
+  课题标题
+  """
+  title: String!
+  
+  # 课题简介
+  """
+  课题简介
+  """
+  desc: String
+  
+  # 脑图
+  """
+  脑图
+  """
+  mindMap: MindMap
+  
+  # 关联教程
+  """
+  关联教程
+  """
+  courses(pageParam: PageParam): CourseConnection
+  
+  # 关联问答
+  """
+  关联问答
+  """
+  questionAnswers(pageParam: PageParam): QuestionAnswerConnection
+  
+  # 关联文章
+  """
+  关联文章
+  """
+  articles(pageParam: PageParam): ArticleConnection
+  
+  # 关联会议
+  """
+  关联会议
+  """
+  conferences(pageParam: PageParam): ConferenceConnection
+  
+  # 关联期刊
+  """
+  关联期刊
+  """
+  journals(pageParam: PageParam): JournalConnection
+  
+  # 行为统计
+  """
+  行为统计
+  """
+  actionCount: UserActionCount
+  
+  # 课题状态
+  """
+  课题状态
+  """
+  status: MetaDataStatus!
+}
+
+
+# 新建课题 输入参数
+"""
+新建课题 输入参数
+"""
+input NewResearchInput {
+  
+  # 课题标题
+  """
+  课题标题
+  """
+  title: String!
+  
+  # 课题简介
+  """
+  课题简介
+  """
+  desc: String
+}
+
+
+# 更新课题 输入参数
+"""
+更新课题 输入参数
+"""
+input UpdateResearchInput {
+  id: BigInt!
+  
+  # 课题标题
+  """
+  课题标题
+  """
+  title: String!
+  
+  # 课题简介
+  """
+  课题简介
+  """
+  desc: String
+  
+  # 课题状态
+  """
+  课题状态
+  """
+  status: MetaDataStatus!
+}
+
+
+# 热搜关键词
+"""
+热搜关键词
+"""
+type HotKeyword {
+  keyword: String
+  score: Int
+}
+
+
+# 关键词补全
+"""
+关键词补全
+"""
+type CompleteKeyword {
+  
+  # 补全值
+  """
+  补全值
+  """
+  value: String
+  
+  # id
+  """
+  id
+  """
+  id: BigInt
+  
+  # 类型
+  """
+  类型
+  """
+  type: ObjectType
+}
+
+
+# 搜索补全类型
+"""
+搜索补全类型
+"""
+enum SearchTypes {
+  
+  # 文章
+  """
+  文章
+  """
+  article
+  
+  # 作者
+  """
+  作者
+  """
+  author
+  
+  # 期刊
+  """
+  期刊
+  """
+  periodical
+  
+  # 会议
+  """
+  会议
+  """
+  conference
+  
+  # 话题
+  """
+  话题
+  """
+  topic
+  
+  # 机构
+  """
+  机构
+  """
+  institution
+}
+
+
+# 文章动态 (DEPRECATED)
+"""
+文章动态 (DEPRECATED)
+"""
+type ArticleDynamic {
+  id: BigInt!
+  
+  # 动态发起者, 为null, 则为系统后台操作
+  """
+  动态发起者, 为null, 则为系统后台操作
+  """
+  applyer: Author
+  
+  # 文章
+  """
+  文章
+  """
+  article: Article
+  
+  # 操作类型 1. 发表 2. 更新 3. 删除 4. 笔记 5. 问题 6. 合并
+  """
+  操作类型 1. 发表 2. 更新 3. 删除 4. 笔记 5. 问题 6. 合并
+  """
+  dy_type: NonNegativeInt!
+  
+  # 创建时间
+  """
+  创建时间
+  """
+  created_at: DateTime
+  
+  # 更新时间
+  """
+  更新时间
+  """
+  updated_at: DateTime
+  
+  # 动态数据
+  """
+  动态数据
+  """
+  dy_data: String
+}
+
+
+# 查询订阅条件，条件为与的关系 (DEPRECATED)
+"""
+查询订阅条件，条件为与的关系 (DEPRECATED)
+"""
+type SubscribeConditions {
+  
+  # 作者条件
+  """
+  作者条件
+  """
+  authors: [Author!]!
+  
+  # 话题条件
+  """
+  话题条件
+  """
+  topics: [Topic!]!
+  
+  # 期刊条件
+  """
+  期刊条件
+  """
+  periodicals: [Periodical!]!
+  
+  # 会议条件
+  """
+  会议条件
+  """
+  conferences: [Conference!]!
+}
+
+
+# 时间线
+"""
+时间线
+"""
+type TimeLine {
+  
+  # ID
+  """
+  ID
+  """
+  id: BigInt!
+  
+  # timeline 所描述的目标对象的类型
+  """
+  timeline 所描述的目标对象的类型
+  """
+  target: TimeLineTarget!
+  
+  # timeline 序列化后的字符串表示
+  """
+  timeline 序列化后的字符串表示
+  """
+  content: String!
+}
+
+enum TimeLineTarget {
+  
+  # 作者
+  """
+  作者
+  """
+  AUTHOR
+  
+  # 研究课题
+  """
+  研究课题
+  """
+  RESEARCH
+}
+
+input NewTimeLineDraftInput {
+  
+  # timeline 所描述的目标对象的ID
+  """
+  timeline 所描述的目标对象的ID
+  """
+  Id: BigInt!
+  
+  # timeline 所描述的目标对象的类型
+  """
+  timeline 所描述的目标对象的类型
+  """
+  target: TimeLineTarget!
+}
+
+input UpdateTimeLineInput {
+  
+  # timeline 的 ID
+  """
+  timeline 的 ID
+  """
+  id: BigInt!
+  
+  # timeline 变动部分序列化后的字符串表示
+  """
+  timeline 变动部分序列化后的字符串表示
+  """
+  diff: String!
+}
+
+
+# 话题 (DEPRECATED)
+"""
+话题 (DEPRECATED)
+"""
+type Topic {
+  
+  # id
+  """
+  id
+  """
+  id: BigInt!
+  
+  # 话题标题
+  """
+  话题标题
+  """
+  title: String!
+  
+  # 话题描述
+  """
+  话题描述
+  """
+  desc: String
+  
+  # 脑图
+  """
+  脑图
+  """
+  mind_map: JSONObject
+  
+  # 行为统计
+  """
+  行为统计
+  """
+  actionCount: UserActionCount
+  
+  # 创建时间
+  """
+  创建时间
+  """
+  created_at: DateTime
+  
+  # 更新时间
+  """
+  更新时间
+  """
+  updated_at: DateTime
+}
+
+
+# 上传Access, 详情见七牛云文档 (DEPRECATED)
+ # https://developer.qiniu.com/kodo/sdk/1283/javascript
+"""
+上传Access, 详情见七牛云文档 (DEPRECATED)
+https://developer.qiniu.com/kodo/sdk/1283/javascript
+"""
+type UploadAccess {
+  
+  # 上传凭据，只用于单个key
+  """
+  上传凭据，只用于单个key
+  """
+  token: String!
+  
+  # 上传到指定key
+  """
+  上传到指定key
+  """
+  key: String!
+}
+
+
+# app 用户
+"""
+app 用户
+"""
+type User {
+  
+  # id
+  """
+  id
+  """
+  id: BigInt!
+  
+  # uuid
+  """
+  uuid
+  """
+  uuid: ID!
+  
+  # 用户名
+  """
+  用户名
+  """
+  userName: String!
+  
+  # 性别
+  """
+  性别
+  """
+  gender: GENDER
+  
+  # 头像
+  """
+  头像
+  """
+  avatar: URI
+  
+  # 邮箱
+  """
+  邮箱
+  """
+  email: String
+  
+  # 手机号码
+  """
+  手机号码
+  """
+  phone: PhoneNumber
+  
+  # 认证并关联的作者
+  """
+  认证并关联的作者
+  """
+  author: Author
+  
+  # 用户统计信息
+  """
+  用户统计信息
+  """
+  statistics: UserStatistics!
+  
+  # 创作的教程
+  """
+  创作的教程
+  """
+  composedCourses(pageParam: PageParam): CourseConnection
+  
+  # 购买的教程
+  """
+  购买的教程
+  """
+  purchasedCourses(pageParam: PageParam): CourseConnection
+  
+  # 作为回答者参与的完整问答
+  """
+  作为回答者参与的完整问答
+  """
+  composedQuestionAnswers(pageParam: PageParam): QuestionAnswerConnection
+  
+  # 购买的完整问答
+  """
+  购买的完整问答
+  """
+  purchasedQuestionAnswers(pageParam: PageParam): QuestionAnswerConnection
+  
+  # 创建的论文收藏夹列表
+  """
+  创建的论文收藏夹列表
+  """
+  collections(pageParam: PageParam): CollectionConnection
+  
+  # 查看论文收藏夹的内容
+  """
+  查看论文收藏夹的内容
+  """
+  collection(collectionId: BigInt!): Collection
+  
+  # 查询好友列表
+  """
+  查询好友列表
+  """
+  friends(pageParam: PageParam): UserList!
+  
+  # 我的用户反馈列表
+  """
+  我的用户反馈列表
+  """
+  feedbacks(pageParam: PageParam): UserFeedbackList!
+}
+
+
+# 用户列表的分页信息
+"""
+用户列表的分页信息
+"""
+type UserEdge {
+  node: User!
+  cursor: String!
+}
+
+
+# 用户列表
+"""
+用户列表
+"""
+type UserList {
+  edges: [UserEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+# 用户统计信息
+"""
+用户统计信息
+"""
+type UserStatistics {
+  
+  # 关注我的用户数量
+  """
+  关注我的用户数量
+  """
+  follower: NonNegativeInt!
+  
+  # 我关注的用户数量
+  """
+  我关注的用户数量
+  """
+  follow: NonNegativeInt!
+  
+  # 好友数
+  """
+  好友数
+  """
+  friend: NonNegativeInt!
+}
+
+
+# 用户资料更新参数
+"""
+用户资料更新参数
+"""
+input UpdateMyProfileInput {
+  userName: String
+  gender: GENDER
+  email: String
+  phone: PhoneNumber
+}
+
+
+# 用户反馈类型
+"""
+用户反馈类型
+"""
+enum UserFeedbackType {
+  
+  # 新功能建议
+  """
+  新功能建议
+  """
+  ADVICE
+  
+  # 已有功能存在的问题
+  """
+  已有功能存在的问题
+  """
+  ISSUE
+}
+
+
+# 用户反馈处理状态
+"""
+用户反馈处理状态
+"""
+enum UserFeedbackStatus {
+  
+  # 正在处理
+  """
+  正在处理
+  """
+  IN_PROGRESS
+  
+  # 处理结束
+  """
+  处理结束
+  """
+  DONE
+  
+  # 用户撤销
+  """
+  用户撤销
+  """
+  CANCELLED
+}
+
+
+# 针对平台功能的反馈
+"""
+针对平台功能的反馈
+"""
+type UserFeedback {
+  
+  # id
+  """
+  id
+  """
+  id: BigInt!
+  
+  # 标题
+  """
+  标题
+  """
+  title: String!
+  
+  # 内容详情
+  """
+  内容详情
+  """
+  content: String
+  
+  # 重现步骤
+  """
+  重现步骤
+  """
+  steps: String
+  
+  # 处理状态
+  """
+  处理状态
+  """
+  status: UserFeedbackStatus!
+  
+  # 处理结果信息
+  """
+  处理结果信息
+  """
+  resultMsg: String
+  
+  # 处理时间
+  """
+  处理时间
+  """
+  handledAt: DateTime!
+  
+  # 创建时间
+  """
+  创建时间
+  """
+  createdAt: DateTime!
+}
+
+
+# 建议错误回复 (DEPRECATED)
+"""
+建议错误回复 (DEPRECATED)
+"""
+type AdviceReply {
+  
+  # id
+  """
+  id
+  """
+  id: BigInt!
+  
+  # 内容
+  """
+  内容
+  """
+  content: String
+  
+  # 回复类型 1. 用户对系统, 2. 系统对用户
+  """
+  回复类型 1. 用户对系统, 2. 系统对用户
+  """
+  reply_type: Int!
+  
+  # 创建时间
+  """
+  创建时间
+  """
+  created_at: DateTime
+  
+  # 更新时间
+  """
+  更新时间
+  """
+  updated_at: DateTime
+}
+
+
+# 用户反馈列表的分页信息
+"""
+用户反馈列表的分页信息
+"""
+type UserFeedbackEdge {
+  node: UserFeedback!
+  cursor: String!
+}
+
+
+# 用户反馈列表
+"""
+用户反馈列表
+"""
+type UserFeedbackList {
+  edges: [UserFeedbackEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input SubmitUserFeedbackInput {
+  
+  # 标题
+  """
+  标题
+  """
+  title: String!
+  
+  # 内容
+  """
+  内容
+  """
+  content: String!
+  
+  # 重现步骤
+  """
+  重现步骤
+  """
+  steps: String
+  
+  # 类型
+  """
+  类型
+  """
+  type: UserFeedbackType!
+}
+
+schema {
+  query: Query
+  mutation: Mutation
+}
