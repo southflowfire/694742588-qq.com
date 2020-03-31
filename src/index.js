@@ -1,7 +1,7 @@
 /*
  * @Author: renjianshu
  * @Date: 2020-03-29 19:46:59
- * @LastEditTime: 2020-03-30 21:33:59
+ * @LastEditTime: 2020-03-31 17:25:46
  * @LastEditors: renjianshu
  * @Description:
  * @FilePath: \mock\src\index.js
@@ -9,6 +9,7 @@
 
 const { ApolloServer,gql } = require("apollo-server")
 const { resolvers}  = require("./scalars")
+const { mocks} = require("graphql-scalars");
 const path = require('path')
 const fs = require('fs')
 
@@ -20,7 +21,7 @@ const typeDefs = gql`${typeStr}`
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	mocks:true
+	mocks
 });
 
 // The `listen` method launches a web server.
