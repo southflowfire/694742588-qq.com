@@ -303,79 +303,49 @@ type Mutation {
   """
   创建教程
   """
-  createCourse(course: NewCourseInput!): CreateMutationResult!
+  createCourse(input: NewCourseInput!): CreateMutationResult!
   
   # 修改教程
   """
   修改教程
   """
-  updateCourse(course: UpdateCourseInput!): CommonMutationResult!
+  updateCourse(input: UpdateCourseInput!): CommonMutationResult!
   
   # 删除教程
   """
   删除教程
   """
-  deleteCourse(courseId: Int!): CommonMutationResult!
-  
-  # 关联文章
-  """
-  关联文章
-  """
-  relateToArticle(articleId: Int!): CommonMutationResult!
-  
-  # 关联课题
-  """
-  关联课题
-  """
-  relateToTopic(topicId: Int!): CommonMutationResult!
+  deleteCourse(id: BigInt!): CommonMutationResult!
   
   # 发布教程
   """
   发布教程
   """
-  publishCourse(courseId: Int!): CommonMutationResult!
-  
-  # 填写更新日志
-  """
-  填写更新日志
-  """
-  addCourseUpdateLog(courseId: Int!, updateLog: String!): CommonMutationResult!
+  publishCourse(id: BigInt!): CommonMutationResult!
   
   # 下架教程
   """
   下架教程
   """
-  hideCourse(courseId: Int!): CommonMutationResult!
+  hideCourse(id: BigInt!): CommonMutationResult!
   
   # 上架教程
   """
   上架教程
   """
-  showCourse(courseId: Int!): CommonMutationResult!
+  showCourse(id: BigInt!): CommonMutationResult!
   
   # 购买教程
   """
   购买教程
   """
-  purchaseCourse(courseId: Int!): CommonMutationResult!
+  purchaseCourse(id: BigInt!): CommonMutationResult!
   
   # 评价教程
   """
   评价教程
   """
-  commentCourse(courseId: Int!, comment: String!): CommonMutationResult!
-  
-  # 分享教程
-  """
-  分享教程
-  """
-  shareCourse(courseId: Int!): CommonMutationResult!
-  
-  # 举报教程
-  """
-  举报教程
-  """
-  reportCourse(courseId: Int!, content: String!): CommonMutationResult!
+  commentCourse(input: CourseCommentInput!): CommonMutationResult!
   
   # 申请创建机构
   """
@@ -507,7 +477,7 @@ type Mutation {
   """
   分享问题给好友
   """
-  shareQuestion(questionId: BigInt!, userId: BigInt!): CommonMutationResult!
+  shareQuestion(questionId: BigInt!, userId: ID!): CommonMutationResult!
   
   # 提问者确认回答者已经清除理解问题
   """
@@ -573,25 +543,25 @@ type Mutation {
   """
   针对追问的补充回答
   """
-  addSubAnswer(questionId: BigInt!, subQuestionId: BigInt!): CommonMutationResult!
+  addSubAnswer(questionId: BigInt!): CommonMutationResult!
   
   # 回答者发布完整问答，并旁听价格等信息
   """
   回答者发布完整问答，并旁听价格等信息
   """
-  releaseAnswer(input: ReleaseAnswerInput!): CommonMutationResult!
+  releaseQuestionAnswer(input: ReleaseQuestionAnswerInput!): CommonMutationResult!
   
   # 旁听者购买问答
   """
   旁听者购买问答
   """
-  buyAnswer(answerId: BigInt!): PaymentInfo!
+  buyQuestionAnswer(qaId: BigInt!): PaymentInfo!
   
-  # 对回答发表评价
+  # 对已购买的完整问答发表评价
   """
-  对回答发表评价
+  对已购买的完整问答发表评价
   """
-  postAnswerReview(input: PostAnswerReviewInput!): CommonMutationResult!
+  postQuestionAnswerReview(input: PostQuestionAnswerReviewInput!): CommonMutationResult!
   
   # 举报数据对象的不恰当行为
   """
@@ -1173,7 +1143,7 @@ type Query {
   """
   获取教程
   """
-  course(courseId: Int!): Course
+  course(id: BigInt!): Course
   
   # 获取教程列表
   """
@@ -2583,8 +2553,8 @@ input RequestConnectionInput {
 """
 type UpdateLog {
   id: BigInt!
-  updateTime: DateTime!
   content: String!
+  updatedAt: DateTime!
 }
 
 
@@ -2615,78 +2585,38 @@ enum CourseType {
 type Course {
   id: BigInt!
   title: String!
+  
+  # 内容摘要，用于向未购买教程的用户展示
+  """
+  内容摘要，用于向未购买教程的用户展示
+  """
   biref: String!
   content: String!
   type: CourseType!
   price: Float!
   score: Float!
   author: Author!
-  createTime: DateTime!
-  updateTime: DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime
   updateLogs: [UpdateLog]
-  relatedArticles: [Article!]!
-  relatedSubjects: [Topic!]!
-  boughtTimes: Int!
-  userActions: [CourseUserAction!]!
-}
-
-
-# 订单
-"""
-订单
-"""
-type CourseOrder {
   
-  # 订单号
+  # 关联的文章
   """
-  订单号
+  关联的文章
   """
-  id: BigInt!
+  articles: [Article!]!
   
-  # 购买的用户
+  # 关联的课题
   """
-  购买的用户
+  关联的课题
   """
-  customer: User!
+  researches: [Research!]!
   
-  # 实际成交价格
+  # 购买教程的用户的评论
   """
-  实际成交价格
+  购买教程的用户的评论
   """
-  dealPrice: Float!
-  
-  # 实际成交时间
-  """
-  实际成交时间
-  """
-  dealTime: DateTime!
-  
-  # 购买的课程
-  """
-  购买的课程
-  """
-  course: Course!
-}
-
-
-# 教程的行为
-"""
-教程的行为
-"""
-type CourseUserAction {
-  id: BigInt!
-  
-  # 用户的购买订单
-  """
-  用户的购买订单
-  """
-  order: CourseOrder!
-  
-  # 用户评价
-  """
-  用户评价
-  """
-  comment: CourseComment!
+  comments(pageParam: PageParam): CourseCommentFeed!
 }
 
 
@@ -2706,7 +2636,7 @@ type CourseComment {
   """
   评价用户
   """
-  commenter: User!
+  user: User!
   
   # 用户评分
   """
@@ -2734,6 +2664,54 @@ type CourseComment {
 }
 
 
+# 教程评论及其游标，用于 CourseCommentFeed
+"""
+教程评论及其游标，用于 CourseCommentFeed
+"""
+type CourseCommentEdge {
+  node: CourseComment!
+  
+  # base64 编码的字符串
+  """
+  base64 编码的字符串
+  """
+  cursor: String!
+}
+
+
+# 教程评论列表，以流的方式组织
+"""
+教程评论列表，以流的方式组织
+"""
+type CourseCommentFeed {
+  edges: [CourseCommentEdge!]!
+  pageInfo: PageInfo!
+}
+
+input CourseCommentInput {
+  courseId: BigInt!
+  userId: ID!
+  
+  # 用户评分
+  """
+  用户评分
+  """
+  score: Float!
+  
+  # 评价内容
+  """
+  评价内容
+  """
+  content: String!
+  
+  # 是否有效。对于论文复现应该是是否能够重现，对于论文解读应该是是否帮助理解
+  """
+  是否有效。对于论文复现应该是是否能够重现，对于论文解读应该是是否帮助理解
+  """
+  useful: Boolean!
+}
+
+
 # 教程过滤参数
 """
 教程过滤参数
@@ -2744,19 +2722,19 @@ input CourseFilterParam {
   """
   教程类型：论文解读、论文复现
   """
-  type: CourseType!
+  type: CourseType
   
   # 教程价格区间
   """
   教程价格区间
   """
-  price: FloatRange!
+  price: FloatRange
   
   # 教程评分区间
   """
   教程评分区间
   """
-  score: FloatRange!
+  score: FloatRange
   
   # 教程作者ID，可以传入多个
   """
@@ -2768,51 +2746,19 @@ input CourseFilterParam {
   """
   教程更新时间
   """
-  updateTime: DateTimeRange
+  updatedWhile: DateTimeRange
   
   # 教程相关文章ID，可以传入多个
   """
   教程相关文章ID，可以传入多个
   """
-  relatedArticles: [BigInt!]!
+  articles: [BigInt!]!
   
   # 教程相关课题ID，可以传入多个
   """
   教程相关课题ID，可以传入多个
   """
-  relatedSubjects: [BigInt!]!
-}
-
-
-# 教程过滤参数
-"""
-教程过滤参数
-"""
-input IdentifiedCourseFilterParam {
-  
-  # 教程类型：论文解读、论文复现
-  """
-  教程类型：论文解读、论文复现
-  """
-  type: CourseType!
-  
-  # 教程价格区间
-  """
-  教程价格区间
-  """
-  price: FloatRange!
-  
-  # 教程评分区间
-  """
-  教程评分区间
-  """
-  score: FloatRange!
-  
-  # 教程更新时间
-  """
-  教程更新时间
-  """
-  updateTime: DateTimeRange
+  researches: [BigInt!]!
 }
 
 
@@ -2904,8 +2850,8 @@ input NewCourseInput {
   content: String!
   type: CourseType!
   price: Float!
-  relatedArticles: [BigInt!]
-  relatedSubjects: [BigInt!]
+  articles: [BigInt!]
+  researches: [BigInt!]
 }
 
 
@@ -2914,12 +2860,18 @@ input NewCourseInput {
 更新教程 输入参数
 """
 input UpdateCourseInput {
-  title: String!
-  biref: String!
-  content: String!
-  price: Float!
-  relatedArticles: [BigInt!]
-  relatedSubjects: [BigInt!]
+  title: String
+  biref: String
+  content: String
+  price: Float
+  
+  # 该参数对于未发布的教程是可选的，对于已发布的教程是必填的
+  """
+  该参数对于未发布的教程是可选的，对于已发布的教程是必填的
+  """
+  updateLog: String
+  articles: [BigInt!]
+  researches: [BigInt!]
 }
 
 
@@ -2942,11 +2894,11 @@ type Institution {
   """
   globalName: String!
   
-  # 机构概述
+  # 机构简介
   """
-  机构概述
+  机构简介
   """
-  summary: String!
+  desc: String!
   
   # 联系人姓名
   """
@@ -2972,9 +2924,9 @@ type Institution {
   """
   address: String
   
-  # 机构状态
+  # 机构数据状态
   """
-  机构状态
+  机构数据状态
   """
   status: MetaDataStatus!
   
@@ -3170,12 +3122,6 @@ type Journal {
   """
   contributionPage: URL
   
-  # 发刊周期
-  """
-  发刊周期
-  """
-  publication: Period
-  
   # 期刊状态
   """
   期刊状态
@@ -3238,12 +3184,6 @@ input NewJournalInput {
   """
   contributionPage: URL
   
-  # 发刊周期
-  """
-  发刊周期
-  """
-  publication: Period
-  
   # 期刊状态
   """
   期刊状态
@@ -3300,12 +3240,6 @@ input UpdateJournalInput {
   投稿地址
   """
   contributionPage: URL
-  
-  # 发刊周期
-  """
-  发刊周期
-  """
-  publication: Period
   
   # 期刊状态
   """
@@ -3776,23 +3710,17 @@ type Question {
   """
   id: BigInt!
   
-  # 问题概述
+  # 问题标题
   """
-  问题概述
+  问题标题
   """
-  abstract: String!
+  title: String!
   
   # 问题详情
   """
   问题详情
   """
   detail: String!
-  
-  # 问题所属学科
-  """
-  问题所属学科
-  """
-  subject: String!
   
   # 关键词
   """
@@ -3865,6 +3793,12 @@ type Answer {
   """
   id: BigInt!
   
+  # 预览，用来向未购买的用户展示部分内容
+  """
+  预览，用来向未购买的用户展示部分内容
+  """
+  preview: String
+  
   # 回答详情
   """
   回答详情
@@ -3885,23 +3819,45 @@ type Answer {
 }
 
 
+# 追加的问答内容
+"""
+追加的问答内容
+"""
+type FollowUpQuestionAnswer {
+  detail: String!
+  createdAt: DateTime!
+}
+
+
 # 已经完成的完整问答记录
 """
 已经完成的完整问答记录
 """
 type QuestionAnswer {
   
-  # 问答记录中的所有问题：首问和追问
+  # ID
   """
-  问答记录中的所有问题：首问和追问
+  ID
   """
-  questions: [Question!]!
+  id: BigInt!
   
-  # 问答记录中的所有回答：首答和追问回答
+  # 问题
   """
-  问答记录中的所有回答：首答和追问回答
+  问题
   """
-  answers: [Answer!]!
+  question: Question!
+  
+  # 回答
+  """
+  回答
+  """
+  answer: Answer!
+  
+  # 追问与追答
+  """
+  追问与追答
+  """
+  followups: [FollowUpQuestionAnswer!]
   
   # 答案旁听定价
   """
@@ -3917,23 +3873,17 @@ type QuestionAnswer {
 """
 input NewQuestionInput {
   
-  # 问题概述
+  # 问题标题
   """
-  问题概述
+  问题标题
   """
-  abstract: String!
+  title: String!
   
   # 问题详情
   """
   问题详情
   """
   detail: String!
-  
-  # 问题所属学科
-  """
-  问题所属学科
-  """
-  subject: String!
   
   # 关键词
   """
@@ -3979,23 +3929,17 @@ input UpdateQuestionInput {
   """
   id: BigInt!
   
-  # 问题概述
+  # 问题标题
   """
-  问题概述
+  问题标题
   """
-  abstract: String!
+  title: String!
   
   # 问题详情
   """
   问题详情
   """
   detail: String!
-  
-  # 问题所属学科
-  """
-  问题所属学科
-  """
-  subject: String!
   
   # 关键词
   """
@@ -4027,13 +3971,13 @@ input ConfirmInput {
   """
   提问者用户ID
   """
-  questionerId: BigInt!
+  questionerId: ID!
   
   # 回答者用户ID
   """
   回答者用户ID
   """
-  answererId: BigInt!
+  answererId: ID!
 }
 
 
@@ -4053,7 +3997,7 @@ input SelectAndPayInput {
   """
   回答者用户ID
   """
-  answererId: BigInt!
+  answererId: ID!
 }
 
 
@@ -4121,11 +4065,11 @@ input UpdateAnswerInput {
 """
 发布完整问答 输入参数
 """
-input ReleaseAnswerInput {
+input ReleaseQuestionAnswerInput {
   
-  # 回答ID
+  # 完整问答ID
   """
-  回答ID
+  完整问答ID
   """
   id: BigInt!
   
@@ -4154,7 +4098,7 @@ enum AnswerReviewRate {
 """
 发布问答评价 输入参数
 """
-input PostAnswerReviewInput {
+input PostQuestionAnswerReviewInput {
   
   # 等级评价
   """
@@ -4176,17 +4120,11 @@ input PostAnswerReviewInput {
 """
 input QAFilterParam {
   
-  # 所属学科，可传入多项
-  """
-  所属学科，可传入多项
-  """
-  subjects: [String!]
-  
   # 用户ID，请求问题时表示提问者，请求回答时表示回答者，可传入多项
   """
   用户ID，请求问题时表示提问者，请求回答时表示回答者，可传入多项
   """
-  userIds: [BigInt!]
+  userIds: [ID!]
   
   # 关键词，可传入多项
   """
@@ -4767,17 +4705,11 @@ app 用户
 """
 type User {
   
-  # id
+  # 认证服务统一管理的 UUID
   """
-  id
+  认证服务统一管理的 UUID
   """
-  id: BigInt!
-  
-  # uuid
-  """
-  uuid
-  """
-  uuid: ID!
+  id: ID!
   
   # 用户名
   """
@@ -4809,11 +4741,17 @@ type User {
   """
   phone: PhoneNumber
   
-  # 认证并关联的作者
+  # 默认关联的作者身份
   """
-  认证并关联的作者
+  默认关联的作者身份
   """
   author: Author
+  
+  # 经过认证的学者身份 (V2)
+  """
+  经过认证的学者身份 (V2)
+  """
+  scholar: Author
   
   # 用户统计信息
   """
@@ -4821,23 +4759,11 @@ type User {
   """
   statistics: UserStatistics!
   
-  # 创作的教程
-  """
-  创作的教程
-  """
-  composedCourses(pageParam: PageParam): CourseConnection
-  
   # 购买的教程
   """
   购买的教程
   """
   purchasedCourses(pageParam: PageParam): CourseConnection
-  
-  # 作为回答者参与的完整问答
-  """
-  作为回答者参与的完整问答
-  """
-  composedQuestionAnswers(pageParam: PageParam): QuestionAnswerConnection
   
   # 购买的完整问答
   """
@@ -4856,12 +4782,6 @@ type User {
   查看论文收藏夹的内容
   """
   collection(collectionId: BigInt!): Collection
-  
-  # 查询好友列表
-  """
-  查询好友列表
-  """
-  friends(pageParam: PageParam): UserList!
   
   # 我的用户反馈列表
   """
