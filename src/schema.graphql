@@ -1,654 +1,3 @@
-# 用户交互行为类型
-"""
-用户交互行为类型
-"""
-enum UserAction {
-  
-  # 点赞
-  """
-  点赞
-  """
-  favour
-  
-  # 不喜欢
-  """
-  不喜欢
-  """
-  unlike
-  
-  # 读过
-  """
-  读过
-  """
-  read
-  
-  # 订阅
-  """
-  订阅
-  """
-  subscribe
-}
-
-
-# 用户行为统计，比如一篇文章被某个用户点赞，那么该文章的点赞数+1
-"""
-用户行为统计，比如一篇文章被某个用户点赞，那么该文章的点赞数+1
-"""
-type UserActionCount {
-  
-  # 点赞数
-  """
-  点赞数
-  """
-  favour: NonNegativeInt
-  
-  # 不喜欢数
-  """
-  不喜欢数
-  """
-  unlike: NonNegativeInt
-  
-  # 收藏数
-  """
-  收藏数
-  """
-  store: NonNegativeInt
-  
-  # 订阅数
-  """
-  订阅数
-  """
-  subscribe: NonNegativeInt
-}
-
-
-# 用户交互行为通用参数
-"""
-用户交互行为通用参数
-"""
-input UserActionInput {
-  targetId: BigInt!
-  targetType: ObjectType!
-}
-
-type Mutation {
-  
-  # 点赞或取消点赞
-  """
-  点赞或取消点赞
-  """
-  toggleFavour(input: UserActionInput): CommonMutationResult!
-  
-  # "不喜欢"或取消
-  """
-  "不喜欢"或取消
-  """
-  toggleUnlike(input: UserActionInput): CommonMutationResult!
-  
-  # 收藏或取消
-  """
-  收藏或取消
-  """
-  toggleStore(input: UserActionInput): CommonMutationResult!
-  
-  # 订阅或取消订阅
-  """
-  订阅或取消订阅
-  """
-  toggleSubscribe(input: UserActionInput): CommonMutationResult!
-  
-  # 创建文章
-  """
-  创建文章
-  """
-  requestNewArticle(article: NewArticleInput!): CommonMutationResult!
-  
-  # 修改文章
-  """
-  修改文章
-  """
-  requestUpdateArticle(article: UpdateArticleInput!): CommonMutationResult!
-  
-  # 合并文章
-  """
-  合并文章
-  """
-  requestMergeArticle(leftId: BigInt!, rightId: BigInt!, resultArticle: NewArticleInput): CommonMutationResult!
-  
-  # 删除文章
-  """
-  删除文章
-  """
-  requestDeleteArticle(articleId: BigInt!): CommonMutationResult!
-  
-  # 申请创建作者信息
-  """
-  申请创建作者信息
-  """
-  requestNewAuthor(input: NewAuthorInput!): CommonMutationResult!
-  
-  # 申请修改作者信息
-  """
-  申请修改作者信息
-  """
-  requestUpdateAuthor(input: UpdateAuthorInput!): CommonMutationResult!
-  
-  # 发起合并作者信息的申请
-  """
-  发起合并作者信息的申请
-  """
-  requestMergeAuthor(authorId1: BigInt!, authorId2: BigInt!, mergedAuthor: MergedAuthorInput!): CommonMutationResult!
-  
-  # 创建聊天对话框 (DEPRECATED)
-  """
-  创建聊天对话框 (DEPRECATED)
-  """
-  findOrCreateChatBoard(authorID: BigInt!): String!
-  
-  # 新增留言 (DEPRECATED)
-  """
-  新增留言 (DEPRECATED)
-  """
-  postBoardMsg(key: String!, body: String!): Boolean!
-  
-  # 删除留言板 (DEPRECATED)
-  """
-  删除留言板 (DEPRECATED)
-  """
-  removeChatBoard(key: String!): Boolean!
-  
-  # 反馈消息通知或警告 (DEPRECATED)
-  """
-  反馈消息通知或警告 (DEPRECATED)
-  """
-  feedbackMsgNotice(msgID: BigInt!): Boolean!
-  
-  # 创建论文集
-  """
-  创建论文集
-  """
-  createCollection(collectionName: String!): CommonMutationResult!
-  
-  # 修改论文集名称
-  """
-  修改论文集名称
-  """
-  updateCollection(collectionID: BigInt!, collectionName: String!): CommonMutationResult!
-  
-  # 删除论文集
-  """
-  删除论文集
-  """
-  deleteCollection(collectionID: BigInt!): CommonMutationResult!
-  
-  # 将文章加入论文集
-  """
-  将文章加入论文集
-  """
-  storeArticleInCollection(articleID: BigInt!, collectionID: BigInt!): CommonMutationResult!
-  
-  # 将文章从论文集中移除
-  """
-  将文章从论文集中移除
-  """
-  removeArticleFromCollection(articleID: BigInt!, collectionID: BigInt!): CommonMutationResult!
-  
-  # 评论 (DEPRECATED)
-  """
-  评论 (DEPRECATED)
-  """
-  postComment(
-  # 评论对象类型
-  """
-  评论对象类型
-  """
-  targetType: commentTargets!, 
-  # 评论对象ID
-  """
-  评论对象ID
-  """
-  targetID: NonNegativeInt!, 
-  # 内容
-  """
-  内容
-  """
-  content: String!): CreateMutationResult
-  
-  # 跟评 (DEPRECATED)
-  """
-  跟评 (DEPRECATED)
-  """
-  followComment(
-  # 跟评ID
-  """
-  跟评ID
-  """
-  followID: NonNegativeInt!, 
-  # 内容
-  """
-  内容
-  """
-  content: String!): Boolean
-  
-  # 修改评论 (DEPRECATED)
-  """
-  修改评论 (DEPRECATED)
-  """
-  modifyComment(
-  # 评论id
-  """
-  评论id
-  """
-  commentID: BigInt!, 
-  # 评论内容
-  """
-  评论内容
-  """
-  content: String!): Boolean!
-  
-  # 删除评论 (DEPRECATED)
-  """
-  删除评论 (DEPRECATED)
-  """
-  removeComment(
-  # 评论ID
-  """
-  评论ID
-  """
-  commentID: NonNegativeInt!): Boolean
-  
-  # 订阅数据对象的变动消息
-  """
-  订阅数据对象的变动消息
-  """
-  subscribeObject(objectId: BigInt!, type: ObjectType!): CommonMutationResult!
-  
-  # 分享数据对象给好友
-  """
-  分享数据对象给好友
-  """
-  shareObject(objectId: BigInt!, type: ObjectType!, userId: BigInt!): CommonMutationResult!
-  
-  # 申请创建会议
-  """
-  申请创建会议
-  """
-  requestNewConference(conference: NewConferenceInput!): CommonMutationResult!
-  
-  # 申请修改会议
-  """
-  申请修改会议
-  """
-  requestUpdateConference(conference: UpdateConferenceInput!): CommonMutationResult!
-  
-  # 申请合并会议
-  """
-  申请合并会议
-  """
-  requestMergeConference(leftId: BigInt!, rightId: BigInt!, resultConf: NewConferenceInput): CommonMutationResult!
-  
-  # 申请删除会议
-  """
-  申请删除会议
-  """
-  requestDeleteConference(conferenceId: BigInt!): CommonMutationResult!
-  
-  # 请求进行添加或删除关联的操作
-  """
-  请求进行添加或删除关联的操作
-  """
-  requestConnection(input: RequestConnectionInput!): CommonMutationResult!
-  
-  # 创建教程
-  """
-  创建教程
-  """
-  createCourse(input: NewCourseInput!): CreateMutationResult!
-  
-  # 修改教程
-  """
-  修改教程
-  """
-  updateCourse(input: UpdateCourseInput!): CommonMutationResult!
-  
-  # 删除教程
-  """
-  删除教程
-  """
-  deleteCourse(id: BigInt!): CommonMutationResult!
-  
-  # 发布教程
-  """
-  发布教程
-  """
-  publishCourse(id: BigInt!): CommonMutationResult!
-  
-  # 下架教程
-  """
-  下架教程
-  """
-  hideCourse(id: BigInt!): CommonMutationResult!
-  
-  # 上架教程
-  """
-  上架教程
-  """
-  showCourse(id: BigInt!): CommonMutationResult!
-  
-  # 购买教程
-  """
-  购买教程
-  """
-  purchaseCourse(id: BigInt!): CommonMutationResult!
-  
-  # 评价教程
-  """
-  评价教程
-  """
-  commentCourse(input: CourseCommentInput!): CommonMutationResult!
-  
-  # 申请创建机构
-  """
-  申请创建机构
-  """
-  requestNewInstitution(input: NewInstitutionInput!): CommonMutationResult!
-  
-  # 申请修改机构
-  """
-  申请修改机构
-  """
-  requestUpdateInstitution(input: UpdateInstitutionInput!): CommonMutationResult!
-  
-  # 申请删除机构
-  """
-  申请删除机构
-  """
-  requestDeleteInstitution(institutionId: BigInt!): CommonMutationResult!
-  
-  # 申请合并机构
-  """
-  申请合并机构
-  """
-  requestMergeInstitution(leftId: BigInt!, rightId: BigInt!, resultInstitution: NewInstitutionInput): CommonMutationResult!
-  
-  # 创建期刊
-  """
-  创建期刊
-  """
-  requestNewJournal(journal: NewJournalInput!): CommonMutationResult!
-  
-  # 修改期刊
-  """
-  修改期刊
-  """
-  requestUpdateJournal(journal: UpdateJournalInput!): CommonMutationResult!
-  
-  # 删除期刊
-  """
-  删除期刊
-  """
-  requestDeleteJournal(journalId: BigInt!): CommonMutationResult!
-  
-  # 合并机构
-  """
-  合并机构
-  """
-  requestMergeJournal(leftId: BigInt!, rightId: BigInt!, resultJournal: NewJournalInput): CommonMutationResult!
-  
-  # 新建思维导图草稿
-  """
-  新建思维导图草稿
-  """
-  newMindMapDraft(input: NewMindMapDraftInput!): MindMap!
-  
-  # 编辑思维导图草稿
-  """
-  编辑思维导图草稿
-  """
-  updateMindMapDraft(input: UpdateMindMapInput!): MindMap!
-  
-  # 删除思维导图草稿
-  """
-  删除思维导图草稿
-  """
-  deleteMindMapDraft(mindMapId: BigInt!): CommonMutationResult!
-  
-  # 申请发布思维导图，该思维导图来自于申请者的草稿
-  """
-  申请发布思维导图，该思维导图来自于申请者的草稿
-  """
-  requestPostMindMap(mindMapId: BigInt!): CommonMutationResult!
-  
-  # 申请修改思维导图，包括任何已经发布的思维导图
-  """
-  申请修改思维导图，包括任何已经发布的思维导图
-  """
-  requestUpdateMindMap(input: UpdateTimeLineInput!): CommonMutationResult!
-  
-  # 添加笔记 (DEPRECATED)
-  """
-  添加笔记 (DEPRECATED)
-  """
-  createNote(input: createNoteInput): CreateMutationResult
-  
-  # 修改笔记 (DEPRECATED)
-  """
-  修改笔记 (DEPRECATED)
-  """
-  updateNote(noteID: BigInt!, input: updateNoteInput): Boolean
-  
-  # 发布笔记 (DEPRECATED)
-  """
-  发布笔记 (DEPRECATED)
-  """
-  publishNote(noteID: BigInt): Boolean
-  
-  # 删除笔记 (DEPRECATED)
-  """
-  删除笔记 (DEPRECATED)
-  """
-  removeNote(noteID: BigInt): Boolean
-  
-  # 创建问题
-  """
-  创建问题
-  """
-  newQuestion(input: NewQuestionInput!): Question!
-  
-  # 删除问题
-  """
-  删除问题
-  """
-  deleteQuestion(questionId: BigInt!): CommonMutationResult!
-  
-  # 更新问题
-  """
-  更新问题
-  """
-  updateQuestion(input: UpdateQuestionInput!): Question!
-  
-  # 发布问题
-  """
-  发布问题
-  """
-  postQuestion(questionId: BigInt!): CommonMutationResult!
-  
-  # 分享问题给好友
-  """
-  分享问题给好友
-  """
-  shareQuestion(questionId: BigInt!, userId: ID!): CommonMutationResult!
-  
-  # 提问者确认回答者已经清除理解问题
-  """
-  提问者确认回答者已经清除理解问题
-  """
-  questionerConfirm(input: ConfirmInput!): CommonMutationResult!
-  
-  # 选择一位回答者，并完成支付
-  """
-  选择一位回答者，并完成支付
-  """
-  selectAndPay(input: SelectAndPayInput!): PaymentInfo!
-  
-  # 发起追问
-  """
-  发起追问
-  """
-  addSubQuestion(questionId: BigInt!): CommonMutationResult!
-  
-  # 确认并接受答案
-  """
-  确认并接受答案
-  """
-  acceptAnswer(answerId: BigInt!): CommonMutationResult!
-  
-  # 加入回答者列表
-  """
-  加入回答者列表
-  """
-  addToAnswerers(questionId: BigInt!): CommonMutationResult!
-  
-  # 移出回答者列表
-  """
-  移出回答者列表
-  """
-  removeFromAnswerers(questionId: BigInt!): CommonMutationResult!
-  
-  # 回答者确认已经清楚理解问题
-  """
-  回答者确认已经清楚理解问题
-  """
-  answererConfirm(input: ConfirmInput!): CommonMutationResult!
-  
-  # 创建回答
-  """
-  创建回答
-  """
-  newAnswer(input: NewAnswerInput!): Answer!
-  
-  # 更新回答
-  """
-  更新回答
-  """
-  updateAnswer(input: UpdateAnswerInput!): Answer!
-  
-  # 提交回答
-  """
-  提交回答
-  """
-  submitAnswer(answerId: BigInt!): CommonMutationResult!
-  
-  # 针对追问的补充回答
-  """
-  针对追问的补充回答
-  """
-  addSubAnswer(questionId: BigInt!): CommonMutationResult!
-  
-  # 回答者发布完整问答，并旁听价格等信息
-  """
-  回答者发布完整问答，并旁听价格等信息
-  """
-  releaseQuestionAnswer(input: ReleaseQuestionAnswerInput!): CommonMutationResult!
-  
-  # 旁听者购买问答
-  """
-  旁听者购买问答
-  """
-  buyQuestionAnswer(qaId: BigInt!): PaymentInfo!
-  
-  # 对已购买的完整问答发表评价
-  """
-  对已购买的完整问答发表评价
-  """
-  postQuestionAnswerReview(input: PostQuestionAnswerReviewInput!): CommonMutationResult!
-  
-  # 举报数据对象的不恰当行为
-  """
-  举报数据对象的不恰当行为
-  """
-  reportIssueOnObject(input: NewReportInput!): CommonMutationResult!
-  
-  # 创建课题
-  """
-  创建课题
-  """
-  requestNewResearch(input: NewResearchInput!): CommonMutationResult!
-  
-  # 修改课题
-  """
-  修改课题
-  """
-  requestUpdateResearch(input: UpdateResearchInput!): CommonMutationResult!
-  
-  # 删除课题
-  """
-  删除课题
-  """
-  requestDeleteResearch(researchId: BigInt!): CommonMutationResult!
-  
-  # 新建时间线草稿
-  """
-  新建时间线草稿
-  """
-  newTimeLineDraft(input: NewTimeLineDraftInput!): TimeLine!
-  
-  # 编辑时间线草稿
-  """
-  编辑时间线草稿
-  """
-  updateTimeLineDraft(input: UpdateTimeLineInput!): TimeLine!
-  
-  # 删除时间线草稿
-  """
-  删除时间线草稿
-  """
-  deleteTimeLineDraft(timeLineId: BigInt!): CommonMutationResult!
-  
-  # 申请发布时间线，该时间线来自于申请者的草稿
-  """
-  申请发布时间线，该时间线来自于申请者的草稿
-  """
-  requestPostTimeLine(timeLineId: BigInt!): CommonMutationResult!
-  
-  # 申请修改时间线，包括任何已经发布的时间线
-  """
-  申请修改时间线，包括任何已经发布的时间线
-  """
-  requestUpdateTimeLine(input: UpdateTimeLineInput!): CommonMutationResult!
-  
-  # 完善个人资料
-  """
-  完善个人资料
-  """
-  updateMyProfile(input: UpdateMyProfileInput!): CommonMutationResult
-  
-  # 添加好友
-  """
-  添加好友
-  """
-  addFriend(userId: BigInt!): CommonMutationResult
-  
-  # 关注用户
-  """
-  关注用户
-  """
-  followUser(userId: BigInt!): CommonMutationResult
-  
-  # 提交反馈
-  """
-  提交反馈
-  """
-  submitUserFeedback(input: SubmitUserFeedbackInput!): CommonMutationResult!
-  
-  # 撤销反馈
-  """
-  撤销反馈
-  """
-  cancelUserFeedback(feedbackId: BigInt!): CommonMutationResult!
-}
-
-
 # 贡献(DEPRECATED)
 """
 贡献(DEPRECATED)
@@ -706,12 +55,6 @@ type Article {
   """
   title: String!
   
-  # 文章副标题（ DEPRECATED ）
-  """
-  文章副标题（ DEPRECATED ）
-  """
-  subTitle: String
-  
   # 索引类型, 包括EI、SCI
   """
   索引类型, 包括EI、SCI
@@ -729,12 +72,6 @@ type Article {
   关键词
   """
   keywords: [String]!
-  
-  # 资助单位（ DEPRECATED ）
-  """
-  资助单位（ DEPRECATED ）
-  """
-  sponsor: [String]
   
   # 文章doi（唯一数字标识）
   """
@@ -794,13 +131,40 @@ type Article {
   """
   行为统计
   """
-  actionCount: UserActionCount
+  statistics: ArticleStatistics
   
   # 文章状态
   """
   文章状态
   """
   status: MetaDataStatus!
+}
+
+type ArticleStatistics {
+  
+  # 关注人数
+  """
+  关注人数
+  """
+  nSubscribers: NonNegativeInt!
+  
+  # 读过该文章的人数
+  """
+  读过该文章的人数
+  """
+  nReaders: NonNegativeInt!
+  
+  # 关联的教程数量
+  """
+  关联的教程数量
+  """
+  nCourses: NonNegativeInt!
+  
+  # 关联的问答数量
+  """
+  关联的问答数量
+  """
+  nQuestionAnswers: NonNegativeInt!
 }
 
 
@@ -1175,9 +539,9 @@ type Query {
   """
   journals(input: JournalConnectionInput): JournalConnection!
   
-  # 查找时间线草稿
+  # 查找思维导图草稿
   """
-  查找时间线草稿
+  查找思维导图草稿
   """
   mindMapDraft(mindMapId: BigInt!): MindMap
   
@@ -1403,6 +767,559 @@ type Query {
   users(input: PageParam!): UserList!
 }
 
+type Mutation {
+  
+  # 创建文章
+  """
+  创建文章
+  """
+  requestNewArticle(article: NewArticleInput!): CommonMutationResult!
+  
+  # 修改文章
+  """
+  修改文章
+  """
+  requestUpdateArticle(article: UpdateArticleInput!): CommonMutationResult!
+  
+  # 合并文章
+  """
+  合并文章
+  """
+  requestMergeArticle(leftId: BigInt!, rightId: BigInt!, resultArticle: NewArticleInput): CommonMutationResult!
+  
+  # 删除文章
+  """
+  删除文章
+  """
+  requestDeleteArticle(articleId: BigInt!): CommonMutationResult!
+  
+  # 将文章标记为已读或未读，read==true 为已读，false 为未读
+  """
+  将文章标记为已读或未读，read==true 为已读，false 为未读
+  """
+  markReadArticle(articleId: BigInt!, read: Boolean!): CommonMutationResult!
+  
+  # 申请创建作者信息
+  """
+  申请创建作者信息
+  """
+  requestNewAuthor(input: NewAuthorInput!): CommonMutationResult!
+  
+  # 申请修改作者信息
+  """
+  申请修改作者信息
+  """
+  requestUpdateAuthor(input: UpdateAuthorInput!): CommonMutationResult!
+  
+  # 发起合并作者信息的申请
+  """
+  发起合并作者信息的申请
+  """
+  requestMergeAuthor(authorId1: BigInt!, authorId2: BigInt!, mergedAuthor: MergedAuthorInput!): CommonMutationResult!
+  
+  # 创建聊天对话框 (DEPRECATED)
+  """
+  创建聊天对话框 (DEPRECATED)
+  """
+  findOrCreateChatBoard(authorID: BigInt!): String!
+  
+  # 新增留言 (DEPRECATED)
+  """
+  新增留言 (DEPRECATED)
+  """
+  postBoardMsg(key: String!, body: String!): Boolean!
+  
+  # 删除留言板 (DEPRECATED)
+  """
+  删除留言板 (DEPRECATED)
+  """
+  removeChatBoard(key: String!): Boolean!
+  
+  # 反馈消息通知或警告 (DEPRECATED)
+  """
+  反馈消息通知或警告 (DEPRECATED)
+  """
+  feedbackMsgNotice(msgID: BigInt!): Boolean!
+  
+  # 创建论文集
+  """
+  创建论文集
+  """
+  createCollection(collectionName: String!): CommonMutationResult!
+  
+  # 修改论文集名称
+  """
+  修改论文集名称
+  """
+  updateCollection(collectionID: BigInt!, collectionName: String!): CommonMutationResult!
+  
+  # 删除论文集
+  """
+  删除论文集
+  """
+  deleteCollection(collectionID: BigInt!): CommonMutationResult!
+  
+  # 将文章加入论文集
+  """
+  将文章加入论文集
+  """
+  storeArticleInCollection(articleID: BigInt!, collectionID: BigInt!): CommonMutationResult!
+  
+  # 将文章从论文集中移除
+  """
+  将文章从论文集中移除
+  """
+  removeArticleFromCollection(articleID: BigInt!, collectionID: BigInt!): CommonMutationResult!
+  
+  # 评论 (DEPRECATED)
+  """
+  评论 (DEPRECATED)
+  """
+  postComment(
+  # 评论对象类型
+  """
+  评论对象类型
+  """
+  targetType: commentTargets!, 
+  # 评论对象ID
+  """
+  评论对象ID
+  """
+  targetID: NonNegativeInt!, 
+  # 内容
+  """
+  内容
+  """
+  content: String!): CreateMutationResult
+  
+  # 跟评 (DEPRECATED)
+  """
+  跟评 (DEPRECATED)
+  """
+  followComment(
+  # 跟评ID
+  """
+  跟评ID
+  """
+  followID: NonNegativeInt!, 
+  # 内容
+  """
+  内容
+  """
+  content: String!): Boolean
+  
+  # 修改评论 (DEPRECATED)
+  """
+  修改评论 (DEPRECATED)
+  """
+  modifyComment(
+  # 评论id
+  """
+  评论id
+  """
+  commentID: BigInt!, 
+  # 评论内容
+  """
+  评论内容
+  """
+  content: String!): Boolean!
+  
+  # 删除评论 (DEPRECATED)
+  """
+  删除评论 (DEPRECATED)
+  """
+  removeComment(
+  # 评论ID
+  """
+  评论ID
+  """
+  commentID: NonNegativeInt!): Boolean
+  
+  # 订阅数据对象的变动消息
+  """
+  订阅数据对象的变动消息
+  """
+  subscribeObject(objectId: BigInt!, type: ObjectType!): CommonMutationResult!
+  
+  # 分享数据对象给好友
+  """
+  分享数据对象给好友
+  """
+  shareObject(objectId: BigInt!, type: ObjectType!, userId: BigInt!): CommonMutationResult!
+  
+  # 申请创建会议
+  """
+  申请创建会议
+  """
+  requestNewConference(conference: NewConferenceInput!): CommonMutationResult!
+  
+  # 申请修改会议
+  """
+  申请修改会议
+  """
+  requestUpdateConference(conference: UpdateConferenceInput!): CommonMutationResult!
+  
+  # 申请合并会议
+  """
+  申请合并会议
+  """
+  requestMergeConference(leftId: BigInt!, rightId: BigInt!, resultConf: NewConferenceInput): CommonMutationResult!
+  
+  # 申请删除会议
+  """
+  申请删除会议
+  """
+  requestDeleteConference(conferenceId: BigInt!): CommonMutationResult!
+  
+  # 请求进行添加或删除关联的操作
+  """
+  请求进行添加或删除关联的操作
+  """
+  requestConnection(input: RequestConnectionInput!): CommonMutationResult!
+  
+  # 创建教程
+  """
+  创建教程
+  """
+  createCourse(input: NewCourseInput!): CreateMutationResult!
+  
+  # 修改教程
+  """
+  修改教程
+  """
+  updateCourse(input: UpdateCourseInput!): CommonMutationResult!
+  
+  # 删除教程
+  """
+  删除教程
+  """
+  deleteCourse(id: BigInt!): CommonMutationResult!
+  
+  # 发布教程
+  """
+  发布教程
+  """
+  publishCourse(id: BigInt!): CommonMutationResult!
+  
+  # 下架教程
+  """
+  下架教程
+  """
+  hideCourse(id: BigInt!): CommonMutationResult!
+  
+  # 上架教程
+  """
+  上架教程
+  """
+  showCourse(id: BigInt!): CommonMutationResult!
+  
+  # 购买教程
+  """
+  购买教程
+  """
+  purchaseCourse(id: BigInt!): CommonMutationResult!
+  
+  # 评价教程
+  """
+  评价教程
+  """
+  commentCourse(input: CourseCommentInput!): CommonMutationResult!
+  
+  # 申请创建机构
+  """
+  申请创建机构
+  """
+  requestNewInstitution(input: NewInstitutionInput!): CommonMutationResult!
+  
+  # 申请修改机构
+  """
+  申请修改机构
+  """
+  requestUpdateInstitution(input: UpdateInstitutionInput!): CommonMutationResult!
+  
+  # 申请删除机构
+  """
+  申请删除机构
+  """
+  requestDeleteInstitution(institutionId: BigInt!): CommonMutationResult!
+  
+  # 申请合并机构
+  """
+  申请合并机构
+  """
+  requestMergeInstitution(leftId: BigInt!, rightId: BigInt!, resultInstitution: NewInstitutionInput): CommonMutationResult!
+  
+  # 创建期刊
+  """
+  创建期刊
+  """
+  requestNewJournal(journal: NewJournalInput!): CommonMutationResult!
+  
+  # 修改期刊
+  """
+  修改期刊
+  """
+  requestUpdateJournal(journal: UpdateJournalInput!): CommonMutationResult!
+  
+  # 删除期刊
+  """
+  删除期刊
+  """
+  requestDeleteJournal(journalId: BigInt!): CommonMutationResult!
+  
+  # 合并机构
+  """
+  合并机构
+  """
+  requestMergeJournal(leftId: BigInt!, rightId: BigInt!, resultJournal: NewJournalInput): CommonMutationResult!
+  
+  # 新建思维导图草稿
+  """
+  新建思维导图草稿
+  """
+  newMindMapDraft(input: NewMindMapDraftInput!): MindMap!
+  
+  # 编辑思维导图草稿
+  """
+  编辑思维导图草稿
+  """
+  updateMindMapDraft(input: UpdateMindMapInput!): MindMap!
+  
+  # 删除思维导图草稿
+  """
+  删除思维导图草稿
+  """
+  deleteMindMapDraft(mindMapId: BigInt!): CommonMutationResult!
+  
+  # 申请发布思维导图，该思维导图来自于申请者的草稿
+  """
+  申请发布思维导图，该思维导图来自于申请者的草稿
+  """
+  requestPostMindMap(mindMapId: BigInt!): CommonMutationResult!
+  
+  # 申请修改思维导图，包括任何已经发布的思维导图
+  """
+  申请修改思维导图，包括任何已经发布的思维导图
+  """
+  requestUpdateMindMap(input: UpdateMindMapInput!): CommonMutationResult!
+  
+  # 添加笔记 (DEPRECATED)
+  """
+  添加笔记 (DEPRECATED)
+  """
+  createNote(input: createNoteInput): CreateMutationResult
+  
+  # 修改笔记 (DEPRECATED)
+  """
+  修改笔记 (DEPRECATED)
+  """
+  updateNote(noteID: BigInt!, input: updateNoteInput): Boolean
+  
+  # 发布笔记 (DEPRECATED)
+  """
+  发布笔记 (DEPRECATED)
+  """
+  publishNote(noteID: BigInt): Boolean
+  
+  # 删除笔记 (DEPRECATED)
+  """
+  删除笔记 (DEPRECATED)
+  """
+  removeNote(noteID: BigInt): Boolean
+  
+  # 创建问题
+  """
+  创建问题
+  """
+  newQuestion(input: NewQuestionInput!): Question!
+  
+  # 删除问题
+  """
+  删除问题
+  """
+  deleteQuestion(questionId: BigInt!): CommonMutationResult!
+  
+  # 更新问题
+  """
+  更新问题
+  """
+  updateQuestion(input: UpdateQuestionInput!): Question!
+  
+  # 发布问题
+  """
+  发布问题
+  """
+  postQuestion(questionId: BigInt!): CommonMutationResult!
+  
+  # 分享问题给好友
+  """
+  分享问题给好友
+  """
+  shareQuestion(questionId: BigInt!, userId: ID!): CommonMutationResult!
+  
+  # 提问者确认回答者已经清除理解问题
+  """
+  提问者确认回答者已经清除理解问题
+  """
+  questionerConfirm(input: ConfirmInput!): CommonMutationResult!
+  
+  # 选择一位回答者，并完成支付
+  """
+  选择一位回答者，并完成支付
+  """
+  selectAndPay(input: SelectAndPayInput!): PaymentInfo!
+  
+  # 发起追问
+  """
+  发起追问
+  """
+  addSubQuestion(questionId: BigInt!): CommonMutationResult!
+  
+  # 确认并接受答案
+  """
+  确认并接受答案
+  """
+  acceptAnswer(answerId: BigInt!): CommonMutationResult!
+  
+  # 加入回答者列表
+  """
+  加入回答者列表
+  """
+  addToAnswerers(questionId: BigInt!): CommonMutationResult!
+  
+  # 移出回答者列表
+  """
+  移出回答者列表
+  """
+  removeFromAnswerers(questionId: BigInt!): CommonMutationResult!
+  
+  # 回答者确认已经清楚理解问题
+  """
+  回答者确认已经清楚理解问题
+  """
+  answererConfirm(input: ConfirmInput!): CommonMutationResult!
+  
+  # 创建回答
+  """
+  创建回答
+  """
+  newAnswer(input: NewAnswerInput!): Answer!
+  
+  # 更新回答
+  """
+  更新回答
+  """
+  updateAnswer(input: UpdateAnswerInput!): Answer!
+  
+  # 提交回答
+  """
+  提交回答
+  """
+  submitAnswer(answerId: BigInt!): CommonMutationResult!
+  
+  # 针对追问的补充回答
+  """
+  针对追问的补充回答
+  """
+  addSubAnswer(questionId: BigInt!): CommonMutationResult!
+  
+  # 回答者发布完整问答，并旁听价格等信息
+  """
+  回答者发布完整问答，并旁听价格等信息
+  """
+  releaseQuestionAnswer(input: ReleaseQuestionAnswerInput!): CommonMutationResult!
+  
+  # 旁听者购买问答
+  """
+  旁听者购买问答
+  """
+  buyQuestionAnswer(qaId: BigInt!): PaymentInfo!
+  
+  # 对已购买的完整问答发表评价
+  """
+  对已购买的完整问答发表评价
+  """
+  postQuestionAnswerReview(input: PostQuestionAnswerReviewInput!): CommonMutationResult!
+  
+  # 举报数据对象的不恰当行为
+  """
+  举报数据对象的不恰当行为
+  """
+  reportIssueOnObject(input: NewReportInput!): CommonMutationResult!
+  
+  # 创建课题
+  """
+  创建课题
+  """
+  requestNewResearch(input: NewResearchInput!): CommonMutationResult!
+  
+  # 修改课题
+  """
+  修改课题
+  """
+  requestUpdateResearch(input: UpdateResearchInput!): CommonMutationResult!
+  
+  # 删除课题
+  """
+  删除课题
+  """
+  requestDeleteResearch(researchId: BigInt!): CommonMutationResult!
+  
+  # 新建时间线草稿
+  """
+  新建时间线草稿
+  """
+  newTimeLineDraft(input: NewTimeLineDraftInput!): TimeLine!
+  
+  # 编辑时间线草稿
+  """
+  编辑时间线草稿
+  """
+  updateTimeLineDraft(input: UpdateTimeLineInput!): TimeLine!
+  
+  # 删除时间线草稿
+  """
+  删除时间线草稿
+  """
+  deleteTimeLineDraft(timeLineId: BigInt!): CommonMutationResult!
+  
+  # 申请发布时间线，该时间线来自于申请者的草稿
+  """
+  申请发布时间线，该时间线来自于申请者的草稿
+  """
+  requestPostTimeLine(timeLineId: BigInt!): CommonMutationResult!
+  
+  # 申请修改时间线，包括任何已经发布的时间线
+  """
+  申请修改时间线，包括任何已经发布的时间线
+  """
+  requestUpdateTimeLine(input: UpdateTimeLineInput!): CommonMutationResult!
+  
+  # 完善个人资料
+  """
+  完善个人资料
+  """
+  updateMyProfile(input: UpdateMyProfileInput!): CommonMutationResult
+  
+  # 关注用户
+  """
+  关注用户
+  """
+  followUser(userId: BigInt!): CommonMutationResult
+  
+  # 提交反馈
+  """
+  提交反馈
+  """
+  submitUserFeedback(input: SubmitUserFeedbackInput!): CommonMutationResult!
+  
+  # 撤销反馈
+  """
+  撤销反馈
+  """
+  cancelUserFeedback(feedbackId: BigInt!): CommonMutationResult!
+}
+
 
 # 作者
 """
@@ -1417,11 +1334,11 @@ type Author {
   """
   fullname: String!
   
-  # 影响力
+  # 作者简介
   """
-  影响力
+  作者简介
   """
-  influence: NonNegativeFloat
+  desc: String
   
   # 头像
   """
@@ -1433,7 +1350,13 @@ type Author {
   """
   行为统计
   """
-  actionCount: UserActionCount!
+  statistics: AuthorStatistics!
+  
+  # 学者统计数据，这个数据对于默认作者是null，对于学者是non-null
+  """
+  学者统计数据，这个数据对于默认作者是null，对于学者是non-null
+  """
+  statisticsAsScholar: ScholarStatistics
   
   # 发表的文章
   """
@@ -1478,6 +1401,66 @@ type Author {
   status: MetaDataStatus!
 }
 
+type AuthorStatistics {
+  
+  # “我”关注的作者数量
+  """
+  “我”关注的作者数量
+  """
+  nFollows: NonNegativeInt!
+  
+  # 关注“我”的作者数量
+  """
+  关注“我”的作者数量
+  """
+  nFollowers: NonNegativeInt!
+  
+  # “我”创作的教程数量
+  """
+  “我”创作的教程数量
+  """
+  nCourses: NonNegativeInt!
+  
+  # “我”创作的问答数量
+  """
+  “我”创作的问答数量
+  """
+  nQuestionAnswers: NonNegativeInt!
+  
+  # “我”阅读过的文章数量
+  """
+  “我”阅读过的文章数量
+  """
+  nReads: NonNegativeInt!
+}
+
+type ScholarStatistics {
+  
+  # H-Index
+  """
+  H-Index
+  """
+  hIndex: NonNegativeInt!
+  
+  # 发表的文章数量
+  """
+  发表的文章数量
+  """
+  nArticles: NonNegativeInt!
+  
+  # 总被引数
+  """
+  总被引数
+  """
+  citationsInTotal: NonNegativeInt!
+  
+  # 他引数
+  """
+  他引数
+  """
+  citationsByOthers: NonNegativeInt!
+}
+
 input NewAuthorInput {
   
   # 作者名
@@ -1486,9 +1469,9 @@ input NewAuthorInput {
   """
   fullname: String!
   
-  # 描述信息，用于评审人判断真实性和有效性
+  # 作者简介
   """
-  描述信息，用于评审人判断真实性和有效性
+  作者简介
   """
   desc: String!
 }
@@ -1501,6 +1484,12 @@ input UpdateAuthorInput {
   作者名
   """
   fullname: String
+  
+  # 作者简介
+  """
+  作者简介
+  """
+  desc: String!
   
   # 头像
   """
@@ -1516,6 +1505,12 @@ input MergedAuthorInput {
   作者全名
   """
   fullname: String!
+  
+  # 作者简介
+  """
+  作者简介
+  """
+  desc: String!
   
   # 头像
   """
@@ -1735,12 +1730,6 @@ type Comment {
   父级评论ID
   """
   comment_id: BigInt
-  
-  # 行为统计
-  """
-  行为统计
-  """
-  actionCount: UserActionCount
   
   # 创建时间
   """
@@ -2166,7 +2155,16 @@ type Conference {
   """
   行为统计
   """
-  actionCount: UserActionCount
+  statistics: ConferenceStatistics!
+}
+
+type ConferenceStatistics {
+  
+  # 关注人数
+  """
+  关注人数
+  """
+  nSubscribers: NonNegativeInt!
 }
 
 
@@ -2617,6 +2615,33 @@ type Course {
   购买教程的用户的评论
   """
   comments(pageParam: PageParam): CourseCommentFeed!
+  
+  # 统计
+  """
+  统计
+  """
+  statistics: CourseStatistics!
+}
+
+type CourseStatistics {
+  
+  # 关注人数
+  """
+  关注人数
+  """
+  nSubscribers: NonNegativeInt!
+  
+  # 购买人数
+  """
+  购买人数
+  """
+  nBuyers: NonNegativeInt!
+  
+  # 浏览详情但未购买人数，该数据只有创作者可见
+  """
+  浏览详情但未购买人数，该数据只有创作者可见
+  """
+  nBrowsers: NonNegativeInt!
 }
 
 
@@ -2929,12 +2954,6 @@ type Institution {
   机构数据状态
   """
   status: MetaDataStatus!
-  
-  # 统计
-  """
-  统计
-  """
-  actionCount: UserActionCount!
 }
 
 
@@ -3132,7 +3151,16 @@ type Journal {
   """
   统计
   """
-  actionCount: UserActionCount
+  statistics: JournalStatistics!
+}
+
+type JournalStatistics {
+  
+  # 关注人数
+  """
+  关注人数
+  """
+  nSubscribers: NonNegativeInt!
 }
 
 
@@ -3317,6 +3345,12 @@ type MindMap {
   mind map 序列化后的字符串表示
   """
   content: String!
+  
+  # 关联文章
+  """
+  关联文章
+  """
+  articles: [Article!]
 }
 
 enum MindMapTarget {
@@ -3347,6 +3381,12 @@ input NewMindMapDraftInput {
   mind map 所描述的目标对象的类型
   """
   target: MindMapTarget!
+  
+  # mind map 新对象的全量序列化内容
+  """
+  mind map 新对象的全量序列化内容
+  """
+  content: String!
 }
 
 input UpdateMindMapInput {
@@ -3357,11 +3397,11 @@ input UpdateMindMapInput {
   """
   id: BigInt!
   
-  # mind map 变动部分序列化后的字符串表示
+  # mind map 新对象的全量序列化内容
   """
-  mind map 变动部分序列化后的字符串表示
+  mind map 新对象的全量序列化内容
   """
-  diff: String!
+  content: String!
 }
 
 
@@ -3427,12 +3467,6 @@ type Note {
   笔记类型=笔记或问答
   """
   note_type: NoteType!
-  
-  # 行为统计
-  """
-  行为统计
-  """
-  actionCount: UserActionCount
   
   # 作者
   """
@@ -3602,12 +3636,6 @@ type Periodical {
   """
   areas: [Area!]
   
-  # 统计
-  """
-  统计
-  """
-  actionCount: UserActionCount
-  
   # 创建时间
   """
   创建时间
@@ -3757,6 +3785,21 @@ type Question {
   问题状态
   """
   status: QuestionStatus!
+  
+  # 统计
+  """
+  统计
+  """
+  statistics: QuestionStatistics!
+}
+
+type QuestionStatistics {
+  
+  # 关注人数
+  """
+  关注人数
+  """
+  nSubscribers: NonNegativeInt!
 }
 
 enum AnswerStatus {
@@ -3864,6 +3907,33 @@ type QuestionAnswer {
   答案旁听定价
   """
   price: NonNegativeFloat!
+  
+  # 统计
+  """
+  统计
+  """
+  statistics: QuestionAnswerStatistics!
+}
+
+type QuestionAnswerStatistics {
+  
+  # 关注人数
+  """
+  关注人数
+  """
+  nSubscribers: NonNegativeInt!
+  
+  # 购买人数
+  """
+  购买人数
+  """
+  nBuyers: NonNegativeInt!
+  
+  # 浏览详情但未购买人数，该数据只有创作者可见
+  """
+  浏览详情但未购买人数，该数据只有创作者可见
+  """
+  nBrowsers: NonNegativeInt!
 }
 
 
@@ -4342,13 +4412,22 @@ type Research {
   """
   行为统计
   """
-  actionCount: UserActionCount
+  statistics: ResearchStatistics
   
   # 课题状态
   """
   课题状态
   """
   status: MetaDataStatus!
+}
+
+type ResearchStatistics {
+  
+  # 关注人数
+  """
+  关注人数
+  """
+  nSubscribers: NonNegativeInt!
 }
 
 
@@ -4579,6 +4658,12 @@ type TimeLine {
   timeline 序列化后的字符串表示
   """
   content: String!
+  
+  # 关联文章
+  """
+  关联文章
+  """
+  articles: [Article!]
 }
 
 enum TimeLineTarget {
@@ -4609,6 +4694,12 @@ input NewTimeLineDraftInput {
   timeline 所描述的目标对象的类型
   """
   target: TimeLineTarget!
+  
+  # timeline 对象的全量序列化内容
+  """
+  timeline 对象的全量序列化内容
+  """
+  content: String!
 }
 
 input UpdateTimeLineInput {
@@ -4619,11 +4710,11 @@ input UpdateTimeLineInput {
   """
   id: BigInt!
   
-  # timeline 变动部分序列化后的字符串表示
+  # timeline 新对象的全量序列化内容
   """
-  timeline 变动部分序列化后的字符串表示
+  timeline 新对象的全量序列化内容
   """
-  diff: String!
+  content: String!
 }
 
 
@@ -4656,12 +4747,6 @@ type Topic {
   脑图
   """
   mind_map: JSONObject
-  
-  # 行为统计
-  """
-  行为统计
-  """
-  actionCount: UserActionCount
   
   # 创建时间
   """
@@ -4822,19 +4907,25 @@ type UserStatistics {
   """
   关注我的用户数量
   """
-  follower: NonNegativeInt!
+  followers: NonNegativeInt!
   
   # 我关注的用户数量
   """
   我关注的用户数量
   """
-  follow: NonNegativeInt!
+  follows: NonNegativeInt!
   
-  # 好友数
+  # 购买的教程数量
   """
-  好友数
+  购买的教程数量
   """
-  friend: NonNegativeInt!
+  purchasedCourses: NonNegativeInt!
+  
+  # 购买的问答数量
+  """
+  购买的问答数量
+  """
+  purchasedQuestionAnswers: NonNegativeInt!
 }
 
 
