@@ -1426,12 +1426,6 @@ type AuthorStatistics {
   “我”创作的问答数量
   """
   nQuestionAnswers: NonNegativeInt!
-  
-  # “我”阅读过的文章数量
-  """
-  “我”阅读过的文章数量
-  """
-  nReads: NonNegativeInt!
 }
 
 type ScholarStatistics {
@@ -4907,25 +4901,31 @@ type UserStatistics {
   """
   关注我的用户数量
   """
-  followers: NonNegativeInt!
+  nFollowers: NonNegativeInt!
   
   # 我关注的用户数量
   """
   我关注的用户数量
   """
-  follows: NonNegativeInt!
+  nFollows: NonNegativeInt!
+  
+  # 阅读过的文章数量
+  """
+  阅读过的文章数量
+  """
+  nReads: NonNegativeInt!
   
   # 购买的教程数量
   """
   购买的教程数量
   """
-  purchasedCourses: NonNegativeInt!
+  nPurchasedCourses: NonNegativeInt!
   
   # 购买的问答数量
   """
   购买的问答数量
   """
-  purchasedQuestionAnswers: NonNegativeInt!
+  nPurchasedQuestionAnswers: NonNegativeInt!
 }
 
 
