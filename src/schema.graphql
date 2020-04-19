@@ -427,6 +427,12 @@ type Query {
   """
   chatBoardMessages(key: String!, startID: BigInt, size: NonNegativeInt = 15): [BoardMsg]!
   
+  # 查看论文集的内容
+  """
+  查看论文集的内容
+  """
+  collection(collectionId: BigInt!): Collection
+  
   # 查询评论详情 (DEPRECATED)
   """
   查询评论详情 (DEPRECATED)
@@ -758,7 +764,7 @@ type Query {
   """
   查询其他用户
   """
-  user(userId: BigInt!): User
+  user(userId: ID!): User
   
   # 查询用户列表
   """
@@ -851,25 +857,25 @@ type Mutation {
   """
   修改论文集名称
   """
-  updateCollection(collectionID: BigInt!, collectionName: String!): CommonMutationResult!
+  updateCollection(collectionId: BigInt!, collectionName: String!): CommonMutationResult!
   
   # 删除论文集
   """
   删除论文集
   """
-  deleteCollection(collectionID: BigInt!): CommonMutationResult!
+  deleteCollection(collectionId: BigInt!): CommonMutationResult!
   
   # 将文章加入论文集
   """
   将文章加入论文集
   """
-  storeArticleInCollection(articleID: BigInt!, collectionID: BigInt!): CommonMutationResult!
+  storeArticleInCollection(articleId: BigInt!, collectionId: BigInt!): CommonMutationResult!
   
   # 将文章从论文集中移除
   """
   将文章从论文集中移除
   """
-  removeArticleFromCollection(articleID: BigInt!, collectionID: BigInt!): CommonMutationResult!
+  removeArticleFromCollection(articleId: BigInt!, collectionId: BigInt!): CommonMutationResult!
   
   # 评论 (DEPRECATED)
   """
@@ -1301,11 +1307,11 @@ type Mutation {
   """
   updateMyProfile(input: UpdateMyProfileInput!): CommonMutationResult
   
-  # 关注用户
+  # 关注其他作者
   """
-  关注用户
+  关注其他作者
   """
-  followUser(userId: BigInt!): CommonMutationResult
+  followAuthor(authorId: BigInt!): CommonMutationResult
   
   # 提交反馈
   """
@@ -1483,7 +1489,7 @@ input UpdateAuthorInput {
   """
   作者简介
   """
-  desc: String!
+  desc: String
   
   # 头像
   """
@@ -4856,12 +4862,6 @@ type User {
   """
   collections(pageParam: PageParam): CollectionConnection
   
-  # 查看论文收藏夹的内容
-  """
-  查看论文收藏夹的内容
-  """
-  collection(collectionId: BigInt!): Collection
-  
   # 我的用户反馈列表
   """
   我的用户反馈列表
@@ -4935,6 +4935,7 @@ type UserStatistics {
 """
 input UpdateMyProfileInput {
   userName: String
+  avatar: URI
   gender: GENDER
   email: String
   phone: PhoneNumber
