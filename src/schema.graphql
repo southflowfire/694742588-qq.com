@@ -415,18 +415,6 @@ type Query {
   """
   author(authorId: BigInt!): Author
   
-  # 获取留言板列表 (DEPRECATED)
-  """
-  获取留言板列表 (DEPRECATED)
-  """
-  myChatBoardList: [ChatBoard]!
-  
-  # 获取留言板消息 (DEPRECATED)
-  """
-  获取留言板消息 (DEPRECATED)
-  """
-  chatBoardMessages(key: String!, startID: BigInt, size: NonNegativeInt = 15): [BoardMsg]!
-  
   # 查看论文集的内容
   """
   查看论文集的内容
@@ -682,12 +670,6 @@ type Query {
   """
   searchPeriodical(keyword: String!, startID: BigInt, size: NonNegativeInt = 15): [Periodical!]!
   
-  # 搜索话题
-  """
-  搜索话题
-  """
-  searchTopic(keyword: String!, startID: BigInt, size: NonNegativeInt = 15): [Topic!]!
-  
   # 搜索会议
   """
   搜索会议
@@ -717,36 +699,6 @@ type Query {
   查找时间线草稿
   """
   timeLineDraft(timeLineId: BigInt!): TimeLine
-  
-  # 获取话题详情 (DEPRECATED)
-  """
-  获取话题详情 (DEPRECATED)
-  """
-  topic(topicID: NonNegativeInt!): Topic
-  
-  # 获取话题列表 (DEPRECATED)
-  """
-  获取话题列表 (DEPRECATED)
-  """
-  topics(page: NonNegativeInt = 1, size: NonNegativeInt = 15, title: String): [Topic!]!
-  
-  # 获取话题关联文章 (DEPRECATED)
-  """
-  获取话题关联文章 (DEPRECATED)
-  """
-  topicArticles(topicID: BigInt!, size: NonNegativeInt = 15, startID: BigInt, total: Boolean = false): [Article!]!
-  
-  # 获取话题关联期刊 (DEPRECATED)
-  """
-  获取话题关联期刊 (DEPRECATED)
-  """
-  topicPeriodicals(topicID: BigInt!, size: NonNegativeInt = 15, startID: BigInt): [Periodical!]!
-  
-  # 获取话题关联作者 (DEPRECATED)
-  """
-  获取话题关联作者 (DEPRECATED)
-  """
-  topicAuthors(topicID: BigInt!, size: NonNegativeInt = 15, startID: BigInt): [Author!]!
   
   # 获取上传所需的token和key (DEPRECATED)
   """
@@ -822,30 +774,6 @@ type Mutation {
   发起合并作者信息的申请
   """
   requestMergeAuthor(authorId1: BigInt!, authorId2: BigInt!, mergedAuthor: MergedAuthorInput!): CommonMutationResult!
-  
-  # 创建聊天对话框 (DEPRECATED)
-  """
-  创建聊天对话框 (DEPRECATED)
-  """
-  findOrCreateChatBoard(authorID: BigInt!): String!
-  
-  # 新增留言 (DEPRECATED)
-  """
-  新增留言 (DEPRECATED)
-  """
-  postBoardMsg(key: String!, body: String!): Boolean!
-  
-  # 删除留言板 (DEPRECATED)
-  """
-  删除留言板 (DEPRECATED)
-  """
-  removeChatBoard(key: String!): Boolean!
-  
-  # 反馈消息通知或警告 (DEPRECATED)
-  """
-  反馈消息通知或警告 (DEPRECATED)
-  """
-  feedbackMsgNotice(msgID: BigInt!): Boolean!
   
   # 创建论文集
   """
@@ -1023,7 +951,7 @@ type Mutation {
   """
   购买教程
   """
-  purchaseCourse(id: BigInt!): CommonMutationResult!
+  purchaseCourse(id: BigInt!): PaymentInfo!
   
   # 评价教程
   """
@@ -1350,7 +1278,7 @@ type Author {
   """
   头像
   """
-  avatar: URI
+  avatar: URL
   
   # 行为统计
   """
@@ -1495,7 +1423,7 @@ input UpdateAuthorInput {
   """
   头像
   """
-  avatar: URI
+  avatar: URL
 }
 
 input MergedAuthorInput {
@@ -1516,128 +1444,7 @@ input MergedAuthorInput {
   """
   头像
   """
-  avatar: URI
-}
-
-
-# 聊天留言板 (DEPRECATED)
-"""
-聊天留言板 (DEPRECATED)
-"""
-type ChatBoard {
-  
-  # id
-  """
-  id
-  """
-  id: BigInt!
-  
-  # 用户作者ID
-  """
-  用户作者ID
-  """
-  author_id: BigInt!
-  
-  # 唯一key
-  """
-  唯一key
-  """
-  key: String!
-  
-  # 对象是否是后台 1 是 0 不是
-  """
-  对象是否是后台 1 是 0 不是
-  """
-  is_sys: Int!
-  
-  # 用户信息 - author数组
-  """
-  用户信息 - author数组
-  """
-  member_info: [Author!]
-  
-  # 最新消息
-  """
-  最新消息
-  """
-  last_message: BoardMsg
-  
-  # 更新时间
-  """
-  更新时间
-  """
-  updated_at: DateTime
-  
-  # 创建时间
-  """
-  创建时间
-  """
-  created_at: DateTime
-}
-
-
-# 留言板消息 (DEPRECATED)
-"""
-留言板消息 (DEPRECATED)
-"""
-type BoardMsg {
-  id: BigInt!
-  
-  # 消息内容
-  """
-  消息内容
-  """
-  body: String!
-  
-  # 消息来源作者
-  """
-  消息来源作者
-  """
-  from: Author
-  
-  # 附带信息
-  """
-  附带信息
-  """
-  extra_data: BoardMsgExtraData
-  
-  # 创建时间
-  """
-  创建时间
-  """
-  created_at: DateTime
-  
-  # 更新时间
-  """
-  更新时间
-  """
-  updated_at: DateTime
-}
-
-
-# 留言信息附带信息 (DEPRECATED)
-"""
-留言信息附带信息 (DEPRECATED)
-"""
-type BoardMsgExtraData {
-  
-  # 消息特殊类别   1. 整改笔记  2. 整改问题 3. 整改评论
-  """
-  消息特殊类别   1. 整改笔记  2. 整改问题 3. 整改评论
-  """
-  msg_spec_type: PositiveInt
-  
-  # 相关id
-  """
-  相关id
-  """
-  tid: BigInt
-  
-  # 是否完成
-  """
-  是否完成
-  """
-  done: Boolean
+  avatar: URL
 }
 
 
@@ -1744,14 +1551,6 @@ type Comment {
   updated_at: DateTime
 }
 
-scalar URI
-
-scalar GENDER
-
-scalar Password
-
-scalar Period
-
 scalar DateTime
 
 scalar EmailAddress
@@ -1763,8 +1562,6 @@ scalar NegativeInt
 scalar NonPositiveInt
 
 scalar PhoneNumber
-
-scalar PositiveInt
 
 scalar UnsignedInt
 
@@ -2871,7 +2668,7 @@ type CourseFeed {
 """
 input NewCourseInput {
   title: String!
-  biref: String!
+  brief: String!
   content: String!
   type: CourseType!
   price: Float!
@@ -2885,9 +2682,11 @@ input NewCourseInput {
 更新教程 输入参数
 """
 input UpdateCourseInput {
+  courseId: BigInt!
   title: String
   biref: String
   content: String
+  type: CourseType!
   price: Float
   
   # 该参数对于未发布的教程是可选的，对于已发布的教程是必填的
@@ -2975,11 +2774,11 @@ input NewInstitutionInput {
   """
   globalName: String!
   
-  # 机构概述
+  # 机构简介
   """
-  机构概述
+  机构简介
   """
-  summary: String!
+  desc: String!
   
   # 联系人姓名
   """
@@ -3026,11 +2825,11 @@ input UpdateInstitutionInput {
   """
   globalName: String
   
-  # 机构概述
+  # 机构简介
   """
-  机构概述
+  机构简介
   """
-  summary: String
+  desc: String
   
   # 联系人姓名
   """
@@ -3617,12 +3416,6 @@ type Periodical {
   审核时间，如三天，一月，一周
   """
   review_time: String
-  
-  # 发刊周期，1. 季刊 2. 月刊 3. 周刊 4. 日刊
-  """
-  发刊周期，1. 季刊 2. 月刊 3. 周刊 4. 日刊
-  """
-  period: Period
   
   # 版面费, 单位元
   """
@@ -4544,12 +4337,6 @@ enum SearchTypes {
   """
   conference
   
-  # 话题
-  """
-  话题
-  """
-  topic
-  
   # 机构
   """
   机构
@@ -4614,12 +4401,6 @@ type SubscribeConditions {
   作者条件
   """
   authors: [Author!]!
-  
-  # 话题条件
-  """
-  话题条件
-  """
-  topics: [Topic!]!
   
   # 期刊条件
   """
@@ -4718,50 +4499,6 @@ input UpdateTimeLineInput {
 }
 
 
-# 话题 (DEPRECATED)
-"""
-话题 (DEPRECATED)
-"""
-type Topic {
-  
-  # id
-  """
-  id
-  """
-  id: BigInt!
-  
-  # 话题标题
-  """
-  话题标题
-  """
-  title: String!
-  
-  # 话题描述
-  """
-  话题描述
-  """
-  desc: String
-  
-  # 脑图
-  """
-  脑图
-  """
-  mind_map: JSONObject
-  
-  # 创建时间
-  """
-  创建时间
-  """
-  created_at: DateTime
-  
-  # 更新时间
-  """
-  更新时间
-  """
-  updated_at: DateTime
-}
-
-
 # 上传Access, 详情见七牛云文档 (DEPRECATED)
  # https://developer.qiniu.com/kodo/sdk/1283/javascript
 """
@@ -4806,13 +4543,13 @@ type User {
   """
   性别
   """
-  gender: GENDER
+  gender: Gender
   
   # 头像
   """
   头像
   """
-  avatar: URI
+  avatar: URL
   
   # 邮箱
   """
@@ -4867,6 +4604,11 @@ type User {
   我的用户反馈列表
   """
   feedbacks(pageParam: PageParam): UserFeedbackList!
+}
+
+enum Gender {
+  MALE
+  FEMALE
 }
 
 
@@ -4935,8 +4677,8 @@ type UserStatistics {
 """
 input UpdateMyProfileInput {
   userName: String
-  avatar: URI
-  gender: GENDER
+  avatar: URL
+  gender: Gender
   email: String
   phone: PhoneNumber
 }
@@ -5041,44 +4783,6 @@ type UserFeedback {
   创建时间
   """
   createdAt: DateTime!
-}
-
-
-# 建议错误回复 (DEPRECATED)
-"""
-建议错误回复 (DEPRECATED)
-"""
-type AdviceReply {
-  
-  # id
-  """
-  id
-  """
-  id: BigInt!
-  
-  # 内容
-  """
-  内容
-  """
-  content: String
-  
-  # 回复类型 1. 用户对系统, 2. 系统对用户
-  """
-  回复类型 1. 用户对系统, 2. 系统对用户
-  """
-  reply_type: Int!
-  
-  # 创建时间
-  """
-  创建时间
-  """
-  created_at: DateTime
-  
-  # 更新时间
-  """
-  更新时间
-  """
-  updated_at: DateTime
 }
 
 
