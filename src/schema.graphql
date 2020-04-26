@@ -180,12 +180,6 @@ input NewArticleInput {
   """
   title: String!
   
-  # 文章副标题（ DEPRECATED ）
-  """
-  文章副标题（ DEPRECATED ）
-  """
-  subTitle: String
-  
   # 索引类型, 包括EI、SCI
   """
   索引类型, 包括EI、SCI
@@ -203,12 +197,6 @@ input NewArticleInput {
   关键词
   """
   keywords: [String]!
-  
-  # 资助单位（ DEPRECATED ）
-  """
-  资助单位（ DEPRECATED ）
-  """
-  sponsor: [String]
   
   # 文章doi（唯一数字标识）
   """
@@ -261,12 +249,6 @@ input UpdateArticleInput {
   """
   title: String
   
-  # 文章副标题（ DEPRECATED ）
-  """
-  文章副标题（ DEPRECATED ）
-  """
-  subTitle: String
-  
   # 索引类型, 包括EI、SCI
   """
   索引类型, 包括EI、SCI
@@ -284,12 +266,6 @@ input UpdateArticleInput {
   关键词
   """
   keywords: [String]
-  
-  # 资助单位（ DEPRECATED ）
-  """
-  资助单位（ DEPRECATED ）
-  """
-  sponsor: [String]
   
   # 文章doi（唯一数字标识）
   """
@@ -326,12 +302,6 @@ input UpdateArticleInput {
   文章作者
   """
   authorIds: [BigInt]
-  
-  # 文章状态
-  """
-  文章状态
-  """
-  status: MetaDataStatus!
 }
 
 
@@ -351,13 +321,13 @@ input ArticleFilterParam {
   """
   关键词
   """
-  keywords: [String]
+  keywords: [String!]
   
   # 文章作者
   """
   文章作者
   """
-  authorIds: [BigInt]
+  authorIds: [BigInt!]
 }
 
 
@@ -571,45 +541,29 @@ type Query {
   """
   authorID: BigInt): [Note]
   
-  # 查询期刊详情 (DEPRECATED)
-  """
-  查询期刊详情 (DEPRECATED)
-  """
-  periodical(id: BigInt!): Periodical
-  
-  # 查询期刊列表 (DEPRECATED)
-  """
-  查询期刊列表 (DEPRECATED)
-  """
-  periodicals(page: NonNegativeInt = 1, size: NonNegativeInt = 15, prd_name: String): [Periodical]!
-  
-  # 查询期刊统计 (DEPRECATED)
-  """
-  查询期刊统计 (DEPRECATED)
-  """
-  prd_stats(prdID: BigInt!): [PrdStats]!
-  
   # 查看问题列表
   """
   查看问题列表
   """
   questions(input: QACollectionInput!): QuestionFeed
   
-  # 查看问题详情
+  # 查看问题详情（该接口的功能能够由 questions 接口代替，比较点击列表中某一项展示详情，所有信息在 QuestionFeed 中都可以拿到）
   """
-  查看问题详情
+  查看问题详情（该接口的功能能够由 questions 接口代替，比较点击列表中某一项展示详情，所有信息在 QuestionFeed 中都可以拿到）
   """
   question(questionId: BigInt!): Question
   
-  # 查看问答列表
+  # 查看某个问题的完整回答列表
   """
-  查看问答列表
+  查看某个问题的完整回答列表
   """
-  questionAnswers(input: QACollectionInput!): QuestionAnswerFeed
+  questionAnswers(questionId: BigInt!, input: QACollectionInput!): QuestionAnswerFeed
   
-  # 查看问题详情，参数分别是首问和首答的ID
+  # 查看完整回答详情，参数分别是首问和首答的ID
+   # （该接口的功能能够由 questionAnswers 接口代替，比较点击列表中某一项展示详情，所有信息在 QuestionAnswerFeed 中都可以拿到）
   """
-  查看问题详情，参数分别是首问和首答的ID
+  查看完整回答详情，参数分别是首问和首答的ID
+  （该接口的功能能够由 questionAnswers 接口代替，比较点击列表中某一项展示详情，所有信息在 QuestionAnswerFeed 中都可以拿到）
   """
   questionAnswer(questionId: BigInt!, answerId: BigInt!): QuestionAnswer
   
@@ -625,62 +579,75 @@ type Query {
   """
   researches(pageParam: PageParam!): ResearchConnection
   
-  # 热搜关键词
+  # 根据搜索对象类型，返回当前的热搜词，返回的数组长度最大值为 50
   """
-  热搜关键词
+  根据搜索对象类型，返回当前的热搜词，返回的数组长度最大值为 50
   """
-  hotKeywords(searchType: SearchTypes!): [HotKeyword]
+  hotSearches(objectType: ObjectType!): [HotSearch!]!
   
   # 搜索补全
   """
   搜索补全
   """
-  completes(
+  keywordCompletions(
   # 关键词
   """
   关键词
   """
   keyword: String!, 
-  # 个数
-  """
-  个数
-  """
-  size: NonNegativeInt = 15, 
   # 补全类型
   """
   补全类型
   """
-  type: SearchTypes!): [CompleteKeyword!]!
+  type: ObjectType!): [KeywordCompletion!]!
   
   # 搜索文章
   """
   搜索文章
   """
-  searchArticle(keyword: String!, startID: BigInt, size: NonNegativeInt = 15, startTime: DateTime, endTime: DateTime): [Article!]!
+  searchArticle(keyword: String!, pageParam: PageParam!, timeRange: DateTimeRange): ArticleConnection!
   
   # 搜索作者
   """
   搜索作者
   """
-  searchAuthor(keyword: String!, startID: BigInt, size: NonNegativeInt = 15): [Author!]!
+  searchAuthor(keyword: String!, pageParam: PageParam!): AuthorConnection!
   
   # 搜索期刊
   """
   搜索期刊
   """
-  searchPeriodical(keyword: String!, startID: BigInt, size: NonNegativeInt = 15): [Periodical!]!
+  searchJournal(keyword: String!, pageParam: PageParam!): JournalConnection!
   
   # 搜索会议
   """
   搜索会议
   """
-  searchConference(keyword: String!, startID: BigInt, size: NonNegativeInt = 15): [Conference!]!
+  searchConference(keyword: String!, pageParam: PageParam!): ConferenceConnection!
   
   # 搜索机构
   """
   搜索机构
   """
-  searchInstitution(keyword: String!, startID: BigInt, size: NonNegativeInt = 15): [Institution!]!
+  searchInstitution(keyword: String!, pageParam: PageParam!): InstitutionConnection!
+  
+  # 搜索教程
+  """
+  搜索教程
+  """
+  searchCourse(keyword: String!, pageParam: PageParam!): CourseConnection!
+  
+  # 搜索课题
+  """
+  搜索课题
+  """
+  searchResearch(keyword: String!, pageParam: PageParam!): ResearchConnection!
+  
+  # 搜索问题
+  """
+  搜索问题
+  """
+  searchQuestion(keyword: String!, pageParam: PageParam!): QuestionFeed!
   
   # 获取订阅条件 (DEPRECATED)
   """
@@ -1498,12 +1465,6 @@ enum commentTargets {
   会议
   """
   conference
-  
-  # 期刊
-  """
-  期刊
-  """
-  periodical
 }
 
 
@@ -1800,7 +1761,17 @@ input FloatRange {
 DateTime范围类型
 """
 input DateTimeRange {
+  
+  # 时间轴上更靠后的时间，upper 晚于 lower
+  """
+  时间轴上更靠后的时间，upper 晚于 lower
+  """
   upper: DateTime
+  
+  # 时间轴上更靠前的时间，lower 早于 upper
+  """
+  时间轴上更靠前的时间，lower 早于 upper
+  """
   lower: DateTime
 }
 
@@ -1900,23 +1871,17 @@ type CreateMutationResult {
 type Conference {
   id: BigInt!
   
-  # 会议名称
+  # 期刊中文名，如无，传入空字符串
   """
-  会议名称
+  期刊中文名，如无，传入空字符串
   """
   localName: String!
   
-  # 会议名称(英文)
+  # 期刊英文名，如无，传入空字符串
   """
-  会议名称(英文)
+  期刊英文名，如无，传入空字符串
   """
-  globalName: String
-  
-  # 收录情况
-  """
-  收录情况
-  """
-  indexType: ArticleIndex
+  globalName: String!
   
   # 会议地点
   """
@@ -1971,23 +1936,17 @@ type ConferenceStatistics {
 """
 input NewConferenceInput {
   
-  # 会议名称
+  # 期刊中文名，如无，传入空字符串
   """
-  会议名称
+  期刊中文名，如无，传入空字符串
   """
   localName: String!
   
-  # 会议名称(英文)
+  # 期刊英文名，如无，传入空字符串
   """
-  会议名称(英文)
+  期刊英文名，如无，传入空字符串
   """
-  globalName: String
-  
-  # 收录情况
-  """
-  收录情况
-  """
-  indexType: ArticleIndex
+  globalName: String!
   
   # 会议地点
   """
@@ -2012,12 +1971,6 @@ input NewConferenceInput {
   联系方式
   """
   contact: String
-  
-  # 会议状态
-  """
-  会议状态
-  """
-  status: MetaDataStatus!
 }
 
 
@@ -2028,23 +1981,17 @@ input NewConferenceInput {
 input UpdateConferenceInput {
   id: BigInt!
   
-  # 会议名称
+  # 期刊中文名，如无，传入空字符串
   """
-  会议名称
+  期刊中文名，如无，传入空字符串
   """
   localName: String!
   
-  # 会议名称(英文)
+  # 期刊英文名，如无，传入空字符串
   """
-  会议名称(英文)
+  期刊英文名，如无，传入空字符串
   """
-  globalName: String
-  
-  # 收录情况
-  """
-  收录情况
-  """
-  indexType: ArticleIndex
+  globalName: String!
   
   # 会议地点
   """
@@ -2069,21 +2016,6 @@ input UpdateConferenceInput {
   联系方式
   """
   contact: String
-  
-  # 会议状态
-  """
-  会议状态
-  """
-  status: MetaDataStatus!
-}
-
-
-# 会议过滤参数
-"""
-会议过滤参数
-"""
-input ConferenceFilterParam {
-  indexType: ArticleIndex
 }
 
 
@@ -2117,7 +2049,6 @@ input ConferenceSortParam {
 """
 input ConferenceConnectionInput {
   pageParam: PageParam!
-  filterParam: ConferenceFilterParam
   sortParam: ConferenceSortParam
 }
 
@@ -2706,15 +2637,15 @@ input UpdateCourseInput {
 type Institution {
   id: BigInt!
   
-  # 本地化名称，目前为中文
+  # 期刊中文名，如无，传入空字符串
   """
-  本地化名称，目前为中文
+  期刊中文名，如无，传入空字符串
   """
-  localName: String
+  localName: String!
   
-  # 通用英文名称
+  # 期刊英文名，如无，传入空字符串
   """
-  通用英文名称
+  期刊英文名，如无，传入空字符串
   """
   globalName: String!
   
@@ -2762,15 +2693,15 @@ type Institution {
 """
 input NewInstitutionInput {
   
-  # 本地化名称，目前为中文
+  # 期刊中文名，如无，传入空字符串
   """
-  本地化名称，目前为中文
+  期刊中文名，如无，传入空字符串
   """
-  localName: String
+  localName: String!
   
-  # 通用英文名称
+  # 期刊英文名，如无，传入空字符串
   """
-  通用英文名称
+  期刊英文名，如无，传入空字符串
   """
   globalName: String!
   
@@ -2813,17 +2744,17 @@ input NewInstitutionInput {
 input UpdateInstitutionInput {
   id: BigInt!
   
-  # 本地化名称，目前为中文
+  # 期刊中文名，如无，传入空字符串
   """
-  本地化名称，目前为中文
+  期刊中文名，如无，传入空字符串
   """
-  localName: String
+  localName: String!
   
-  # 通用英文名称
+  # 期刊英文名，如无，传入空字符串
   """
-  通用英文名称
+  期刊英文名，如无，传入空字符串
   """
-  globalName: String
+  globalName: String!
   
   # 机构简介
   """
@@ -2898,23 +2829,17 @@ input InstitutionConnectionInput {
 type Journal {
   id: BigInt!
   
-  # 期刊名
+  # 期刊中文名，如无，传入空字符串
   """
-  期刊名
+  期刊中文名，如无，传入空字符串
   """
-  localName: String
+  localName: String!
   
-  # 期刊英文名
+  # 期刊英文名，如无，传入空字符串
   """
-  期刊英文名
+  期刊英文名，如无，传入空字符串
   """
   globalName: String!
-  
-  # 影响因子
-  """
-  影响因子
-  """
-  influence: NonNegativeFloat
   
   # ISSN
   """
@@ -2969,15 +2894,15 @@ type JournalStatistics {
 """
 input NewJournalInput {
   
-  # 期刊名
+  # 期刊中文名，如无，传入空字符串
   """
-  期刊名
+  期刊中文名，如无，传入空字符串
   """
-  localName: String
+  localName: String!
   
-  # 期刊英文名
+  # 期刊英文名，如无，传入空字符串
   """
-  期刊英文名
+  期刊英文名，如无，传入空字符串
   """
   globalName: String!
   
@@ -3010,12 +2935,6 @@ input NewJournalInput {
   投稿地址
   """
   contributionPage: URL
-  
-  # 期刊状态
-  """
-  期刊状态
-  """
-  status: MetaDataStatus!
 }
 
 
@@ -3026,15 +2945,15 @@ input NewJournalInput {
 input UpdateJournalInput {
   id: BigInt!
   
-  # 期刊名
+  # 期刊中文名，如无，传入空字符串
   """
-  期刊名
+  期刊中文名，如无，传入空字符串
   """
-  localName: String
+  localName: String!
   
-  # 期刊英文名
+  # 期刊英文名，如无，传入空字符串
   """
-  期刊英文名
+  期刊英文名，如无，传入空字符串
   """
   globalName: String!
   
@@ -3067,12 +2986,6 @@ input UpdateJournalInput {
   投稿地址
   """
   contributionPage: URL
-  
-  # 期刊状态
-  """
-  期刊状态
-  """
-  status: MetaDataStatus!
 }
 
 
@@ -3348,130 +3261,6 @@ input updateNoteInput {
   内容
   """
   content: String
-}
-
-
-# 地区 (DEPRECATED)
-"""
-地区 (DEPRECATED)
-"""
-type Area {
-  id: BigInt!
-  content: String!
-  sort: String!
-}
-
-
-# 期刊 (DEPRECATED)
-"""
-期刊 (DEPRECATED)
-"""
-type Periodical {
-  id: BigInt!
-  
-  # 期刊名
-  """
-  期刊名
-  """
-  prd_name: String!
-  
-  # 期刊名缩写
-  """
-  期刊名缩写
-  """
-  short_name: String
-  
-  # 主页地址
-  """
-  主页地址
-  """
-  home_page: URL
-  
-  # 投稿地址
-  """
-  投稿地址
-  """
-  contribute_page: URL
-  
-  # 影响力
-  """
-  影响力
-  """
-  influence: NonNegativeInt
-  
-  # 采用率
-  """
-  采用率
-  """
-  adoption_rate: NonNegativeInt
-  
-  # 月发文量
-  """
-  月发文量
-  """
-  monthly_volume: String
-  
-  # 审核时间，如三天，一月，一周
-  """
-  审核时间，如三天，一月，一周
-  """
-  review_time: String
-  
-  # 版面费, 单位元
-  """
-  版面费, 单位元
-  """
-  charge: String
-  
-  # 地区
-  """
-  地区
-  """
-  areas: [Area!]
-  
-  # 创建时间
-  """
-  创建时间
-  """
-  created_at: DateTime
-  
-  # 更新时间
-  """
-  更新时间
-  """
-  updated_at: DateTime
-}
-
-
-# 期刊当年统计状况 (DEPRECATED)
-"""
-期刊当年统计状况 (DEPRECATED)
-"""
-type PrdStats {
-  
-  # ID
-  """
-  ID
-  """
-  id: BigInt!
-  
-  # 影响力
-  """
-  影响力
-  """
-  influence: Int
-  
-  # 月发文量
-  """
-  月发文量
-  """
-  monthly_volume: Int
-  
-  # 年份
-  """
-  年份
-  """
-  year: Int
 }
 
 
@@ -4275,73 +4064,28 @@ input UpdateResearchInput {
 """
 热搜关键词
 """
-type HotKeyword {
-  keyword: String
-  score: Int
+type HotSearch {
+  keyword: String!
 }
 
 
-# 关键词补全
+# 搜索关键词补全
 """
-关键词补全
+搜索关键词补全
 """
-type CompleteKeyword {
+type KeywordCompletion {
   
-  # 补全值
+  # 补全文本
   """
-  补全值
+  补全文本
   """
-  value: String
-  
-  # id
-  """
-  id
-  """
-  id: BigInt
+  text: String
   
   # 类型
   """
   类型
   """
   type: ObjectType
-}
-
-
-# 搜索补全类型
-"""
-搜索补全类型
-"""
-enum SearchTypes {
-  
-  # 文章
-  """
-  文章
-  """
-  article
-  
-  # 作者
-  """
-  作者
-  """
-  author
-  
-  # 期刊
-  """
-  期刊
-  """
-  periodical
-  
-  # 会议
-  """
-  会议
-  """
-  conference
-  
-  # 机构
-  """
-  机构
-  """
-  institution
 }
 
 
@@ -4401,12 +4145,6 @@ type SubscribeConditions {
   作者条件
   """
   authors: [Author!]!
-  
-  # 期刊条件
-  """
-  期刊条件
-  """
-  periodicals: [Periodical!]!
   
   # 会议条件
   """
