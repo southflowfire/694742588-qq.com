@@ -2349,6 +2349,12 @@ type Course {
   统计
   """
   statistics: CourseStatistics!
+  
+  # 教程状态
+  """
+  教程状态
+  """
+  status: MetaDataStatus!
 }
 
 type CourseStatistics {
