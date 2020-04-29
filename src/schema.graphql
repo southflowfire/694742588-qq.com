@@ -690,6 +690,7 @@ type Query {
   查询用户列表
   """
   users(input: PageParam!): UserList!
+  userBasics(userIds: [ID!]!): [UserBasic!]
 }
 
 type Mutation {
@@ -1640,6 +1641,12 @@ enum MetaDataStatus {
   合并请求正在审核中
   """
   MERGE_UNDER_REVIEW
+  
+  # 删除元数据的请求正在审核中
+  """
+  删除元数据的请求正在审核中
+  """
+  DELETE_UNDER_REVIEW
   
   # 创建、更新、关联请求已通过
   """
@@ -4262,6 +4269,32 @@ type UploadAccess {
   上传到指定key
   """
   key: String!
+}
+
+
+# 用户基础数据，专用于返回用户列表的场景，如消息的联系人列表
+"""
+用户基础数据，专用于返回用户列表的场景，如消息的联系人列表
+"""
+type UserBasic {
+  
+  # 认证服务统一管理的 UUID
+  """
+  认证服务统一管理的 UUID
+  """
+  id: ID!
+  
+  # 用户名
+  """
+  用户名
+  """
+  userName: String!
+  
+  # 头像
+  """
+  头像
+  """
+  avatar: URL
 }
 
 
