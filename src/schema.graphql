@@ -837,18 +837,6 @@ type Mutation {
   """
   commentID: NonNegativeInt!): Boolean
   
-  # 订阅数据对象的变动消息
-  """
-  订阅数据对象的变动消息
-  """
-  subscribeObject(objectId: BigInt!, type: ObjectType!): CommonMutationResult!
-  
-  # 分享数据对象给好友
-  """
-  分享数据对象给好友
-  """
-  shareObject(objectId: BigInt!, type: ObjectType!, userId: BigInt!): CommonMutationResult!
-  
   # 申请创建会议
   """
   申请创建会议
@@ -1208,6 +1196,18 @@ type Mutation {
   关注其他作者
   """
   followAuthor(authorId: BigInt!): CommonMutationResult
+  
+  # 订阅（关注）除 Author 之外的其他数据对象，如课题/文章/期刊/会议等
+  """
+  订阅（关注）除 Author 之外的其他数据对象，如课题/文章/期刊/会议等
+  """
+  subscribeObject(objectId: BigInt!, type: ObjectType!): CommonMutationResult!
+  
+  # 分享数据对象给好友
+  """
+  分享数据对象给好友
+  """
+  shareObject(objectId: BigInt!, type: ObjectType!, userId: BigInt!): CommonMutationResult!
   
   # 提交反馈
   """
@@ -4381,6 +4381,45 @@ type User {
   我的用户反馈列表
   """
   feedbacks(pageParam: PageParam): UserFeedbackList!
+  
+  # 我的关注和订阅
+  """
+  我的关注和订阅
+  """
+  subscriptionAndFollowship: UserSubscriptionAndFollowship!
+}
+
+type UserSubscriptionAndFollowship {
+  
+  # 订阅的课题
+  """
+  订阅的课题
+  """
+  researches(pageParam: PageParam): ResearchConnection!
+  
+  # 订阅的文章
+  """
+  订阅的文章
+  """
+  articles(pageParam: PageParam): ArticleConnection!
+  
+  # 订阅的期刊
+  """
+  订阅的期刊
+  """
+  journals(pageParam: PageParam): JournalConnection!
+  
+  # 订阅的会议
+  """
+  订阅的会议
+  """
+  conferences(pageParam: PageParam): ConferenceConnection!
+  
+  # 关注的作者
+  """
+  关注的作者
+  """
+  authors(pageParam: PageParam): AuthorConnection!
 }
 
 enum Gender {
