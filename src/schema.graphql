@@ -107,7 +107,7 @@ type Article {
   """
   文章作者
   """
-  authors(pageParam: PageParam): AuthorConnection
+  authors: [Author!]
   
   # 关联课题
   """
@@ -371,7 +371,7 @@ type Query {
   """
   查询文章
   """
-  article(id: Int!): Article
+  article(id: BigInt!): Article
   
   # 查询文章列表
   """
@@ -1197,11 +1197,23 @@ type Mutation {
   """
   followAuthor(authorId: BigInt!): CommonMutationResult
   
+  # 取消关注其他作者
+  """
+  取消关注其他作者
+  """
+  unfollowAuthor(authorId: BigInt!): CommonMutationResult
+  
   # 订阅（关注）除 Author 之外的其他数据对象，如课题/文章/期刊/会议等
   """
   订阅（关注）除 Author 之外的其他数据对象，如课题/文章/期刊/会议等
   """
   subscribeObject(objectId: BigInt!, type: ObjectType!): CommonMutationResult!
+  
+  # 取消订阅（关注）除 Author 之外的其他数据对象，如课题/文章/期刊/会议等
+  """
+  取消订阅（关注）除 Author 之外的其他数据对象，如课题/文章/期刊/会议等
+  """
+  unsubscribeObject(objectId: BigInt!, type: ObjectType!): CommonMutationResult!
   
   # 分享数据对象给好友
   """
