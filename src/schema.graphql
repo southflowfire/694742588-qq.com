@@ -379,6 +379,12 @@ type Query {
   """
   articles(input: ArticleConnectionInput): ArticleConnection
   
+  # 首页推荐 - 文章
+  """
+  首页推荐 - 文章
+  """
+  recommendedArticles(pageParam: PageParam!): ArticleConnection!
+  
   # 查询作者信息
   """
   查询作者信息
@@ -467,6 +473,12 @@ type Query {
   """
   conferences(input: ConferenceConnectionInput): ConferenceConnection!
   
+  # 首页推荐 - 会议
+  """
+  首页推荐 - 会议
+  """
+  recommendedConferences(pageParam: PageParam!): ConferenceConnection!
+  
   # 获取教程
   """
   获取教程
@@ -478,6 +490,12 @@ type Query {
   获取教程列表
   """
   courses(input: CourseCollectionInput!): CourseFeed!
+  
+  # 首页推荐 - 教程
+  """
+  首页推荐 - 教程
+  """
+  recommendedCourses(pageParam: PageParam!): CourseFeed!
   
   # 查询机构
   """
@@ -502,6 +520,12 @@ type Query {
   查询期刊列表
   """
   journals(input: JournalConnectionInput): JournalConnection!
+  
+  # 首页推荐 - 期刊
+  """
+  首页推荐 - 期刊
+  """
+  recommendedJournals(pageParam: PageParam!): JournalConnection!
   
   # 查找思维导图草稿
   """
@@ -567,6 +591,12 @@ type Query {
   """
   questionAnswer(questionId: BigInt!, answerId: BigInt!): QuestionAnswer
   
+  # 首页推荐 - 问答
+  """
+  首页推荐 - 问答
+  """
+  recommendedQuestions(pageParam: PageParam!): QuestionFeed!
+  
   # 获取课题详情
   """
   获取课题详情
@@ -578,6 +608,12 @@ type Query {
   获取课题列表
   """
   researches(pageParam: PageParam!): ResearchConnection
+  
+  # 首页推荐 - 课题
+  """
+  首页推荐 - 课题
+  """
+  recommendedResearches(pageParam: PageParam!): ResearchConnection!
   
   # 根据搜索对象类型，返回当前的热搜词，返回的数组长度最大值为 50
   """
@@ -1040,12 +1076,6 @@ type Mutation {
   发布问题
   """
   postQuestion(questionId: BigInt!): CommonMutationResult!
-  
-  # 分享问题给好友
-  """
-  分享问题给好友
-  """
-  shareQuestion(questionId: BigInt!, userId: ID!): CommonMutationResult!
   
   # 提问者确认回答者已经清除理解问题
   """
@@ -3357,6 +3387,12 @@ type Question {
   """
   detail: String!
   
+  # 提问者，如果匿名发布该字段为 null
+  """
+  提问者，如果匿名发布该字段为 null
+  """
+  author: Author
+  
   # 关键词
   """
   关键词
@@ -3442,6 +3478,12 @@ type Answer {
   ID
   """
   id: BigInt!
+  
+  # 回答者
+  """
+  回答者
+  """
+  author: Author!
   
   # 预览，用来向未购买的用户展示部分内容
   """
@@ -3644,17 +3686,17 @@ input ConfirmInput {
   """
   questionId: BigInt!
   
-  # 提问者用户ID
+  # 提问者 Author Id
   """
-  提问者用户ID
+  提问者 Author Id
   """
-  questionerId: ID!
+  questionerId: BigInt!
   
-  # 回答者用户ID
+  # 回答者 Author Id
   """
-  回答者用户ID
+  回答者 Author Id
   """
-  answererId: ID!
+  answererId: BigInt!
 }
 
 
@@ -3670,11 +3712,11 @@ input SelectAndPayInput {
   """
   questionId: BigInt!
   
-  # 回答者用户ID
+  # 回答者 Author Id
   """
-  回答者用户ID
+  回答者 Author Id
   """
-  answererId: ID!
+  answererId: BigInt!
 }
 
 
@@ -3797,11 +3839,11 @@ input PostQuestionAnswerReviewInput {
 """
 input QAFilterParam {
   
-  # 用户ID，请求问题时表示提问者，请求回答时表示回答者，可传入多项
+  # Author Id，请求问题时表示提问者，请求回答时表示回答者，可传入多项
   """
-  用户ID，请求问题时表示提问者，请求回答时表示回答者，可传入多项
+  Author Id，请求问题时表示提问者，请求回答时表示回答者，可传入多项
   """
-  userIds: [ID!]
+  authorIds: [BigInt!]
   
   # 关键词，可传入多项
   """
