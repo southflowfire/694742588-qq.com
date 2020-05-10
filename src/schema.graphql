@@ -497,6 +497,12 @@ type Query {
   """
   recommendedCourses(pageParam: PageParam!): CourseFeed!
   
+  # 按照时间顺序聚合当前用户所订阅/关注的所有数据对象的最近动态
+  """
+  按照时间顺序聚合当前用户所订阅/关注的所有数据对象的最近动态
+  """
+  dynamicsOfInterest(input: DynamicsOfInterestInput!): DynamicFeed!
+  
   # 查询机构
   """
   查询机构
@@ -902,6 +908,24 @@ type Mutation {
   请求进行添加或删除关联的操作
   """
   requestConnection(input: RequestConnectionInput!): CommonMutationResult!
+  
+  # 由 request 指定的 reviewer 调用，通过审核
+  """
+  由 request 指定的 reviewer 调用，通过审核
+  """
+  approveConnectionRequest(requestId: BigInt!): CommonMutationResult!
+  
+  # 由 request 指定的 reviewer 调用，驳回审核
+  """
+  由 request 指定的 reviewer 调用，驳回审核
+  """
+  rejectConnectionRequest(requestId: BigInt!, reason: String!): CommonMutationResult!
+  
+  # 由 request 指定的 reviewer 调用，表示该 request 的内容与其无关
+  """
+  由 request 指定的 reviewer 调用，表示该 request 的内容与其无关
+  """
+  ignoreConnectionRequest(requestId: BigInt!, reason: String): CommonMutationResult!
   
   # 创建教程
   """
@@ -1660,11 +1684,21 @@ enum ObjectType {
 }
 
 
-# 泛型对象，包含 id 和对象类型
+# 泛型对象，包含 id 和对象类型（用于类型对象）
 """
-泛型对象，包含 id 和对象类型
+泛型对象，包含 id 和对象类型（用于类型对象）
 """
 type GenericObject {
+  id: BigInt!
+  type: ObjectType!
+}
+
+
+# 泛型对象，包含 id 和对象类型（用于参数对象）
+"""
+泛型对象，包含 id 和对象类型（用于参数对象）
+"""
+input GenericObjectInput {
   id: BigInt!
   type: ObjectType!
 }
@@ -2268,10 +2302,8 @@ type CollectionConnection {
  # # RequestConnectionInput
  # ##############################################################################
 input RequestConnectionInput {
-  fromItemId: BigInt!
-  fromItemType: ObjectType!
-  toItemId: BigInt!
-  toItemType: ObjectType!
+  master: GenericObjectInput!
+  slave: GenericObjectInput!
   operation: ConnectionOperation!
 }
 
@@ -2680,17 +2712,23 @@ enum DynamicAction {
 
 # 动态
  # 接口遵循 who does what to whom 的语义
- # who: 字段所在的 Type
+ # who: subject
  # what: action
  # whom: object
 """
 动态
 接口遵循 who does what to whom 的语义
-who: 字段所在的 Type
+who: subject
 what: action
 whom: object
 """
 type Dynamic {
+  
+  # 动态的主体，如文章更新，则主体是文章，作者发表教程，主体是作者
+  """
+  动态的主体，如文章更新，则主体是文章，作者发表教程，主体是作者
+  """
+  subject: GenericObject!
   
   # 发生的动作
   """
@@ -2742,6 +2780,10 @@ type DynamicFeed {
   edges: [DynamicEdge]
   pageInfo: PageInfo!
   totalCount: Int!
+}
+
+input DynamicsOfInterestInput {
+  pageParam: PageParam!
 }
 
 
