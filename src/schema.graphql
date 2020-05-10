@@ -138,6 +138,12 @@ type Article {
   文章状态
   """
   status: MetaDataStatus!
+  
+  # 动态，用于在首页关注中显示用户关注的文章最近发生了什么变动
+  """
+  动态，用于在首页关注中显示用户关注的文章最近发生了什么变动
+  """
+  dynamics(pageParam: PageParam!): DynamicFeed!
 }
 
 type ArticleStatistics {
@@ -454,12 +460,6 @@ type Query {
   查询返回个数
   """
   size: NonNegativeInt): [Comment!]!
-  
-  # 首页动态 (DEPRECATED)
-  """
-  首页动态 (DEPRECATED)
-  """
-  homeDynamics(startID: BigInt, size: NonNegativeInt = 15): [Dynamics]
   
   # 查询会议
   """
@@ -1343,6 +1343,12 @@ type Author {
   审核状态
   """
   status: MetaDataStatus!
+  
+  # 动态，用于在首页关注中显示用户关注的作者最近发生了什么变动
+  """
+  动态，用于在首页关注中显示用户关注的作者最近发生了什么变动
+  """
+  dynamics(pageParam: PageParam!): DynamicFeed!
 }
 
 type AuthorStatistics {
@@ -1654,6 +1660,16 @@ enum ObjectType {
 }
 
 
+# 泛型对象，包含 id 和对象类型
+"""
+泛型对象，包含 id 和对象类型
+"""
+type GenericObject {
+  id: BigInt!
+  type: ObjectType!
+}
+
+
 # 元数据状态
 """
 元数据状态
@@ -1825,74 +1841,6 @@ input DateTimeRange {
 }
 
 
-# 动态 (DEPRECATED)
-"""
-动态 (DEPRECATED)
-"""
-type Dynamics {
-  
-  # id
-  """
-  id
-  """
-  id: BigInt!
-  
-  # 行为主体id
-  """
-  行为主体id
-  """
-  body_id: BigInt!
-  
-  # 行为主体类型 1. 作者 2. 文章 3. 期刊 4. 会议 5. 机构 6. 话题
-  """
-  行为主体类型 1. 作者 2. 文章 3. 期刊 4. 会议 5. 机构 6. 话题
-  """
-  body_type: Int
-  
-  # 行为主体名称
-  """
-  行为主体名称
-  """
-  body_name: String
-  
-  # 事件 1. 关注 2. 笔记 3. 评论 4. 读过 5. 收藏 6. 修改基本信息 7. 提出问题
-  """
-  事件 1. 关注 2. 笔记 3. 评论 4. 读过 5. 收藏 6. 修改基本信息 7. 提出问题
-  """
-  event: String
-  
-  # 事件数据
-  """
-  事件数据
-  """
-  event_data: JSONObject
-  
-  # 对象id
-  """
-  对象id
-  """
-  target_id: BigInt
-  
-  # 对象类型 1. 作者 2. 文章 3. 期刊 4. 会议 5. 机构 6.话题 7. 笔记 8. 评论， 9. 问题
-  """
-  对象类型 1. 作者 2. 文章 3. 期刊 4. 会议 5. 机构 6.话题 7. 笔记 8. 评论， 9. 问题
-  """
-  target_type: ObjectType
-  
-  # 创建时间
-  """
-  创建时间
-  """
-  created_at: DateTime
-  
-  # 资源
-  """
-  资源
-  """
-  resource: JSONObject
-}
-
-
 # 默认Mutation结果
 """
 默认Mutation结果
@@ -1967,6 +1915,12 @@ type Conference {
   行为统计
   """
   statistics: ConferenceStatistics!
+  
+  # 动态，用于在首页关注中显示用户关注的会议最近发生了什么变动
+  """
+  动态，用于在首页关注中显示用户关注的会议最近发生了什么变动
+  """
+  dynamics(pageParam: PageParam!): DynamicFeed!
 }
 
 type ConferenceStatistics {
@@ -2352,6 +2306,12 @@ enum CourseType {
   INTERPRETATION
 }
 
+enum CourseStatus {
+  NEW
+  PUBLIC
+  PRIVATE
+}
+
 
 # 教程
 """
@@ -2366,7 +2326,7 @@ type Course {
   内容摘要，用于向未购买教程的用户展示
   """
   biref: String!
-  content: String!
+  content: String
   type: CourseType!
   price: Float!
   score: Float!
@@ -2403,7 +2363,13 @@ type Course {
   """
   教程状态
   """
-  status: MetaDataStatus!
+  status: CourseStatus!
+  
+  # 动态，用于在首页关注中显示用户关注/购买的教程最近发生了什么变动
+  """
+  动态，用于在首页关注中显示用户关注/购买的教程最近发生了什么变动
+  """
+  dynamics(pageParam: PageParam!): DynamicFeed!
 }
 
 type CourseStatistics {
@@ -2670,7 +2636,7 @@ input NewCourseInput {
 input UpdateCourseInput {
   courseId: BigInt!
   title: String
-  biref: String
+  brief: String
   content: String
   type: CourseType!
   price: Float
@@ -2682,6 +2648,100 @@ input UpdateCourseInput {
   updateLog: String
   articles: [BigInt!]
   researches: [BigInt!]
+}
+
+enum DynamicAction {
+  
+  # 内容更新
+  """
+  内容更新
+  """
+  CONTENT_UPDATED
+  
+  # 添加关联
+  """
+  添加关联
+  """
+  ADD_CONNECTION
+  
+  # 移除关联
+  """
+  移除关联
+  """
+  REMOVE_CONNECTION
+  
+  # 作者发表新作品，包括教程、问答等
+  """
+  作者发表新作品，包括教程、问答等
+  """
+  POST_WORKS
+}
+
+
+# 动态
+ # 接口遵循 who does what to whom 的语义
+ # who: 字段所在的 Type
+ # what: action
+ # whom: object
+"""
+动态
+接口遵循 who does what to whom 的语义
+who: 字段所在的 Type
+what: action
+whom: object
+"""
+type Dynamic {
+  
+  # 发生的动作
+  """
+  发生的动作
+  """
+  action: DynamicAction!
+  
+  # 如果动作是关联/发表，那么object对应关联的对象或发表的教程、问答；对于其他动作，该字段为 null
+  """
+  如果动作是关联/发表，那么object对应关联的对象或发表的教程、问答；对于其他动作，该字段为 null
+  """
+  object: GenericObject
+  
+  # 预览标题
+  """
+  预览标题
+  """
+  title: String!
+  
+  # 预览内容
+  """
+  预览内容
+  """
+  preview: String!
+  
+  # 时间记录
+  """
+  时间记录
+  """
+  createdAt: DateTime!
+}
+
+
+# 动态的分页信息
+"""
+动态的分页信息
+"""
+type DynamicEdge {
+  node: Dynamic!
+  cursor: String!
+}
+
+
+# 动态流
+"""
+动态流
+"""
+type DynamicFeed {
+  edges: [DynamicEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 
@@ -2739,6 +2799,12 @@ type Institution {
   机构数据状态
   """
   status: MetaDataStatus!
+  
+  # 动态，用于在首页关注中显示用户关注的机构最近发生了什么变动
+  """
+  动态，用于在首页关注中显示用户关注的机构最近发生了什么变动
+  """
+  dynamics(pageParam: PageParam!): DynamicFeed!
 }
 
 
@@ -2931,6 +2997,12 @@ type Journal {
   统计
   """
   statistics: JournalStatistics!
+  
+  # 动态，用于在首页关注中显示用户关注的期刊最近发生了什么变动
+  """
+  动态，用于在首页关注中显示用户关注的期刊最近发生了什么变动
+  """
+  dynamics(pageParam: PageParam!): DynamicFeed!
 }
 
 type JournalStatistics {
@@ -3434,6 +3506,12 @@ type Question {
   统计
   """
   statistics: QuestionStatistics!
+  
+  # 动态，用于在首页关注中显示用户关注的问题最近发生了什么变动
+  """
+  动态，用于在首页关注中显示用户关注的问题最近发生了什么变动
+  """
+  dynamics(pageParam: PageParam!): DynamicFeed!
 }
 
 type QuestionStatistics {
@@ -4031,31 +4109,31 @@ type Research {
   """
   关联教程
   """
-  courses(pageParam: PageParam): CourseConnection
+  courses(pageParam: PageParam!): CourseConnection
   
   # 关联问答
   """
   关联问答
   """
-  questionAnswers(pageParam: PageParam): QuestionAnswerConnection
+  questionAnswers(pageParam: PageParam!): QuestionAnswerConnection
   
   # 关联文章
   """
   关联文章
   """
-  articles(pageParam: PageParam): ArticleConnection
+  articles(pageParam: PageParam!): ArticleConnection
   
   # 关联会议
   """
   关联会议
   """
-  conferences(pageParam: PageParam): ConferenceConnection
+  conferences(pageParam: PageParam!): ConferenceConnection
   
   # 关联期刊
   """
   关联期刊
   """
-  journals(pageParam: PageParam): JournalConnection
+  journals(pageParam: PageParam!): JournalConnection
   
   # 行为统计
   """
@@ -4068,6 +4146,12 @@ type Research {
   课题状态
   """
   status: MetaDataStatus!
+  
+  # 动态，用于在首页关注中显示用户关注的课题最近发生了什么变动
+  """
+  动态，用于在首页关注中显示用户关注的课题最近发生了什么变动
+  """
+  dynamics(pageParam: PageParam!): DynamicFeed!
 }
 
 type ResearchStatistics {
@@ -4118,12 +4202,6 @@ input UpdateResearchInput {
   课题简介
   """
   desc: String
-  
-  # 课题状态
-  """
-  课题状态
-  """
-  status: MetaDataStatus!
 }
 
 
