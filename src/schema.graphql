@@ -46,8 +46,9 @@ type Contribute {
 """
 文章
 """
-type Article {
+type Article implements TypedObject {
   id: BigInt!
+  isA: String!
   
   # 文章标题
   """
@@ -602,6 +603,12 @@ type Query {
   首页推荐 - 问答
   """
   recommendedQuestions(pageParam: PageParam!): QuestionFeed!
+  
+  # 首页推荐聚合数据接口
+  """
+  首页推荐聚合数据接口
+  """
+  recommendations(pageParam: PageParam!): TypedObjectFeed!
   
   # 获取课题详情
   """
@@ -1293,8 +1300,9 @@ type Mutation {
 """
 作者
 """
-type Author {
+type Author implements TypedObject {
   id: BigInt!
+  isA: String!
   
   # 作者名
   """
@@ -1683,6 +1691,11 @@ enum ObjectType {
   JOURNAL
 }
 
+interface TypedObject {
+  id: BigInt!
+  isA: String!
+}
+
 
 # 泛型对象，包含 id 和对象类型（用于类型对象）
 """
@@ -1894,13 +1907,30 @@ type CreateMutationResult {
   id: BigInt!
 }
 
+type TypedObjectEdge {
+  node: TypedObject!
+  cursor: String!
+}
+
+
+# TypedObject 的分页
+"""
+TypedObject 的分页
+"""
+type TypedObjectFeed {
+  edges: [TypedObjectEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 
 # 会议
 """
 会议
 """
-type Conference {
+type Conference implements TypedObject {
   id: BigInt!
+  isA: String!
   
   # 期刊中文名，如无，传入空字符串
   """
@@ -2349,15 +2379,16 @@ enum CourseStatus {
 """
 教程
 """
-type Course {
+type Course implements TypedObject {
   id: BigInt!
+  isA: String!
   title: String!
   
   # 内容摘要，用于向未购买教程的用户展示
   """
   内容摘要，用于向未购买教程的用户展示
   """
-  biref: String!
+  brief: String!
   content: String
   type: CourseType!
   price: Float!
@@ -2791,8 +2822,9 @@ input DynamicsOfInterestInput {
 """
 机构
 """
-type Institution {
+type Institution implements TypedObject {
   id: BigInt!
+  isA: String!
   
   # 期刊中文名，如无，传入空字符串
   """
@@ -2989,8 +3021,9 @@ input InstitutionConnectionInput {
 """
 期刊
 """
-type Journal {
+type Journal implements TypedObject {
   id: BigInt!
+  isA: String!
   
   # 期刊中文名，如无，传入空字符串
   """
@@ -3207,13 +3240,9 @@ input JournalConnectionInput {
   sortParam: JournalSortParam
 }
 
-type MindMap {
-  
-  # ID
-  """
-  ID
-  """
+type MindMap implements TypedObject {
   id: BigInt!
+  isA: String!
   
   # mind map 所描述的目标对象的类型
   """
@@ -3481,13 +3510,9 @@ enum QuestionStatus {
 """
 问题
 """
-type Question {
-  
-  # ID
-  """
-  ID
-  """
+type Question implements TypedObject {
   id: BigInt!
+  isA: String!
   
   # 问题标题
   """
@@ -4126,8 +4151,9 @@ input NewReportInput {
 """
 课题
 """
-type Research {
+type Research implements TypedObject {
   id: BigInt!
+  isA: String!
   
   # 课题标题
   """
@@ -4345,13 +4371,9 @@ type SubscribeConditions {
 """
 时间线
 """
-type TimeLine {
-  
-  # ID
-  """
-  ID
-  """
+type TimeLine implements TypedObject {
   id: BigInt!
+  isA: String!
   
   # timeline 所描述的目标对象的类型
   """
