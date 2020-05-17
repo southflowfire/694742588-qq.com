@@ -16,6 +16,6 @@
     "apollo-server-koa": "^2.8.1",
     "graphql": "^14.4.2",
     "graphql-scalars": "^1.0.2",
-    "lodash":"^4.17.15"
+    "lodash": "^4.17.15"
   }
 }
