@@ -123,6 +123,31 @@ const resolvers = {
       return ast.value;
     },
   }),
+  Currency: new GraphQLScalarType({
+    name: 'Currency',
+    description: '非负整型数，表示以分为单位的金额，例如3.23元对应的值为323',
+    parseValue(value) {
+      if (!Number.isInteger(value) || value < 0) {
+        throw new ValidationError('Currency 类型验证错误: 非正整数');
+      }
+      return value;
+    },
+    serialize(value) {
+      return value; // value sent to the client
+    },
+    parseLiteral(ast) {
+      let regexp = new RegExp('^[0-9]+$');
+      if (!regexp.test(ast.value)) {
+        throw new ValidationError('Currency 类型验证错误: 非正整数');
+      }
+
+      let val = parseInt(ast.value);
+      if (!Number.isInteger(val) || val < 0) {
+        throw new ValidationError('Currency 类型验证错误: 非正整数');
+      }
+      return val;
+    },
+  }),
 };
 
 module.exports = {

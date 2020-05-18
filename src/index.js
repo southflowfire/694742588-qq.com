@@ -9,7 +9,7 @@
 
 const { ApolloServer,gql } = require("apollo-server")
 const { resolvers}  = require("./scalars")
-const { mocks} = require("graphql-scalars");
+const mocks = require('./mocks');
 const path = require('path')
 const fs = require('fs')
 
