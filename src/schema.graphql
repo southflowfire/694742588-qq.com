@@ -145,6 +145,24 @@ type Article implements TypedObject {
   动态，用于在首页关注中显示用户关注的文章最近发生了什么变动
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
+  
+  # 社区内容维护的主要贡献者，至多返回 10 位用户
+  """
+  社区内容维护的主要贡献者，至多返回 10 位用户
+  """
+  majorContributors: [Author!]!
+  
+  # 当前用户是否关注文章
+  """
+  当前用户是否关注文章
+  """
+  isSubscribed: Boolean!
+  
+  # 当前用户是否读过文章
+  """
+  当前用户是否读过文章
+  """
+  isRead: Boolean!
 }
 
 type ArticleStatistics {
@@ -572,6 +590,12 @@ type Query {
   """
   authorID: BigInt): [Note]
   
+  # 生成交易码
+  """
+  生成交易码
+  """
+  generateTradeNumber: String!
+  
   # 查看问题列表
   """
   查看问题列表
@@ -609,6 +633,12 @@ type Query {
   首页推荐聚合数据接口
   """
   recommendations(pageParam: PageParam!): TypedObjectFeed!
+  
+  # 查询单个审批
+  """
+  查询单个审批
+  """
+  contentRequest(requestId: BigInt!, role: RequestRole!): ContentRequest
   
   # 获取课题详情
   """
@@ -974,7 +1004,7 @@ type Mutation {
   """
   购买教程
   """
-  purchaseCourse(id: BigInt!): PaymentInfo!
+  purchaseCourse(input: PurchaseCourseInput!): PaymentInfo!
   
   # 评价教程
   """
@@ -1198,6 +1228,24 @@ type Mutation {
   """
   reportIssueOnObject(input: NewReportInput!): CommonMutationResult!
   
+  # 由 request 指定的 reviewer 调用，通过审核
+  """
+  由 request 指定的 reviewer 调用，通过审核
+  """
+  approveContentRequest(requestId: BigInt!): CommonMutationResult!
+  
+  # 由 request 指定的 reviewer 调用，驳回审核
+  """
+  由 request 指定的 reviewer 调用，驳回审核
+  """
+  rejectContentRequest(requestId: BigInt!, reason: String!): CommonMutationResult!
+  
+  # 由 request 指定的 reviewer 调用，表示该 request 的内容与其无关
+  """
+  由 request 指定的 reviewer 调用，表示该 request 的内容与其无关
+  """
+  ignoreContentRequest(requestId: BigInt!, reason: String): CommonMutationResult!
+  
   # 创建课题
   """
   创建课题
@@ -1381,6 +1429,18 @@ type Author implements TypedObject {
   动态，用于在首页关注中显示用户关注的作者最近发生了什么变动
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
+  
+  # 社区内容维护的主要贡献者，至多返回 10 位用户
+  """
+  社区内容维护的主要贡献者，至多返回 10 位用户
+  """
+  majorContributors: [Author!]!
+  
+  # 当前用户是否关注作者
+  """
+  当前用户是否关注作者
+  """
+  isFollowed: Boolean!
 }
 
 type AuthorStatistics {
@@ -1634,6 +1694,8 @@ scalar JSON
 scalar JSONObject
 
 scalar NonNegativeFloat
+
+scalar Currency
 
 
 # 系统中支持的对象类型
@@ -1932,15 +1994,15 @@ type Conference implements TypedObject {
   id: BigInt!
   isA: String!
   
-  # 期刊中文名，如无，传入空字符串
+  # 会议中文名，如无，传入空字符串
   """
-  期刊中文名，如无，传入空字符串
+  会议中文名，如无，传入空字符串
   """
   localName: String!
   
-  # 期刊英文名，如无，传入空字符串
+  # 会议英文名，如无，传入空字符串
   """
-  期刊英文名，如无，传入空字符串
+  会议英文名，如无，传入空字符串
   """
   globalName: String!
   
@@ -1985,6 +2047,18 @@ type Conference implements TypedObject {
   动态，用于在首页关注中显示用户关注的会议最近发生了什么变动
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
+  
+  # 社区内容维护的主要贡献者，至多返回 10 位用户
+  """
+  社区内容维护的主要贡献者，至多返回 10 位用户
+  """
+  majorContributors: [Author!]!
+  
+  # 当前用户是否关注会议
+  """
+  当前用户是否关注会议
+  """
+  isSubscribed: Boolean!
 }
 
 type ConferenceStatistics {
@@ -2003,15 +2077,15 @@ type ConferenceStatistics {
 """
 input NewConferenceInput {
   
-  # 期刊中文名，如无，传入空字符串
+  # 会议中文名，如无，传入空字符串
   """
-  期刊中文名，如无，传入空字符串
+  会议中文名，如无，传入空字符串
   """
   localName: String!
   
-  # 期刊英文名，如无，传入空字符串
+  # 会议英文名，如无，传入空字符串
   """
-  期刊英文名，如无，传入空字符串
+  会议英文名，如无，传入空字符串
   """
   globalName: String!
   
@@ -2048,17 +2122,17 @@ input NewConferenceInput {
 input UpdateConferenceInput {
   id: BigInt!
   
-  # 期刊中文名，如无，传入空字符串
+  # 会议中文名
   """
-  期刊中文名，如无，传入空字符串
+  会议中文名
   """
-  localName: String!
+  localName: String
   
-  # 期刊英文名，如无，传入空字符串
+  # 会议英文名
   """
-  期刊英文名，如无，传入空字符串
+  会议英文名
   """
-  globalName: String!
+  globalName: String
   
   # 会议地点
   """
@@ -2389,6 +2463,17 @@ type Course implements TypedObject {
   内容摘要，用于向未购买教程的用户展示
   """
   brief: String!
+  
+  # 以 JSON 字符串保存的目录信息
+  """
+  以 JSON 字符串保存的目录信息
+  """
+  contentTable: String!
+  
+  # 正文
+  """
+  正文
+  """
   content: String
   type: CourseType!
   price: Float!
@@ -2433,6 +2518,12 @@ type Course implements TypedObject {
   动态，用于在首页关注中显示用户关注/购买的教程最近发生了什么变动
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
+  
+  # 当前用户是否关注教程
+  """
+  当前用户是否关注教程
+  """
+  isSubscribed: Boolean!
 }
 
 type CourseStatistics {
@@ -2454,6 +2545,12 @@ type CourseStatistics {
   浏览详情但未购买人数，该数据只有创作者可见
   """
   nBrowsers: NonNegativeInt!
+  
+  # 累计收益
+  """
+  累计收益
+  """
+  totalGain: Float!
 }
 
 
@@ -2523,6 +2620,7 @@ type CourseCommentEdge {
 type CourseCommentFeed {
   edges: [CourseCommentEdge!]!
   pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 input CourseCommentInput {
@@ -2684,6 +2782,7 @@ type CourseFeed {
 input NewCourseInput {
   title: String!
   brief: String!
+  contentTable: String!
   content: String!
   type: CourseType!
   price: Float!
@@ -2700,8 +2799,9 @@ input UpdateCourseInput {
   courseId: BigInt!
   title: String
   brief: String
+  contentTable: String
   content: String
-  type: CourseType!
+  type: CourseType
   price: Float
   
   # 该参数对于未发布的教程是可选的，对于已发布的教程是必填的
@@ -2711,6 +2811,27 @@ input UpdateCourseInput {
   updateLog: String
   articles: [BigInt!]
   researches: [BigInt!]
+}
+
+input PurchaseCourseInput {
+  
+  # Course Id
+  """
+  Course Id
+  """
+  id: BigInt!
+  
+  # 支付方式
+  """
+  支付方式
+  """
+  paymentType: PaymentType!
+  
+  # 交易码，需要先通过 generateTradeNumber 接口获取
+  """
+  交易码，需要先通过 generateTradeNumber 接口获取
+  """
+  tradeNumber: String!
 }
 
 enum DynamicAction {
@@ -2826,15 +2947,15 @@ type Institution implements TypedObject {
   id: BigInt!
   isA: String!
   
-  # 期刊中文名，如无，传入空字符串
+  # 机构中文名，如无，传入空字符串
   """
-  期刊中文名，如无，传入空字符串
+  机构中文名，如无，传入空字符串
   """
   localName: String!
   
-  # 期刊英文名，如无，传入空字符串
+  # 机构英文名，如无，传入空字符串
   """
-  期刊英文名，如无，传入空字符串
+  机构英文名，如无，传入空字符串
   """
   globalName: String!
   
@@ -2879,6 +3000,18 @@ type Institution implements TypedObject {
   动态，用于在首页关注中显示用户关注的机构最近发生了什么变动
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
+  
+  # 社区内容维护的主要贡献者，至多返回 10 位用户
+  """
+  社区内容维护的主要贡献者，至多返回 10 位用户
+  """
+  majorContributors: [Author!]!
+  
+  # 当前用户是否关注机构
+  """
+  当前用户是否关注机构
+  """
+  isSubscribed: Boolean!
 }
 
 
@@ -2888,15 +3021,15 @@ type Institution implements TypedObject {
 """
 input NewInstitutionInput {
   
-  # 期刊中文名，如无，传入空字符串
+  # 机构中文名，如无，传入空字符串
   """
-  期刊中文名，如无，传入空字符串
+  机构中文名，如无，传入空字符串
   """
   localName: String!
   
-  # 期刊英文名，如无，传入空字符串
+  # 机构英文名，如无，传入空字符串
   """
-  期刊英文名，如无，传入空字符串
+  机构英文名，如无，传入空字符串
   """
   globalName: String!
   
@@ -2939,17 +3072,17 @@ input NewInstitutionInput {
 input UpdateInstitutionInput {
   id: BigInt!
   
-  # 期刊中文名，如无，传入空字符串
+  # 机构中文名
   """
-  期刊中文名，如无，传入空字符串
+  机构中文名
   """
-  localName: String!
+  localName: String
   
-  # 期刊英文名，如无，传入空字符串
+  # 机构英文名
   """
-  期刊英文名，如无，传入空字符串
+  机构英文名
   """
-  globalName: String!
+  globalName: String
   
   # 机构简介
   """
@@ -3078,6 +3211,18 @@ type Journal implements TypedObject {
   动态，用于在首页关注中显示用户关注的期刊最近发生了什么变动
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
+  
+  # 社区内容维护的主要贡献者，至多返回 10 位用户
+  """
+  社区内容维护的主要贡献者，至多返回 10 位用户
+  """
+  majorContributors: [Author!]!
+  
+  # 当前用户是否关注期刊
+  """
+  当前用户是否关注期刊
+  """
+  isSubscribed: Boolean!
 }
 
 type JournalStatistics {
@@ -3147,17 +3292,17 @@ input NewJournalInput {
 input UpdateJournalInput {
   id: BigInt!
   
-  # 期刊中文名，如无，传入空字符串
+  # 期刊中文名
   """
-  期刊中文名，如无，传入空字符串
+  期刊中文名
   """
-  localName: String!
+  localName: String
   
-  # 期刊英文名，如无，传入空字符串
+  # 期刊英文名
   """
-  期刊英文名，如无，传入空字符串
+  期刊英文名
   """
-  globalName: String!
+  globalName: String
   
   # 影响因子
   """
@@ -3461,6 +3606,100 @@ input updateNoteInput {
   content: String
 }
 
+enum PaymentType {
+  
+  # 支付宝
+  """
+  支付宝
+  """
+  ALIPAY
+  
+  # 微信支付
+  """
+  微信支付
+  """
+  WECHATPAY
+}
+
+
+# 支付信息
+"""
+支付信息
+"""
+type PaymentInfo {
+  
+  # 支付服务商返回的支付页面 URL
+  """
+  支付服务商返回的支付页面 URL
+  """
+  paymentUrl: URL!
+}
+
+
+# 订单
+"""
+订单
+"""
+type Order {
+  
+  # 订单号
+  """
+  订单号
+  """
+  id: BigInt!
+  
+  # 商品原价
+  """
+  商品原价
+  """
+  price: Currency!
+  
+  # 商品优惠折扣
+  """
+  商品优惠折扣
+  """
+  discount: Currency!
+  
+  # 实际成交价格
+  """
+  实际成交价格
+  """
+  receiptAmount: Currency!
+  
+  # 实际成交时间
+  """
+  实际成交时间
+  """
+  dealTime: DateTime!
+  
+  # 购买的商品
+  """
+  购买的商品
+  """
+  commodity: TypedObject!
+}
+
+type OrderEdge {
+  node: Order!
+  
+  # base64 编码的字符串
+  """
+  base64 编码的字符串
+  """
+  cursor: String!
+}
+
+
+# 订单分页
+"""
+订单分页
+"""
+type OrderFeed {
+  edges: [OrderEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
 
 # 问题状态
 """
@@ -3579,6 +3818,12 @@ type Question implements TypedObject {
   动态，用于在首页关注中显示用户关注的问题最近发生了什么变动
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
+  
+  # 当前用户是否关注问题
+  """
+  当前用户是否关注问题
+  """
+  isSubscribed: Boolean!
 }
 
 type QuestionStatistics {
@@ -3865,20 +4110,6 @@ input SelectAndPayInput {
 }
 
 
-# 支付信息
-"""
-支付信息
-"""
-type PaymentInfo {
-  
-  # 服务器生成的支付链接，如支付二维码或其他支付途径
-  """
-  服务器生成的支付链接，如支付二维码或其他支付途径
-  """
-  paymentUrl: URL!
-}
-
-
 # 新建回答 输入参数
 """
 新建回答 输入参数
@@ -4146,6 +4377,178 @@ input NewReportInput {
   description: String!
 }
 
+enum RequestStatus {
+  
+  # 审批中
+  """
+  审批中
+  """
+  IN_PROGESS
+  
+  # 审批通过
+  """
+  审批通过
+  """
+  APPROVED
+  
+  # 审批驳回
+  """
+  审批驳回
+  """
+  REJECT
+}
+
+enum ActionType {
+  
+  # 新增
+  """
+  新增
+  """
+  DATA_CREATE
+  
+  # 修改
+  """
+  修改
+  """
+  DATA_UPDATE
+  
+  # 删除
+  """
+  删除
+  """
+  DATA_DELETE
+  
+  # 合并
+  """
+  合并
+  """
+  DATA_MERGE
+}
+
+enum RequestRole {
+  
+  # 创建者
+  """
+  创建者
+  """
+  CREATOR
+  
+  # 审批者
+  """
+  审批者
+  """
+  REVIEWER
+}
+
+type ContentRequest {
+  id: BigInt!
+  
+  # 元数据类型
+  """
+  元数据类型
+  """
+  targetType: ObjectType!
+  
+  # 元数据title
+  """
+  元数据title
+  """
+  title: String!
+  
+  # 原始对象
+  """
+  原始对象
+  """
+  left: TypedObject
+  
+  # 修改后对象
+  """
+  修改后对象
+  """
+  targetLog: TypedObject!
+  
+  # 合并的右id
+  """
+  合并的右id
+  """
+  right: TypedObject
+  
+  # 业务类型
+  """
+  业务类型
+  """
+  action: ActionType
+  
+  # 提交日期
+  """
+  提交日期
+  """
+  createdAt: DateTime
+  
+  # 审批状态
+  """
+  审批状态
+  """
+  status: RequestStatus!
+}
+
+
+# 存储审批关联项的分页信息
+"""
+存储审批关联项的分页信息
+"""
+type ContentRequestEdge {
+  node: ContentRequest!
+  cursor: String!
+}
+
+
+# 审批关联项
+"""
+审批关联项
+"""
+type ContentRequestFeed {
+  edges: [ContentRequestEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+# 审批过滤参数
+"""
+审批过滤参数
+"""
+input ContentRequestFilterParam {
+  
+  # 元数据类型
+  """
+  元数据类型
+  """
+  targetType: ObjectType!
+  
+  # 业务类型
+  """
+  业务类型
+  """
+  action: ActionType
+  
+  # 审批状态
+  """
+  审批状态
+  """
+  status: RequestStatus
+}
+
+
+# 审批集合查询参数
+"""
+审批集合查询参数
+"""
+input ContentRequestFeedInput {
+  pageParam: PageParam!
+  filterParam: ContentRequestFilterParam
+}
+
 
 # 课题
 """
@@ -4220,6 +4623,18 @@ type Research implements TypedObject {
   动态，用于在首页关注中显示用户关注的课题最近发生了什么变动
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
+  
+  # 社区内容维护的主要贡献者，至多返回 10 位用户
+  """
+  社区内容维护的主要贡献者，至多返回 10 位用户
+  """
+  majorContributors: [Author!]!
+  
+  # 当前用户是否关注课题
+  """
+  当前用户是否关注课题
+  """
+  isSubscribed: Boolean!
 }
 
 type ResearchStatistics {
@@ -4263,7 +4678,7 @@ input UpdateResearchInput {
   """
   课题标题
   """
-  title: String!
+  title: String
   
   # 课题简介
   """
@@ -4583,6 +4998,24 @@ type User {
   我的关注和订阅
   """
   subscriptionAndFollowship: UserSubscriptionAndFollowship!
+  
+  # 我的订单
+  """
+  我的订单
+  """
+  orders(pageParam: PageParam): OrderFeed!
+  
+  # 查询审批集合(我发起的)
+  """
+  查询审批集合(我发起的)
+  """
+  contentRequestsAsCreator(input: ContentRequestFeedInput!): ContentRequestFeed
+  
+  # 查询审批集合(发给我的)
+  """
+  查询审批集合(发给我的)
+  """
+  contentRequestsAsReviewer(input: ContentRequestFeedInput!): ContentRequestFeed
 }
 
 type UserSubscriptionAndFollowship {
