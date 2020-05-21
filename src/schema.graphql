@@ -826,13 +826,13 @@ type Mutation {
   """
   创建论文集
   """
-  createCollection(collectionName: String!): CommonMutationResult!
+  createCollection(input: CreateCollectionInput!): CommonMutationResult!
   
   # 修改论文集名称
   """
   修改论文集名称
   """
-  updateCollection(collectionId: BigInt!, collectionName: String!): CommonMutationResult!
+  updateCollection(input: UpdateCollectionInput!): CommonMutationResult!
   
   # 删除论文集
   """
@@ -1330,6 +1330,12 @@ type Mutation {
   """
   shareObject(objectId: BigInt!, type: ObjectType!, userId: BigInt!): CommonMutationResult!
   
+  # 提现
+  """
+  提现
+  """
+  requestWithdrawal: CommonMutationResult!
+  
   # 提交反馈
   """
   提交反馈
@@ -1398,7 +1404,17 @@ type Author implements TypedObject {
   """
   创作的教程
   """
-  courses(pageParam: PageParam): CourseConnection
+  courses(
+  # 教程状态，传入参数获取对应状态的教程；传入空数组返回所有状态的教程
+  """
+  教程状态，传入参数获取对应状态的教程；传入空数组返回所有状态的教程
+  """
+  status: [CourseStatus!]!, 
+  # 分页参数
+  """
+  分页参数
+  """
+  pageParam: PageParam): CourseConnection
   
   # 作为回答者参与的完整问答
   """
@@ -1580,6 +1596,22 @@ type Collection {
   论文集中的文章
   """
   articles(pageParam: PageParam): ArticleConnection
+}
+
+input CreateCollectionInput {
+  title: String!
+  description: String
+}
+
+input UpdateCollectionInput {
+  
+  # 论文集Id
+  """
+  论文集Id
+  """
+  id: BigInt!
+  title: String
+  description: String
 }
 
 
@@ -1927,6 +1959,16 @@ Float范围类型
 input FloatRange {
   upper: Float
   lower: Float
+}
+
+
+# 货币范围类型
+"""
+货币范围类型
+"""
+input CurrencyRange {
+  upper: Currency!
+  lower: Currency!
 }
 
 
@@ -2443,8 +2485,23 @@ enum CourseType {
 }
 
 enum CourseStatus {
-  NEW
+  
+  # 教程草稿，尚未发布
+  """
+  教程草稿，尚未发布
+  """
+  DRAFT
+  
+  # 教程已发布，非购买者可以看到教程预览
+  """
+  教程已发布，非购买者可以看到教程预览
+  """
   PUBLIC
+  
+  # 教程发布后下架，非购买者看不到该教程任何信息
+  """
+  教程发布后下架，非购买者看不到该教程任何信息
+  """
   PRIVATE
 }
 
@@ -2476,7 +2533,7 @@ type Course implements TypedObject {
   """
   content: String
   type: CourseType!
-  price: Float!
+  price: Currency!
   score: Float!
   author: Author!
   createdAt: DateTime!
@@ -2546,11 +2603,17 @@ type CourseStatistics {
   """
   nBrowsers: NonNegativeInt!
   
-  # 累计收益
+  # 用于教程作者查看自己创作的教程的累计收益；除此情况外，返回 null
   """
-  累计收益
+  用于教程作者查看自己创作的教程的累计收益；除此情况外，返回 null
   """
-  totalGain: Float!
+  totalGain: Currency
+  
+  # 教程作者更新教程后，购买者是否还未读；教程作者请求自己的原创教程时，该值为 null
+  """
+  教程作者更新教程后，购买者是否还未读；教程作者请求自己的原创教程时，该值为 null
+  """
+  hasUnreadUpdate: Boolean
 }
 
 
@@ -2663,7 +2726,7 @@ input CourseFilterParam {
   """
   教程价格区间
   """
-  price: FloatRange
+  price: CurrencyRange
   
   # 教程评分区间
   """
@@ -2785,7 +2848,7 @@ input NewCourseInput {
   contentTable: String!
   content: String!
   type: CourseType!
-  price: Float!
+  price: Currency!
   articles: [BigInt!]
   researches: [BigInt!]
 }
@@ -2802,7 +2865,7 @@ input UpdateCourseInput {
   contentTable: String
   content: String
   type: CourseType
-  price: Float
+  price: Currency
   
   # 该参数对于未发布的教程是可选的，对于已发布的教程是必填的
   """
@@ -3781,7 +3844,7 @@ type Question implements TypedObject {
   """
   问题定价
   """
-  price: NonNegativeFloat!
+  price: Currency!
   
   # 是否匿名发布
   """
@@ -3945,7 +4008,7 @@ type QuestionAnswer {
   """
   答案旁听定价
   """
-  price: NonNegativeFloat!
+  price: Currency!
   
   # 统计
   """
@@ -4004,7 +4067,7 @@ input NewQuestionInput {
   """
   问题定价
   """
-  price: NonNegativeFloat!
+  price: Currency!
   
   # 是否匿名发布
   """
@@ -4060,7 +4123,7 @@ input UpdateQuestionInput {
   """
   问题定价
   """
-  price: NonNegativeFloat!
+  price: Currency!
 }
 
 
@@ -4172,7 +4235,7 @@ input ReleaseQuestionAnswerInput {
   """
   旁听价格
   """
-  price: NonNegativeFloat!
+  price: Currency!
 }
 
 
@@ -5113,6 +5176,12 @@ type UserStatistics {
   购买的问答数量
   """
   nPurchasedQuestionAnswers: NonNegativeInt!
+  
+  # 可提现金额
+  """
+  可提现金额
+  """
+  balance: Currency!
 }
 
 
