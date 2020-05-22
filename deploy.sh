@@ -1,7 +1,3 @@
 #! /bin/bash
 
-git reset --hard origin/master
-git clean -f
-git pull origin master
-npm install
-npm run start
+/www/server/nvm/versions/node/v12.16.3/bin/npm run start
