@@ -22,6 +22,7 @@ const server = new ApolloServer({
 	typeDefs,
 	resolvers,
 	mocks,
+	mockEntireSchema: false,
 	playground: {
 		settings: {
 			"editor.theme": "light",

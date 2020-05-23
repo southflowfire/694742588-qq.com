@@ -12,6 +12,18 @@ const { ValidationError } = require("apollo-server-koa");
 const { isNaN } = require("lodash");
 const { GraphQLError } = require("graphql/error");
 const { URL } = require("url");
+const casual = require('casual');
+
+const OBJECT_TYPE = {
+  AUTHOR:               'Author',
+  RESEARCH:             'Research',
+  ARTICLE:              'Article',
+  JOURNAL:              'Journal',
+  CONFERENCE:           'Conference',
+  COURSE:               'Course',
+  QUESTIONANSWER:       'Question',
+  INSTITUTION:          'Institution'
+}
 
 const {
   DateTimeResolver,
@@ -148,6 +160,12 @@ const resolvers = {
       return val;
     },
   }),
+
+  TypedObject: {
+    __resolveType(data) {
+      return OBJECT_TYPE[data.isA];
+    }
+  },
 };
 
 module.exports = {
