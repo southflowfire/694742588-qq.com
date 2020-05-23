@@ -13,7 +13,7 @@ const mocks = require('./mocks');
 const path = require('path')
 const fs = require('fs')
 
-const typeStr = fs.readFileSync(path.join(__dirname,'schema.graphql'))
+const typeStr = fs.readFileSync(path.join(__dirname,'schema.public.graphql'))
 const typeDefs = gql`${typeStr}`
 
 // The ApolloServer constructor requires two parameters: your schema
