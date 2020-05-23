@@ -21,10 +21,18 @@ const typeDefs = gql`${typeStr}`
 const server = new ApolloServer({
 	typeDefs,
 	resolvers,
-	mocks
+	mocks,
+	playground: {
+		settings: {
+			"editor.theme": "light",
+		},
+	},
 });
 const app = new express()
-server.applyMiddleware({ app });
+server.applyMiddleware({
+	app,
+	path: '/',
+});
 // The `listen` method launches a web server.
 app.listen({ port: 4000 }, () =>
     console.log(`  Server ready at http://localhost:4000${server.graphqlPath}`)
