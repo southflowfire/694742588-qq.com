@@ -163,6 +163,30 @@ type Article implements TypedObject {
   当前用户是否读过文章
   """
   isRead: Boolean!
+  
+  # 基本信息 - 主页创新
+  """
+  基本信息 - 主页创新
+  """
+  innovation: String
+  
+  # 基本信息 - 方法思路
+  """
+  基本信息 - 方法思路
+  """
+  method: String
+  
+  # 基本信息 - 论文结论
+  """
+  基本信息 - 论文结论
+  """
+  conclusion: String
+  
+  # 基本信息 - 存在不足
+  """
+  基本信息 - 存在不足
+  """
+  drawback: String
 }
 
 type ArticleStatistics {
@@ -746,12 +770,6 @@ type Query {
   """
   timeLineDraft(timeLineId: BigInt!): TimeLine
   
-  # 获取上传所需的token和key (DEPRECATED)
-  """
-  获取上传所需的token和key (DEPRECATED)
-  """
-  uploadAccess: UploadAccess!
-  
   # 查询自己
   """
   查询自己
@@ -820,7 +838,7 @@ type Mutation {
   """
   发起合并作者信息的申请
   """
-  requestMergeAuthor(authorId1: BigInt!, authorId2: BigInt!, mergedAuthor: MergedAuthorInput!): CommonMutationResult!
+  requestMergeAuthor(leftId: BigInt!, rightId: BigInt!, resultAuthor: MergedAuthorInput!): CommonMutationResult!
   
   # 创建论文集
   """
@@ -1293,6 +1311,12 @@ type Mutation {
   申请修改时间线，包括任何已经发布的时间线
   """
   requestUpdateTimeLine(input: UpdateTimeLineInput!): CommonMutationResult!
+  
+  # 上传图片
+  """
+  上传图片
+  """
+  uploadImage(file: Upload!, type: UploadPurpose!): UploadResult!
   
   # 完善个人资料
   """
@@ -2943,7 +2967,7 @@ type Dynamic {
   """
   动态的主体，如文章更新，则主体是文章，作者发表教程，主体是作者
   """
-  subject: GenericObject!
+  subject: TypedObject!
   
   # 发生的动作
   """
@@ -2955,7 +2979,7 @@ type Dynamic {
   """
   如果动作是关联/发表，那么object对应关联的对象或发表的教程、问答；对于其他动作，该字段为 null
   """
-  object: GenericObject
+  object: TypedObject
   
   # 预览标题
   """
@@ -4923,26 +4947,24 @@ input UpdateTimeLineInput {
   content: String!
 }
 
+type UploadResult {
+  url: URL
+  sucess: Boolean!
+}
 
-# 上传Access, 详情见七牛云文档 (DEPRECATED)
- # https://developer.qiniu.com/kodo/sdk/1283/javascript
-"""
-上传Access, 详情见七牛云文档 (DEPRECATED)
-https://developer.qiniu.com/kodo/sdk/1283/javascript
-"""
-type UploadAccess {
+enum UploadPurpose {
   
-  # 上传凭据，只用于单个key
+  # 头像
   """
-  上传凭据，只用于单个key
+  头像
   """
-  token: String!
+  AVATAR
   
-  # 上传到指定key
+  # 除头像外的所有图片
   """
-  上传到指定key
+  除头像外的所有图片
   """
-  key: String!
+  BIGIMAGE
 }
 
 
