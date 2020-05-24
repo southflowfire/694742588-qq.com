@@ -140,9 +140,9 @@ type Article implements TypedObject {
   """
   status: MetaDataStatus!
   
-  # 动态，用于在首页关注中显示用户关注的文章最近发生了什么变动
+  # 文章动态，用于在文章详情页中展示该元数据最近的变化
   """
-  动态，用于在首页关注中显示用户关注的文章最近发生了什么变动
+  文章动态，用于在文章详情页中展示该元数据最近的变化
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
   
@@ -1464,11 +1464,17 @@ type Author implements TypedObject {
   """
   status: MetaDataStatus!
   
-  # 动态，用于在首页关注中显示用户关注的作者最近发生了什么变动
+  # 作者动态，用于在作者详情页中展示该作者最近的创作
   """
-  动态，用于在首页关注中显示用户关注的作者最近发生了什么变动
+  作者动态，用于在作者详情页中展示该作者最近的创作
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
+  
+  # 作者社区贡献，在作者详情页展示作者对公共数据做了哪些维护工作
+  """
+  作者社区贡献，在作者详情页展示作者对公共数据做了哪些维护工作
+  """
+  contributions(pageParam: PageParam!): DynamicFeed!
   
   # 社区内容维护的主要贡献者，至多返回 10 位用户
   """
@@ -2108,9 +2114,9 @@ type Conference implements TypedObject {
   """
   statistics: ConferenceStatistics!
   
-  # 动态，用于在首页关注中显示用户关注的会议最近发生了什么变动
+  # 会议动态，用于在会议详情页中展示该元数据最近的变化
   """
-  动态，用于在首页关注中显示用户关注的会议最近发生了什么变动
+  会议动态，用于在会议详情页中展示该元数据最近的变化
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
   
@@ -2473,7 +2479,7 @@ type CollectionConnection {
  # ##############################################################################
 input RequestConnectionInput {
   master: GenericObjectInput!
-  slave: GenericObjectInput!
+  slaves: [GenericObjectInput!]!
   operation: ConnectionOperation!
 }
 
@@ -2593,12 +2599,6 @@ type Course implements TypedObject {
   教程状态
   """
   status: CourseStatus!
-  
-  # 动态，用于在首页关注中显示用户关注/购买的教程最近发生了什么变动
-  """
-  动态，用于在首页关注中显示用户关注/购买的教程最近发生了什么变动
-  """
-  dynamics(pageParam: PageParam!): DynamicFeed!
   
   # 当前用户是否关注教程
   """
@@ -2976,6 +2976,12 @@ type Dynamic {
   """
   subject: TypedObject!
   
+  # subject对象标题，subject是作者的话，该值即为作者名
+  """
+  subject对象标题，subject是作者的话，该值即为作者名
+  """
+  subjectTitle: String!
+  
   # 发生的动作
   """
   发生的动作
@@ -2988,11 +2994,11 @@ type Dynamic {
   """
   object: TypedObject
   
-  # 预览标题
+  # object对象标题
   """
-  预览标题
+  object对象标题
   """
-  title: String!
+  objectTitle: String!
   
   # 预览内容
   """
@@ -3089,9 +3095,9 @@ type Institution implements TypedObject {
   """
   status: MetaDataStatus!
   
-  # 动态，用于在首页关注中显示用户关注的机构最近发生了什么变动
+  # 机构动态，用于在机构详情页中展示该元数据最近的变化
   """
-  动态，用于在首页关注中显示用户关注的机构最近发生了什么变动
+  机构动态，用于在机构详情页中展示该元数据最近的变化
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
   
@@ -3300,9 +3306,9 @@ type Journal implements TypedObject {
   """
   statistics: JournalStatistics!
   
-  # 动态，用于在首页关注中显示用户关注的期刊最近发生了什么变动
+  # 期刊动态，用于在期刊详情页中展示该元数据最近的变化
   """
-  动态，用于在首页关注中显示用户关注的期刊最近发生了什么变动
+  期刊动态，用于在期刊详情页中展示该元数据最近的变化
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
   
@@ -3906,12 +3912,6 @@ type Question implements TypedObject {
   统计
   """
   statistics: QuestionStatistics!
-  
-  # 动态，用于在首页关注中显示用户关注的问题最近发生了什么变动
-  """
-  动态，用于在首页关注中显示用户关注的问题最近发生了什么变动
-  """
-  dynamics(pageParam: PageParam!): DynamicFeed!
   
   # 当前用户是否关注问题
   """
@@ -4686,9 +4686,9 @@ type Research implements TypedObject {
   """
   status: MetaDataStatus!
   
-  # 动态，用于在首页关注中显示用户关注的课题最近发生了什么变动
+  # 课题动态，用于在课题详情页中展示该元数据最近的变化
   """
-  动态，用于在首页关注中显示用户关注的课题最近发生了什么变动
+  课题动态，用于在课题详情页中展示该元数据最近的变化
   """
   dynamics(pageParam: PageParam!): DynamicFeed!
   
