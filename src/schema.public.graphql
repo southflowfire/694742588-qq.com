@@ -2919,6 +2919,12 @@ input PurchaseCourseInput {
   交易码，需要先通过 generateTradeNumber 接口获取
   """
   tradeNumber: String!
+  
+  # 回调URL
+  """
+  回调URL
+  """
+  callbackUrl: URL!
 }
 
 enum DynamicAction {
@@ -2962,6 +2968,7 @@ what: action
 whom: object
 """
 type Dynamic {
+  id: BigInt!
   
   # 动态的主体，如文章更新，则主体是文章，作者发表教程，主体是作者
   """
@@ -4407,32 +4414,6 @@ type QuestionAnswerFeed {
 }
 
 
-# 举报/投诉类型
-"""
-举报/投诉类型
-"""
-enum ReportIssueType {
-  
-  # 违法违规，如色情、暴力、歧视等低俗信息
-  """
-  违法违规，如色情、暴力、歧视等低俗信息
-  """
-  ILLEGAL
-  
-  # 存在无关学术的政治性言论
-  """
-  存在无关学术的政治性言论
-  """
-  POLITICAL
-  
-  # 其他
-  """
-  其他
-  """
-  OTHERS
-}
-
-
 # 发起举报参数
 """
 发起举报参数
@@ -4455,13 +4436,13 @@ input NewReportInput {
   """
   举报/投诉类型
   """
-  issueType: ReportIssueType!
+  issueType: String!
   
   # 内容描述
   """
   内容描述
   """
-  description: String!
+  description: String
 }
 
 enum RequestStatus {
