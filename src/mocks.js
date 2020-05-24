@@ -28,5 +28,14 @@ module.exports = {
       id: casual.integer(1, 100),
       isA: casual.random_value(OBJECT_TYPE)
     })
+  }),
+  TypedObjectFeed: () => ({
+    edges: () => new MockList([5, 20])
+  }),
+  TypedObjectEdge: () => ({
+    node: () => ({
+      id: casual.integer(1, 100),
+      isA: casual.random_value(OBJECT_TYPE)
+    })
   })
 };
