@@ -23,6 +23,10 @@ module.exports = {
     subject: () => ({
       id: casual.integer(1, 100),
       isA: casual.random_value(OBJECT_TYPE)
+    }),
+    object: () => ({
+      id: casual.integer(1, 100),
+      isA: casual.random_value(OBJECT_TYPE)
     })
   })
 };
