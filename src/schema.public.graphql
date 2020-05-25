@@ -1509,11 +1509,23 @@ type AuthorStatistics {
   """
   nCourses: NonNegativeInt!
   
-  # “我”创作的问答数量
+  # “我”的提问数
   """
-  “我”创作的问答数量
+  “我”的提问数
   """
-  nQuestionAnswers: NonNegativeInt!
+  nQuestions: NonNegativeInt!
+  
+  # “我”创作的回答数
+  """
+  “我”创作的回答数
+  """
+  nAnswers: NonNegativeInt!
+  
+  # 浏览过“我”的创作内容的总人次
+  """
+  浏览过“我”的创作内容的总人次
+  """
+  nTotalBrowsers: NonNegativeInt!
 }
 
 type ScholarStatistics {
@@ -2947,11 +2959,35 @@ enum DynamicAction {
   """
   REMOVE_CONNECTION
   
-  # 作者发表新作品，包括教程、问答等
+  # 作者发表新作品，教程
   """
-  作者发表新作品，包括教程、问答等
+  作者发表新作品，教程
   """
   POST_WORKS
+  
+  # 关注作者
+  """
+  关注作者
+  """
+  FOLLOW_AUTHOR
+  
+  # 订阅
+  """
+  订阅
+  """
+  SUBSCRIBE
+  
+  # 发布问题
+  """
+  发布问题
+  """
+  POST_QUESTION
+  
+  # 回答问题
+  """
+  回答问题
+  """
+  POST_ANSWER
 }
 
 
@@ -4930,7 +4966,7 @@ input UpdateTimeLineInput {
 
 type UploadResult {
   url: URL
-  sucess: Boolean!
+  success: Boolean!
 }
 
 enum UploadPurpose {
