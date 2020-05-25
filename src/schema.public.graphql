@@ -662,7 +662,7 @@ type Query {
   """
   查询单个审批
   """
-  contentRequest(requestId: BigInt!, role: RequestRole!): ContentRequest
+  request(requestId: BigInt!, role: RequestRole!): Request
   
   # 获取课题详情
   """
@@ -958,30 +958,6 @@ type Mutation {
   """
   requestDeleteConference(conferenceId: BigInt!): CommonMutationResult!
   
-  # 请求进行添加或删除关联的操作
-  """
-  请求进行添加或删除关联的操作
-  """
-  requestConnection(input: RequestConnectionInput!): CommonMutationResult!
-  
-  # 由 request 指定的 reviewer 调用，通过审核
-  """
-  由 request 指定的 reviewer 调用，通过审核
-  """
-  approveConnectionRequest(requestId: BigInt!): CommonMutationResult!
-  
-  # 由 request 指定的 reviewer 调用，驳回审核
-  """
-  由 request 指定的 reviewer 调用，驳回审核
-  """
-  rejectConnectionRequest(requestId: BigInt!, reason: String!): CommonMutationResult!
-  
-  # 由 request 指定的 reviewer 调用，表示该 request 的内容与其无关
-  """
-  由 request 指定的 reviewer 调用，表示该 request 的内容与其无关
-  """
-  ignoreConnectionRequest(requestId: BigInt!, reason: String): CommonMutationResult!
-  
   # 创建教程
   """
   创建教程
@@ -1246,23 +1222,29 @@ type Mutation {
   """
   reportIssueOnObject(input: NewReportInput!): CommonMutationResult!
   
+  # 请求进行添加或删除关联的操作
+  """
+  请求进行添加或删除关联的操作
+  """
+  createConnectionRequest(input: ConnectionInput!): CommonMutationResult!
+  
   # 由 request 指定的 reviewer 调用，通过审核
   """
   由 request 指定的 reviewer 调用，通过审核
   """
-  approveContentRequest(requestId: BigInt!): CommonMutationResult!
+  approveRequest(requestId: BigInt!): CommonMutationResult!
   
   # 由 request 指定的 reviewer 调用，驳回审核
   """
   由 request 指定的 reviewer 调用，驳回审核
   """
-  rejectContentRequest(requestId: BigInt!, reason: String!): CommonMutationResult!
+  rejectRequest(requestId: BigInt!, reason: String!): CommonMutationResult!
   
   # 由 request 指定的 reviewer 调用，表示该 request 的内容与其无关
   """
   由 request 指定的 reviewer 调用，表示该 request 的内容与其无关
   """
-  ignoreContentRequest(requestId: BigInt!, reason: String): CommonMutationResult!
+  ignoreRequest(requestId: BigInt!, reason: String): CommonMutationResult!
   
   # 创建课题
   """
@@ -2277,11 +2259,6 @@ input ConferenceConnectionInput {
   sortParam: ConferenceSortParam
 }
 
-enum ConnectionOperation {
-  ADD
-  REMOVE
-}
-
 
 # 存储作者关联项的分页信息
 """
@@ -2483,16 +2460,6 @@ type CollectionConnection {
   edges: [CollectionEdge]
   pageInfo: PageInfo!
   totalCount: Int!
-}
-
-
-# ##############################################################################
- # # RequestConnectionInput
- # ##############################################################################
-input RequestConnectionInput {
-  master: GenericObjectInput!
-  slaves: [GenericObjectInput!]!
-  operation: ConnectionOperation!
 }
 
 
@@ -4527,6 +4494,18 @@ enum ActionType {
   合并
   """
   DATA_MERGE
+  
+  # 添加关联
+  """
+  添加关联
+  """
+  CONNECTION_ADD
+  
+  # 移除关联
+  """
+  移除关联
+  """
+  CONNECTION_REMOVE
 }
 
 enum RequestRole {
@@ -4544,7 +4523,13 @@ enum RequestRole {
   REVIEWER
 }
 
-type ContentRequest {
+type ConnectionInfo {
+  id: BigInt!
+  type: ObjectType!
+  title: String!
+}
+
+type Request {
   id: BigInt!
   
   # 元数据类型
@@ -4569,13 +4554,19 @@ type ContentRequest {
   """
   修改后对象
   """
-  targetLog: TypedObject!
+  targetLog: TypedObject
   
   # 合并的右id
   """
   合并的右id
   """
   right: TypedObject
+  
+  # 如果该审核是关联审核，则该字段为被关联对象的基本信息数组
+  """
+  如果该审核是关联审核，则该字段为被关联对象的基本信息数组
+  """
+  connections: [ConnectionInfo!]
   
   # 业务类型
   """
@@ -4601,8 +4592,8 @@ type ContentRequest {
 """
 存储审批关联项的分页信息
 """
-type ContentRequestEdge {
-  node: ContentRequest!
+type RequestEdge {
+  node: Request!
   cursor: String!
 }
 
@@ -4611,8 +4602,8 @@ type ContentRequestEdge {
 """
 审批关联项
 """
-type ContentRequestFeed {
-  edges: [ContentRequestEdge]
+type RequestFeed {
+  edges: [RequestEdge!]
   pageInfo: PageInfo!
   totalCount: Int!
 }
@@ -4622,7 +4613,7 @@ type ContentRequestFeed {
 """
 审批过滤参数
 """
-input ContentRequestFilterParam {
+input RequestFilterParam {
   
   # 元数据类型
   """
@@ -4648,9 +4639,15 @@ input ContentRequestFilterParam {
 """
 审批集合查询参数
 """
-input ContentRequestFeedInput {
+input RequestFeedInput {
   pageParam: PageParam!
-  filterParam: ContentRequestFilterParam
+  filterParam: RequestFilterParam
+}
+
+input ConnectionInput {
+  master: GenericObjectInput!
+  slaves: [GenericObjectInput!]!
+  action: ActionType!
 }
 
 
@@ -5111,13 +5108,13 @@ type User {
   """
   查询审批集合(我发起的)
   """
-  contentRequestsAsCreator(input: ContentRequestFeedInput!): ContentRequestFeed
+  requestsAsCreator(input: RequestFeedInput!): RequestFeed
   
   # 查询审批集合(发给我的)
   """
   查询审批集合(发给我的)
   """
-  contentRequestsAsReviewer(input: ContentRequestFeedInput!): ContentRequestFeed
+  requestsAsReviewer(input: RequestFeedInput!): RequestFeed
 }
 
 type UserSubscriptionAndFollowship {
