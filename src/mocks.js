@@ -37,5 +37,53 @@ module.exports = {
       id: casual.integer(1, 100),
       isA: casual.random_value(OBJECT_TYPE)
     })
-  })
+  }),
+  User: () => ({
+    id: casual.integer(1, 99999999),
+  }),
+  Article: () => ({
+    id: casual.integer(1, 99999999),
+    isA: casual.random_value('Article'),
+  }),
+  Author: () => ({
+    id: casual.integer(1, 99999999),
+    isA: casual.random_value('Author'),
+  }),
+  Journal: () => ({
+    id: casual.integer(1, 99999999),
+    isA: casual.random_value('Journal'),
+  }),
+  Research: () => ({
+    id: casual.integer(1, 99999999),
+    isA: casual.random_value('Research'),
+  }),
+  Conference: () => ({
+    id: casual.integer(1, 99999999),
+    isA: casual.random_value('Conference'),
+  }),
+  Institution: () => ({
+    id: casual.integer(1, 99999999),
+    isA: casual.random_value('Institution'),
+  }),
+  Course: () => ({
+    id: casual.integer(1, 99999999),
+    isA: casual.random_value('Course'),
+  }),
+  QuestionAnswer: () => ({
+    id: casual.integer(1, 99999999),
+    isA: casual.random_value('QuestionAnswer'),
+  }),
+  Collection: () => ({
+    id: casual.integer(1, 99999999),
+  }),
+  Comment: () => ({
+    id: casual.integer(1, 99999999),
+  }),
+  MindMap: () => ({
+    id: casual.integer(1, 99999999),
+  }),
+  Request: () => ({
+    id: casual.integer(1, 99999999),
+  }),
+  
 };
