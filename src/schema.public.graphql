@@ -580,7 +580,12 @@ type Query {
   """
   查找思维导图草稿
   """
-  mindMapDraft(mindMapId: BigInt!): MindMap
+  mindMapDraft(
+  # MindMap Id
+  """
+  MindMap Id
+  """
+  id: BigInt!): MindMap
   
   # 查询笔记 (DEPRECATED)
   """
@@ -620,37 +625,11 @@ type Query {
   """
   generateTradeNumber: String!
   
-  # 查看问题列表
+  # 查看问答详情
   """
-  查看问题列表
+  查看问答详情
   """
-  questions(input: QACollectionInput!): QuestionFeed
-  
-  # 查看问题详情（该接口的功能能够由 questions 接口代替，比较点击列表中某一项展示详情，所有信息在 QuestionFeed 中都可以拿到）
-  """
-  查看问题详情（该接口的功能能够由 questions 接口代替，比较点击列表中某一项展示详情，所有信息在 QuestionFeed 中都可以拿到）
-  """
-  question(questionId: BigInt!): Question
-  
-  # 查看某个问题的完整回答列表
-  """
-  查看某个问题的完整回答列表
-  """
-  questionAnswers(questionId: BigInt!, input: QACollectionInput!): QuestionAnswerFeed
-  
-  # 查看完整回答详情，参数分别是首问和首答的ID
-   # （该接口的功能能够由 questionAnswers 接口代替，比较点击列表中某一项展示详情，所有信息在 QuestionAnswerFeed 中都可以拿到）
-  """
-  查看完整回答详情，参数分别是首问和首答的ID
-  （该接口的功能能够由 questionAnswers 接口代替，比较点击列表中某一项展示详情，所有信息在 QuestionAnswerFeed 中都可以拿到）
-  """
-  questionAnswer(questionId: BigInt!, answerId: BigInt!): QuestionAnswer
-  
-  # 首页推荐 - 问答
-  """
-  首页推荐 - 问答
-  """
-  recommendedQuestions(pageParam: PageParam!): QuestionFeed!
+  questionAnswer(id: BigInt!): QuestionAnswer
   
   # 首页推荐聚合数据接口
   """
@@ -750,7 +729,13 @@ type Query {
   """
   搜索问题
   """
-  searchQuestion(keyword: String!, pageParam: PageParam!): QuestionFeed!
+  searchQuestionAnswer(keyword: String!, pageParam: PageParam!): QuestionAnswerFeed!
+  
+  # 我来回答页面 - 按照关键词搜索没有回答过的问题
+  """
+  我来回答页面 - 按照关键词搜索没有回答过的问题
+  """
+  searchRecruitingQuestion(keywords: [String!]!, pageParam: PageParam!): QuestionAnswerFeed!
   
   # 获取订阅条件 (DEPRECATED)
   """
@@ -768,7 +753,12 @@ type Query {
   """
   查找时间线草稿
   """
-  timeLineDraft(timeLineId: BigInt!): TimeLine
+  timeLineDraft(
+  # TimeLine Id
+  """
+  TimeLine Id
+  """
+  id: BigInt!): TimeLine
   
   # 查询自己
   """
@@ -1054,35 +1044,28 @@ type Mutation {
   """
   requestMergeJournal(leftId: BigInt!, rightId: BigInt!, resultJournal: NewJournalInput): CommonMutationResult!
   
-  # 新建思维导图草稿
+  # 新建或更新思维导图草稿
   """
-  新建思维导图草稿
+  新建或更新思维导图草稿
   """
-  newMindMapDraft(input: NewMindMapDraftInput!): MindMap!
-  
-  # 编辑思维导图草稿
-  """
-  编辑思维导图草稿
-  """
-  updateMindMapDraft(input: UpdateMindMapInput!): MindMap!
+  createOrUpdateMindMapDraft(input: MindMapInput!): CreateMutationResult!
   
   # 删除思维导图草稿
   """
   删除思维导图草稿
   """
-  deleteMindMapDraft(mindMapId: BigInt!): CommonMutationResult!
+  deleteMindMapDraft(
+  # MindMap Id
+  """
+  MindMap Id
+  """
+  id: BigInt!): CommonMutationResult!
   
-  # 申请发布思维导图，该思维导图来自于申请者的草稿
+  # 申请创建或修改思维导图
   """
-  申请发布思维导图，该思维导图来自于申请者的草稿
+  申请创建或修改思维导图
   """
-  requestPostMindMap(mindMapId: BigInt!): CommonMutationResult!
-  
-  # 申请修改思维导图，包括任何已经发布的思维导图
-  """
-  申请修改思维导图，包括任何已经发布的思维导图
-  """
-  requestUpdateMindMap(input: UpdateMindMapInput!): CommonMutationResult!
+  requestCreateOrUpdateMindMap(input: MindMapInput!): CreateMutationResult!
   
   # 添加笔记 (DEPRECATED)
   """
@@ -1108,35 +1091,34 @@ type Mutation {
   """
   removeNote(noteID: BigInt): Boolean
   
-  # 创建问题
+  # 快速发布或高级编辑页面中的发布，返回对象中的 id 是该问题所属的 QuestionAnswer 对象的 id
   """
-  创建问题
+  快速发布或高级编辑页面中的发布，返回对象中的 id 是该问题所属的 QuestionAnswer 对象的 id
   """
-  newQuestion(input: NewQuestionInput!): Question!
+  postQuestion(input: QuestionInput!): CreateMutationResult!
+  
+  # 存草稿
+  """
+  存草稿
+  """
+  saveQuestion(input: QuestionInput!): CommonMutationResult!
   
   # 删除问题
   """
   删除问题
   """
-  deleteQuestion(questionId: BigInt!): CommonMutationResult!
-  
-  # 更新问题
+  deleteQuestion(
+  # QuestionAnswer 对象的 id
   """
-  更新问题
+  QuestionAnswer 对象的 id
   """
-  updateQuestion(input: UpdateQuestionInput!): Question!
-  
-  # 发布问题
-  """
-  发布问题
-  """
-  postQuestion(questionId: BigInt!): CommonMutationResult!
+  id: BigInt!): CommonMutationResult!
   
   # 提问者确认回答者已经清除理解问题
   """
   提问者确认回答者已经清除理解问题
   """
-  questionerConfirm(input: ConfirmInput!): CommonMutationResult!
+  askerConfirm(input: ConfirmInput!): CommonMutationResult!
   
   # 选择一位回答者，并完成支付
   """
@@ -1144,29 +1126,69 @@ type Mutation {
   """
   selectAndPay(input: SelectAndPayInput!): PaymentInfo!
   
-  # 发起追问
+  # 增加追问或追答
   """
-  发起追问
+  增加追问或追答
   """
-  addSubQuestion(questionId: BigInt!): CommonMutationResult!
+  addDiscussion(
+  # QuestionAnswer 对象的 id
+  """
+  QuestionAnswer 对象的 id
+  """
+  id: BigInt!, 
+  # 回答详情
+  """
+  回答详情
+  """
+  detail: String!): CommonMutationResult!
   
   # 确认并接受答案
   """
   确认并接受答案
   """
-  acceptAnswer(answerId: BigInt!): CommonMutationResult!
+  acceptAnswer(
+  # QuestionAnswer 对象的 id
+  """
+  QuestionAnswer 对象的 id
+  """
+  id: BigInt!): CommonMutationResult!
   
   # 加入回答者列表
   """
   加入回答者列表
   """
-  addToAnswerers(questionId: BigInt!): CommonMutationResult!
+  addToAnswerers(
+  # QuestionAnswer 对象的 id
+  """
+  QuestionAnswer 对象的 id
+  """
+  id: BigInt!, 
+  # 回答出价
+  """
+  回答出价
+  """
+  charge: Currency!, 
+  # 匿名回答
+  """
+  匿名回答
+  """
+  anonymous: Boolean!, 
+  # 匿名原因，如果选择匿名回答，必须填入原因，否则接口调用失败
+  """
+  匿名原因，如果选择匿名回答，必须填入原因，否则接口调用失败
+  """
+  reason: String): CommonMutationResult!
   
   # 移出回答者列表
   """
   移出回答者列表
   """
-  removeFromAnswerers(questionId: BigInt!): CommonMutationResult!
+  removeFromAnswerers(
+  # QuestionAnswer 对象的 id
+  """
+  QuestionAnswer 对象的 id
+  """
+  id: BigInt!): CommonMutationResult!
   
   # 回答者确认已经清楚理解问题
   """
@@ -1174,47 +1196,41 @@ type Mutation {
   """
   answererConfirm(input: ConfirmInput!): CommonMutationResult!
   
-  # 创建回答
+  # 发布回答
   """
-  创建回答
+  发布回答
   """
-  newAnswer(input: NewAnswerInput!): Answer!
+  postAnswer(input: AnswerInput!): CreateMutationResult!
   
-  # 更新回答
+  # 保存回答草稿
   """
-  更新回答
+  保存回答草稿
   """
-  updateAnswer(input: UpdateAnswerInput!): Answer!
-  
-  # 提交回答
-  """
-  提交回答
-  """
-  submitAnswer(answerId: BigInt!): CommonMutationResult!
-  
-  # 针对追问的补充回答
-  """
-  针对追问的补充回答
-  """
-  addSubAnswer(questionId: BigInt!): CommonMutationResult!
+  saveAnswer(input: AnswerInput!): CommonMutationResult!
   
   # 回答者发布完整问答，并旁听价格等信息
   """
   回答者发布完整问答，并旁听价格等信息
   """
-  releaseQuestionAnswer(input: ReleaseQuestionAnswerInput!): CommonMutationResult!
+  releaseQuestionAnswer(input: QuestionAnswerPriceInput!): CommonMutationResult!
+  
+  # 修改旁听价格
+  """
+  修改旁听价格
+  """
+  modifyAuditPrice(input: QuestionAnswerPriceInput!): CommonMutationResult!
   
   # 旁听者购买问答
   """
   旁听者购买问答
   """
-  buyQuestionAnswer(qaId: BigInt!): PaymentInfo!
+  buyQuestionAnswer(input: BuyQuestionAnswerInput!): PaymentInfo!
   
-  # 对已购买的完整问答发表评价
+  # 提问者和旁听者对问答进行评论
   """
-  对已购买的完整问答发表评价
+  提问者和旁听者对问答进行评论
   """
-  postQuestionAnswerReview(input: PostQuestionAnswerReviewInput!): CommonMutationResult!
+  commentQuestionAnswer(input: QuestionAnswerCommentInput!): CommonMutationResult!
   
   # 举报数据对象的不恰当行为
   """
@@ -1264,35 +1280,28 @@ type Mutation {
   """
   requestDeleteResearch(researchId: BigInt!): CommonMutationResult!
   
-  # 新建时间线草稿
+  # 新建或更新时间线草稿
   """
-  新建时间线草稿
+  新建或更新时间线草稿
   """
-  newTimeLineDraft(input: NewTimeLineDraftInput!): TimeLine!
-  
-  # 编辑时间线草稿
-  """
-  编辑时间线草稿
-  """
-  updateTimeLineDraft(input: UpdateTimeLineInput!): TimeLine!
+  createOrUpdateTimeLineDraft(input: TimeLineInput!): CreateMutationResult!
   
   # 删除时间线草稿
   """
   删除时间线草稿
   """
-  deleteTimeLineDraft(timeLineId: BigInt!): CommonMutationResult!
+  deleteTimeLineDraft(
+  # TimeLine Id
+  """
+  TimeLine Id
+  """
+  id: BigInt!): CommonMutationResult!
   
-  # 申请发布时间线，该时间线来自于申请者的草稿
+  # 申请创建或修改时间线
   """
-  申请发布时间线，该时间线来自于申请者的草稿
+  申请创建或修改时间线
   """
-  requestPostTimeLine(timeLineId: BigInt!): CommonMutationResult!
-  
-  # 申请修改时间线，包括任何已经发布的时间线
-  """
-  申请修改时间线，包括任何已经发布的时间线
-  """
-  requestUpdateTimeLine(input: UpdateTimeLineInput!): CommonMutationResult!
+  requestCreateOrUpdateTimeLine(input: TimeLineInput!): CreateMutationResult!
   
   # 上传图片
   """
@@ -1422,11 +1431,23 @@ type Author implements TypedObject {
   """
   pageParam: PageParam): CourseConnection
   
-  # 作为回答者参与的完整问答
+  # 提出的问题
   """
-  作为回答者参与的完整问答
+  提出的问题
   """
-  questionAnswers(pageParam: PageParam): QuestionAnswerConnection
+  myQuestions(pageParam: PageParam): QuestionAnswerFeed
+  
+  # 完成的问答
+  """
+  完成的问答
+  """
+  myAnswers(pageParam: PageParam): QuestionAnswerFeed
+  
+  # 我的问答草稿
+  """
+  我的问答草稿
+  """
+  myQuestionAnswerDrafts(pageParam: PageParam): QuestionAnswerFeed
   
   # 显示作者研究领域关联关系的思维导图
   """
@@ -2661,6 +2682,12 @@ type CourseComment {
   评价对应的教程
   """
   course: Course!
+  
+  # 创建时间
+  """
+  创建时间
+  """
+  createdAt: DateTime!
 }
 
 
@@ -3488,25 +3515,30 @@ input JournalConnectionInput {
   sortParam: JournalSortParam
 }
 
+
+# 思维导图
+"""
+思维导图
+"""
 type MindMap implements TypedObject {
   id: BigInt!
   isA: String!
   
-  # mind map 所描述的目标对象的类型
+  # MindMap 所描述的目标对象的类型
   """
-  mind map 所描述的目标对象的类型
+  MindMap 所描述的目标对象的类型
   """
   target: MindMapTarget!
   
-  # mind map 序列化后的字符串表示
+  # MindMap 序列化后的字符串表示
   """
-  mind map 序列化后的字符串表示
+  MindMap 序列化后的字符串表示
   """
   content: String!
   
-  # 关联文章
+  # 关联文章，用来返回 content 中引用的全部文章
   """
-  关联文章
+  关联文章，用来返回 content 中引用的全部文章
   """
   articles: [Article!]
 }
@@ -3526,38 +3558,23 @@ enum MindMapTarget {
   RESEARCH
 }
 
-input NewMindMapDraftInput {
+input MindMapInput {
   
-  # mind map 所描述的目标对象的ID
+  # MindMap 的 Id，创建时该值为null，更新时非空
   """
-  mind map 所描述的目标对象的ID
+  MindMap 的 Id，创建时该值为null，更新时非空
   """
-  Id: BigInt!
+  id: BigInt
   
-  # mind map 所描述的目标对象的类型
+  # MindMap 所描述的目标对象的类型，该字段仅在创建时用到，必须传入有效值，后续更新时该值被忽略，可传入 null
   """
-  mind map 所描述的目标对象的类型
+  MindMap 所描述的目标对象的类型，该字段仅在创建时用到，必须传入有效值，后续更新时该值被忽略，可传入 null
   """
-  target: MindMapTarget!
+  target: MindMapTarget
   
-  # mind map 新对象的全量序列化内容
+  # MindMap 新对象的全量序列化内容，引用的 Article 的 Id 也在其中
   """
-  mind map 新对象的全量序列化内容
-  """
-  content: String!
-}
-
-input UpdateMindMapInput {
-  
-  # mind map 的ID
-  """
-  mind map 的ID
-  """
-  id: BigInt!
-  
-  # mind map 新对象的全量序列化内容
-  """
-  mind map 新对象的全量序列化内容
+  MindMap 新对象的全量序列化内容，引用的 Article 的 Id 也在其中
   """
   content: String!
 }
@@ -3808,7 +3825,7 @@ type OrderFeed {
 """
 问题状态
 """
-enum QuestionStatus {
+enum QuestionAnswerStatus {
   
   # 问题创建后未发布
   """
@@ -3845,6 +3862,12 @@ enum QuestionStatus {
   问题已删除
   """
   DELETED
+  
+  # 问答已发布
+  """
+  问答已发布
+  """
+  RELEASED
 }
 
 
@@ -3852,9 +3875,13 @@ enum QuestionStatus {
 """
 问题
 """
-type Question implements TypedObject {
-  id: BigInt!
-  isA: String!
+type Question {
+  
+  # 匿名发布时，authorId 为null
+  """
+  匿名发布时，authorId 为null
+  """
+  asker: QAParticipant!
   
   # 问题标题
   """
@@ -3868,35 +3895,11 @@ type Question implements TypedObject {
   """
   detail: String!
   
-  # 提问者，如果匿名发布该字段为 null
-  """
-  提问者，如果匿名发布该字段为 null
-  """
-  author: Author
-  
   # 关键词
   """
   关键词
   """
   keywords: [String!]!
-  
-  # 问题定价
-  """
-  问题定价
-  """
-  price: Currency!
-  
-  # 是否匿名发布
-  """
-  是否匿名发布
-  """
-  anonymous: Boolean!
-  
-  # 仅受邀请用户可见
-  """
-  仅受邀请用户可见
-  """
-  inviteeOnly: Boolean!
   
   # 创建日期
   """
@@ -3904,61 +3907,49 @@ type Question implements TypedObject {
   """
   createdAt: DateTime!
   
-  # 问题状态
+  # 候选人列表
   """
-  问题状态
+  候选人列表
   """
-  status: QuestionStatus!
-  
-  # 统计
-  """
-  统计
-  """
-  statistics: QuestionStatistics!
-  
-  # 当前用户是否关注问题
-  """
-  当前用户是否关注问题
-  """
-  isSubscribed: Boolean!
+  candidates: [AnswerCandidate!]
 }
 
-type QuestionStatistics {
-  
-  # 关注人数
-  """
-  关注人数
-  """
-  nSubscribers: NonNegativeInt!
+type QAParticipant {
+  authorId: BigInt
+  name: String!
+  avatar: URL!
+  hIndex: NonNegativeInt
+  nArticles: NonNegativeInt
+  institution: String
+  anounymousReason: String
 }
 
-enum AnswerStatus {
+type AnswerCandidate {
+  participant: QAParticipant!
+  charge: Currency!
+}
+
+enum DiscussionType {
   
-  # 草稿状态，可以反复编辑，仅自己可见
+  # 提问
   """
-  草稿状态，可以反复编辑，仅自己可见
+  提问
   """
-  DRAFT
+  QUESTION
   
-  # 提交状态，可以反复修改，自己和提问者均可见
+  # 回答
   """
-  提交状态，可以反复修改，自己和提问者均可见
+  回答
   """
-  SUBMITTED
-  
-  # 回答被认可，不能继续修改，自己和提问者均可见，如有未尽回答，需要采用追问方式
-  """
-  回答被认可，不能继续修改，自己和提问者均可见，如有未尽回答，需要采用追问方式
-  """
-  ACCEPTED
+  ANSWER
 }
 
 
-# 回答
+# 回复
 """
-回答
+回复
 """
-type Answer {
+type Discussion {
   
   # ID
   """
@@ -3966,17 +3957,11 @@ type Answer {
   """
   id: BigInt!
   
-  # 回答者
+  # 回复类型
   """
-  回答者
+  回复类型
   """
-  author: Author!
-  
-  # 预览，用来向未购买的用户展示部分内容
-  """
-  预览，用来向未购买的用户展示部分内容
-  """
-  preview: String
+  type: DiscussionType!
   
   # 回答详情
   """
@@ -3984,35 +3969,79 @@ type Answer {
   """
   detail: String!
   
-  # 创建日期
+  # 更新时间
   """
-  创建日期
+  更新时间
   """
-  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Answer {
+  id: BigInt!
   
-  # 回答状态
+  # 回答者
   """
-  回答状态
+  回答者
   """
-  status: AnswerStatus!
+  answerer: QAParticipant!
+  
+  # 回答、追问、追答，采用“讨论”的形式记录
+  """
+  回答、追问、追答，采用“讨论”的形式记录
+  """
+  discussions: [Discussion!]
+  
+  # 预览，用来向未购买的用户展示部分内容
+  """
+  预览，用来向未购买的用户展示部分内容
+  """
+  preview: String
 }
 
 
-# 追加的问答内容
+# 当前访问者的身份
 """
-追加的问答内容
+当前访问者的身份
 """
-type FollowUpQuestionAnswer {
-  detail: String!
-  createdAt: DateTime!
+enum RequesterIdentity {
+  
+  # 提问者
+  """
+  提问者
+  """
+  ASKER
+  
+  # 回答候选人
+  """
+  回答候选人
+  """
+  CANDIDATE
+  
+  # 回答者
+  """
+  回答者
+  """
+  ANSWERER
+  
+  # 购买者
+  """
+  购买者
+  """
+  BUYER
+  
+  # 其他
+  """
+  其他
+  """
+  OTHER
 }
 
 
-# 已经完成的完整问答记录
+# 问答记录
 """
-已经完成的完整问答记录
+问答记录
 """
-type QuestionAnswer {
+type QuestionAnswer implements TypedObject {
   
   # ID
   """
@@ -4020,35 +4049,150 @@ type QuestionAnswer {
   """
   id: BigInt!
   
+  # 常量：QUESTIONANSWER
+  """
+  常量：QUESTIONANSWER
+  """
+  isA: String!
+  
   # 问题
   """
   问题
   """
   question: Question!
   
-  # 回答
+  # 回答，未回答的问答，该值为 null
   """
-  回答
+  回答，未回答的问答，该值为 null
   """
-  answer: Answer!
+  answer: Answer
   
-  # 追问与追答
+  # 当前用户是否关注问题
   """
-  追问与追答
+  当前用户是否关注问题
   """
-  followups: [FollowUpQuestionAnswer!]
+  isSubscribed: Boolean!
   
-  # 答案旁听定价
+  # 关联文章
   """
-  答案旁听定价
+  关联文章
   """
-  price: Currency!
+  articles: [Article!]!
+  
+  # 关联课题
+  """
+  关联课题
+  """
+  researches: [Research!]!
+  
+  # 关联作者
+  """
+  关联作者
+  """
+  authors: [Author!]!
   
   # 统计
   """
   统计
   """
   statistics: QuestionAnswerStatistics!
+  
+  # 问答状态
+  """
+  问答状态
+  """
+  status: QuestionAnswerStatus!
+  
+  # 评论
+  """
+  评论
+  """
+  comments(pageParam: PageParam!): QuestionAnswerCommentFeed!
+  
+  # 当前访问者的身份
+  """
+  当前访问者的身份
+  """
+  requesterIdentity: RequesterIdentity!
+  
+  # 价格，提问阶段表示提问者的悬赏金额，回答完成阶段表示问答的旁听价格
+  """
+  价格，提问阶段表示提问者的悬赏金额，回答完成阶段表示问答的旁听价格
+  """
+  price: Currency!
+  
+  # 用来请求提问者追问草稿、回答者的首答或追答草稿；对于问题草稿直接从 QuestionAnswer
+   # 的 question 获取（当 status == CREATED）
+  """
+  用来请求提问者追问草稿、回答者的首答或追答草稿；对于问题草稿直接从 QuestionAnswer
+  的 question 获取（当 status == CREATED）
+  """
+  draftDiscussion: Discussion
+}
+
+type QuestionAnswerComment {
+  
+  # 评论ID
+  """
+  评论ID
+  """
+  id: BigInt!
+  
+  # 评论用户
+  """
+  评论用户
+  """
+  user: User!
+  
+  # 用户评分
+  """
+  用户评分
+  """
+  score: Float!
+  
+  # 评论内容
+  """
+  评论内容
+  """
+  content: String!
+  
+  # 问答是否有帮助
+  """
+  问答是否有帮助
+  """
+  useful: Boolean!
+  
+  # 创建时间
+  """
+  创建时间
+  """
+  createdAt: DateTime!
+}
+
+
+# 问答评论及其游标，用于 QuestionAnswerCommentFeed
+"""
+问答评论及其游标，用于 QuestionAnswerCommentFeed
+"""
+type QuestionAnswerCommentEdge {
+  node: QuestionAnswerComment!
+  
+  # base64 编码的字符串
+  """
+  base64 编码的字符串
+  """
+  cursor: String!
+}
+
+
+# 问答评论列表，以流的方式组织
+"""
+问答评论列表，以流的方式组织
+"""
+type QuestionAnswerCommentFeed {
+  edges: [QuestionAnswerCommentEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 type QuestionAnswerStatistics {
@@ -4077,7 +4221,13 @@ type QuestionAnswerStatistics {
 """
 新建问题 输入参数
 """
-input NewQuestionInput {
+input QuestionInput {
+  
+  # QuestionAnswer Id, 该值为null时为创建或直接发布，非空时表示更新已有数据
+  """
+  QuestionAnswer Id, 该值为null时为创建或直接发布，非空时表示更新已有数据
+  """
+  id: BigInt
   
   # 问题标题
   """
@@ -4097,67 +4247,47 @@ input NewQuestionInput {
   """
   keywords: [String!]!
   
-  # 问题定价
+  # 问题悬赏价格
   """
-  问题定价
+  问题悬赏价格
   """
-  price: Currency!
+  reward: Currency!
   
   # 是否匿名发布
   """
   是否匿名发布
   """
-  anonymous: Boolean! = false
+  anonymous: Boolean
   
   # 仅受邀请用户可见
   """
   仅受邀请用户可见
   """
-  inviteeOnly: Boolean! = false
+  inviteeOnly: Boolean
   
-  # 是否创建后立即发布
+  # 被邀请的作者Id
   """
-  是否创建后立即发布
+  被邀请的作者Id
   """
-  post: Boolean!
-}
-
-
-# 更新问题 输入参数
-"""
-更新问题 输入参数
-"""
-input UpdateQuestionInput {
+  invitees: [BigInt!]
   
-  # 要更新的问题的ID
+  # 关联文章的 Id
   """
-  要更新的问题的ID
+  关联文章的 Id
   """
-  id: BigInt!
+  articles: [BigInt!]
   
-  # 问题标题
+  # 关联课题的 Id
   """
-  问题标题
+  关联课题的 Id
   """
-  title: String!
+  researches: [BigInt!]
   
-  # 问题详情
+  # 关联作者的 Id
   """
-  问题详情
+  关联作者的 Id
   """
-  detail: String!
-  
-  # 关键词
-  """
-  关键词
-  """
-  keywords: [String!]
-  
-  # 问题定价
-  """
-  问题定价
-  """
-  price: Currency!
+  authors: [BigInt!]
 }
 
 
@@ -4167,23 +4297,11 @@ input UpdateQuestionInput {
 """
 input ConfirmInput {
   
-  # 问题ID
+  # QuestionAnswer 对象的 id
   """
-  问题ID
+  QuestionAnswer 对象的 id
   """
-  questionId: BigInt!
-  
-  # 提问者 Author Id
-  """
-  提问者 Author Id
-  """
-  questionerId: BigInt!
-  
-  # 回答者 Author Id
-  """
-  回答者 Author Id
-  """
-  answererId: BigInt!
+  id: BigInt!
 }
 
 
@@ -4193,57 +4311,43 @@ input ConfirmInput {
 """
 input SelectAndPayInput {
   
-  # 问题ID
+  # QuestionAnswer 对象的 id
   """
-  问题ID
+  QuestionAnswer 对象的 id
   """
-  questionId: BigInt!
+  id: BigInt!
   
   # 回答者 Author Id
   """
   回答者 Author Id
   """
   answererId: BigInt!
+  
+  # 支付方式
+  """
+  支付方式
+  """
+  paymentType: PaymentType!
+  
+  # 交易码，需要先通过 generateTradeNumber 接口获取
+  """
+  交易码，需要先通过 generateTradeNumber 接口获取
+  """
+  tradeNumber: String!
 }
 
 
-# 新建回答 输入参数
+# 回答的输入参数
 """
-新建回答 输入参数
+回答的输入参数
 """
-input NewAnswerInput {
+input AnswerInput {
   
-  # 问题ID
+  # QuestionAnswer Id
   """
-  问题ID
+  QuestionAnswer Id
   """
-  questionId: BigInt!
-  
-  # 回答详情
-  """
-  回答详情
-  """
-  detail: String!
-  
-  # 是否创建回答时直接提交
-  """
-  是否创建回答时直接提交
-  """
-  submit: Boolean!
-}
-
-
-# 更新回答 输入参数
-"""
-更新回答 输入参数
-"""
-input UpdateAnswerInput {
-  
-  # 回答ID
-  """
-  回答ID
-  """
-  id: BigInt!
+  id: BigInt
   
   # 回答详情
   """
@@ -4257,13 +4361,13 @@ input UpdateAnswerInput {
 """
 发布完整问答 输入参数
 """
-input ReleaseQuestionAnswerInput {
+input QuestionAnswerPriceInput {
   
-  # 完整问答ID
+  # QuestionAnswer Id
   """
-  完整问答ID
+  QuestionAnswer Id
   """
-  id: BigInt!
+  id: BigInt
   
   # 旁听价格
   """
@@ -4273,137 +4377,29 @@ input ReleaseQuestionAnswerInput {
 }
 
 
-# 问答评级
+# 旁听者购买问答参数
 """
-问答评级
+旁听者购买问答参数
 """
-enum AnswerReviewRate {
-  ANGRY
-  NOTGOOD
-  ASEXPECTED
-  GOOD
-  AMAZING
-}
-
-
-# 发布问答评价 输入参数
-"""
-发布问答评价 输入参数
-"""
-input PostQuestionAnswerReviewInput {
+input BuyQuestionAnswerInput {
   
-  # 等级评价
+  # QuestionAnswer 对象的 id
   """
-  等级评价
+  QuestionAnswer 对象的 id
   """
-  rate: AnswerReviewRate!
+  id: BigInt!
   
-  # 评价详情
+  # 支付方式
   """
-  评价详情
+  支付方式
   """
-  detail: String!
-}
-
-
-# 问答过滤参数
-"""
-问答过滤参数
-"""
-input QAFilterParam {
+  paymentType: PaymentType!
   
-  # Author Id，请求问题时表示提问者，请求回答时表示回答者，可传入多项
+  # 交易码，需要先通过 generateTradeNumber 接口获取
   """
-  Author Id，请求问题时表示提问者，请求回答时表示回答者，可传入多项
+  交易码，需要先通过 generateTradeNumber 接口获取
   """
-  authorIds: [BigInt!]
-  
-  # 关键词，可传入多项
-  """
-  关键词，可传入多项
-  """
-  keywords: [String!]
-}
-
-
-# 能够用来排序的字段
-"""
-能够用来排序的字段
-"""
-enum SortableField {
-  
-  # 创建日期
-  """
-  创建日期
-  """
-  CREATED
-  
-  # 价格
-  """
-  价格
-  """
-  PRICE
-}
-
-
-# 排序控制参数
-"""
-排序控制参数
-"""
-input QASortParam {
-  field: SortableField!
-  direction: SortDirection!
-}
-
-
-# 问题或回答的集合查询参数
-"""
-问题或回答的集合查询参数
-"""
-input QACollectionInput {
-  
-  # 分页请求参数
-  """
-  分页请求参数
-  """
-  pageParam: PageParam!
-  
-  # 可选的过滤器参数
-  """
-  可选的过滤器参数
-  """
-  filterParam: QAFilterParam
-  
-  # 可选的排序参数
-  """
-  可选的排序参数
-  """
-  sortParam: QASortParam
-}
-
-
-# 问题及其游标，用于 QuestionFeed
-"""
-问题及其游标，用于 QuestionFeed
-"""
-type QuestionEdge {
-  node: Question!
-  
-  # base64 编码的字符串
-  """
-  base64 编码的字符串
-  """
-  cursor: String!
-}
-
-
-# 问题列表，以流的方式组织
-"""
-问题列表，以流的方式组织
-"""
-type QuestionFeed {
-  edges: [QuestionEdge!]!
-  pageInfo: PageInfo!
+  tradeNumber: String!
 }
 
 
@@ -4414,6 +4410,35 @@ type QuestionFeed {
 type QuestionAnswerFeed {
   edges: [QuestionAnswerEdge!]!
   pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+input QuestionAnswerCommentInput {
+  
+  # QuestionAnswer 对象的 id
+  """
+  QuestionAnswer 对象的 id
+  """
+  id: BigInt!
+  userId: ID!
+  
+  # 用户评分
+  """
+  用户评分
+  """
+  score: Float!
+  
+  # 评价内容
+  """
+  评价内容
+  """
+  content: String!
+  
+  # 问答是否有帮助
+  """
+  问答是否有帮助
+  """
+  useful: Boolean!
 }
 
 
@@ -4707,6 +4732,12 @@ type Research implements TypedObject {
   """
   journals(pageParam: PageParam!): JournalConnection
   
+  # 关联作者
+  """
+  关联作者
+  """
+  authors(pageParam: PageParam!): AuthorConnection
+  
   # 行为统计
   """
   行为统计
@@ -4925,38 +4956,23 @@ enum TimeLineTarget {
   RESEARCH
 }
 
-input NewTimeLineDraftInput {
+input TimeLineInput {
   
-  # timeline 所描述的目标对象的ID
+  # TimeLine 的 Id，创建时该值为null，更新时非空
   """
-  timeline 所描述的目标对象的ID
+  TimeLine 的 Id，创建时该值为null，更新时非空
   """
-  Id: BigInt!
+  id: BigInt
   
-  # timeline 所描述的目标对象的类型
+  # TimeLine 所描述的目标对象的类型，该字段仅在创建时用到，必须传入有效值，后续更新时该值被忽略，可传入 null
   """
-  timeline 所描述的目标对象的类型
+  TimeLine 所描述的目标对象的类型，该字段仅在创建时用到，必须传入有效值，后续更新时该值被忽略，可传入 null
   """
-  target: TimeLineTarget!
+  target: TimeLineTarget
   
-  # timeline 对象的全量序列化内容
+  # TimeLine 新对象的全量序列化内容，引用的 Article 的 Id 也在其中
   """
-  timeline 对象的全量序列化内容
-  """
-  content: String!
-}
-
-input UpdateTimeLineInput {
-  
-  # timeline 的 ID
-  """
-  timeline 的 ID
-  """
-  id: BigInt!
-  
-  # timeline 新对象的全量序列化内容
-  """
-  timeline 新对象的全量序列化内容
+  TimeLine 新对象的全量序列化内容，引用的 Article 的 Id 也在其中
   """
   content: String!
 }
@@ -5078,7 +5094,7 @@ type User {
   """
   购买的完整问答
   """
-  purchasedQuestionAnswers(pageParam: PageParam): QuestionAnswerConnection
+  purchasedQuestionAnswers(pageParam: PageParam): QuestionAnswerFeed
   
   # 创建的论文收藏夹列表
   """
