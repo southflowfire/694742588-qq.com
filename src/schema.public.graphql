@@ -3912,6 +3912,12 @@ type Question {
   候选人列表
   """
   candidates: [AnswerCandidate!]
+  
+  # 仅受邀请用户可见
+  """
+  仅受邀请用户可见
+  """
+  inviteeOnly: Boolean
 }
 
 type QAParticipant {
@@ -5102,11 +5108,17 @@ type User {
   """
   collections(pageParam: PageParam): CollectionConnection
   
-  # 我的用户反馈列表
+  # 我的建议列表
   """
-  我的用户反馈列表
+  我的建议列表
   """
-  feedbacks(pageParam: PageParam): UserFeedbackList!
+  advices(pageParam: PageParam): UserFeedbackList!
+  
+  # 我的报错列表
+  """
+  我的报错列表
+  """
+  issues(pageParam: PageParam): UserFeedbackList!
   
   # 我的关注和订阅
   """
