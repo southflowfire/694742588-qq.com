@@ -21,7 +21,7 @@ const OBJECT_TYPE = {
   JOURNAL:              'Journal',
   CONFERENCE:           'Conference',
   COURSE:               'Course',
-  QUESTIONANSWER:       'Question',
+  QUESTIONANSWER:       'QuestionAnswer',
   INSTITUTION:          'Institution'
 }
 

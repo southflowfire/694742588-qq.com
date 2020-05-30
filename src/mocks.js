@@ -85,5 +85,4 @@ module.exports = {
   Request: () => ({
     id: casual.integer(1, 99999999),
   }),
-  
 };
