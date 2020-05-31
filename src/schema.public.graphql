@@ -780,6 +780,17 @@ type Mutation {
   """
   requestUpdateAuthor(input: UpdateAuthorInput!): CommonMutationResult!
   
+  # 申请删除作者信息
+  """
+  申请删除作者信息
+  """
+  requestDeleteAuthor(
+  # Author Id
+  """
+  Author Id
+  """
+  id: BigInt!): CommonMutationResult!
+  
   # 发起合并作者信息的申请
   """
   发起合并作者信息的申请
@@ -4560,6 +4571,12 @@ type Request {
   审批状态
   """
   status: RequestStatus!
+  
+  # 角色
+  """
+  角色
+  """
+  role: RequestRole!
 }
 
 
