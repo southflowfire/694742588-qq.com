@@ -29,6 +29,10 @@ module.exports = {
       isA: casual.random_value(OBJECT_TYPE)
     })
   }),
+  TypedObject: () => ({
+    isA: casual.random_value(OBJECT_TYPE),
+    __typename: casual.random_value(OBJECT_TYPE),
+  }),
   TypedObjectFeed: () => ({
     edges: () => new MockList([5, 20])
   }),
@@ -42,7 +46,7 @@ module.exports = {
     id: casual.integer(1, 99999999),
   }),
   Article: () => ({
-    id: casual.integer(1, 99999999),
+    id: casual.integer(1, 1),
     isA: 'ARTICLE',
     title: casual.sentence,
     abstract: () => casual.text
@@ -50,6 +54,7 @@ module.exports = {
   Author: () => ({
     id: casual.integer(1, 99999999),
     isA: 'AUTHOR',
+    fullname: casual.full_name
   }),
   Journal: () => ({
     id: casual.integer(1, 99999999),
@@ -85,9 +90,10 @@ module.exports = {
     id: casual.integer(1, 99999999),
   }),
   Request: () => {
-    const type = casual.random_value(OBJECT_TYPE);
+    const type = casual.random_element(['AUTHOR', 'RESEARCH', 'ARTICLE', 'JOURNAL', 'CONFERENCE', 'INSTITUTION']);
     return {
       id: casual.integer(1, 99999999),
+      targetType: type,
       left: () => ({
         id: casual.integer(1, 99999999),
         isA: type,
