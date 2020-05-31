@@ -43,35 +43,37 @@ module.exports = {
   }),
   Article: () => ({
     id: casual.integer(1, 99999999),
-    isA: casual.random_value('Article'),
+    isA: 'ARTICLE',
+    title: casual.sentence,
+    abstract: () => casual.text
   }),
   Author: () => ({
     id: casual.integer(1, 99999999),
-    isA: casual.random_value('Author'),
+    isA: 'AUTHOR',
   }),
   Journal: () => ({
     id: casual.integer(1, 99999999),
-    isA: casual.random_value('Journal'),
+    isA: 'JOURNAL',
   }),
   Research: () => ({
     id: casual.integer(1, 99999999),
-    isA: casual.random_value('Research'),
+    isA: 'RESEARCH',
   }),
   Conference: () => ({
     id: casual.integer(1, 99999999),
-    isA: casual.random_value('Conference'),
+    isA: 'CONFERENCE',
   }),
   Institution: () => ({
     id: casual.integer(1, 99999999),
-    isA: casual.random_value('Institution'),
+    isA: 'INSTITUTION',
   }),
   Course: () => ({
     id: casual.integer(1, 99999999),
-    isA: casual.random_value('Course'),
+    isA: 'COURSE',
   }),
   QuestionAnswer: () => ({
     id: casual.integer(1, 99999999),
-    isA: casual.random_value('QuestionAnswer'),
+    isA: 'QUESTIONANSWER',
   }),
   Collection: () => ({
     id: casual.integer(1, 99999999),
@@ -82,7 +84,22 @@ module.exports = {
   MindMap: () => ({
     id: casual.integer(1, 99999999),
   }),
-  Request: () => ({
-    id: casual.integer(1, 99999999),
-  }),
+  Request: () => {
+    const type = casual.random_value(OBJECT_TYPE);
+    return {
+      id: casual.integer(1, 99999999),
+      left: () => ({
+        id: casual.integer(1, 99999999),
+        isA: 'ARTICLE',
+      }),
+      right: () => ({
+        id: casual.integer(1, 99999999),
+        isA: type
+      }),
+      targetLog: () => ({
+        id: casual.integer(1, 99999999),
+        isA: type
+      })
+    };
+  },
 };
