@@ -90,7 +90,7 @@ module.exports = {
       id: casual.integer(1, 99999999),
       left: () => ({
         id: casual.integer(1, 99999999),
-        isA: 'ARTICLE',
+        isA: type,
       }),
       right: () => ({
         id: casual.integer(1, 99999999),
