@@ -734,6 +734,12 @@ type Query {
   """
   users(input: PageParam!): UserList!
   userBasics(userIds: [ID!]!): [UserBasic!]
+  userFeedback(
+  # 建议反馈的 Id
+  """
+  建议反馈的 Id
+  """
+  id: BigInt!): UserFeedback
 }
 
 type Mutation {
@@ -1329,6 +1335,12 @@ type Mutation {
   撤销反馈
   """
   cancelUserFeedback(feedbackId: BigInt!): CommonMutationResult!
+  
+  # 发送讨论消息
+  """
+  发送讨论消息
+  """
+  addFeedbackDiscussion(id: BigInt!, message: String!): CommonMutationResult!
 }
 
 
@@ -1444,7 +1456,7 @@ type Author implements TypedObject {
   """
   作者社区贡献，在作者详情页展示作者对公共数据做了哪些维护工作
   """
-  contributions(pageParam: PageParam!): DynamicFeed!
+  contributions(pageParam: PageParam!): ContributionFeed!
   
   # 社区内容维护的主要贡献者，至多返回 10 位用户
   """
@@ -2446,6 +2458,38 @@ type CollectionEdge {
 """
 type CollectionConnection {
   edges: [CollectionEdge]
+  pageInfo: PageInfo!
+  totalCount: Int!
+}
+
+
+# 社区贡献
+"""
+社区贡献
+"""
+type Contribution {
+  id: BigInt!
+  content: String!
+  createdAt: DateTime!
+}
+
+
+# 社区贡献分页信息
+"""
+社区贡献分页信息
+"""
+type ContributionEdge {
+  node: Contribution!
+  cursor: String!
+}
+
+
+# 社区贡献列表
+"""
+社区贡献列表
+"""
+type ContributionFeed {
+  edges: [ContributionEdge!]
   pageInfo: PageInfo!
   totalCount: Int!
 }
@@ -5274,6 +5318,23 @@ enum UserFeedbackStatus {
   CANCELLED
 }
 
+enum FeedbackDiscussionType {
+  SYSTEM
+  USER
+}
+
+type FeedbackDiscussion {
+  id: BigInt!
+  type: FeedbackDiscussionType!
+  
+  # 来自用户或系统的消息
+  """
+  来自用户或系统的消息
+  """
+  message: String!
+  createdAt: DateTime!
+}
+
 
 # 针对平台功能的反馈
 """
@@ -5328,6 +5389,12 @@ type UserFeedback {
   创建时间
   """
   createdAt: DateTime!
+  
+  # 用户和系统的讨论
+  """
+  用户和系统的讨论
+  """
+  discussions: [FeedbackDiscussion!]!
 }
 
 
