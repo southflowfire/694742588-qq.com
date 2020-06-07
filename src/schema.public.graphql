@@ -633,11 +633,11 @@ type Query {
   关键词
   """
   keyword: String!, 
-  # 补全类型
+  # 搜索类型
   """
-  补全类型
+  搜索类型
   """
-  type: ObjectType!): [KeywordCompletion!]!
+  types: [ObjectType!]!): [KeywordCompletion!]!
   
   # 搜索文章
   """
@@ -681,9 +681,9 @@ type Query {
   """
   searchResearch(keyword: String!, pageParam: PageParam!): ResearchConnection!
   
-  # 搜索问题
+  # 搜索问答
   """
-  搜索问题
+  搜索问答
   """
   searchQuestionAnswer(keyword: String!, pageParam: PageParam!): QuestionAnswerFeed!
   
@@ -1550,6 +1550,12 @@ input NewAuthorInput {
   作者简介
   """
   desc: String!
+  
+  # 头像
+  """
+  头像
+  """
+  avatar: URL
 }
 
 input UpdateAuthorInput {
@@ -4846,17 +4852,23 @@ type HotSearch {
 """
 type KeywordCompletion {
   
+  # 返回的搜索结果对应的数据对象 Id
+  """
+  返回的搜索结果对应的数据对象 Id
+  """
+  id: BigInt!
+  
+  # 返回的搜索结果数据类型
+  """
+  返回的搜索结果数据类型
+  """
+  isA: String!
+  
   # 补全文本
   """
   补全文本
   """
-  text: String
-  
-  # 类型
-  """
-  类型
-  """
-  type: ObjectType
+  text: String!
 }
 
 
