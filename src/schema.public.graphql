@@ -34,7 +34,7 @@ type Article implements TypedObject {
   """
   文章doi（唯一数字标识）
   """
-  doi: String
+  doi: String!
   
   # 文章链接
   """
@@ -207,7 +207,7 @@ input NewArticleInput {
   """
   文章doi（唯一数字标识）
   """
-  doi: String
+  doi: String!
   
   # 文章链接
   """
@@ -276,7 +276,7 @@ input UpdateArticleInput {
   """
   文章doi（唯一数字标识）
   """
-  doi: String
+  doi: String!
   
   # 文章链接
   """
@@ -3321,7 +3321,7 @@ type Journal implements TypedObject {
   """
   ISSN
   """
-  issn: String
+  issn: String!
   
   # 收录情况
   """
@@ -3404,7 +3404,7 @@ input NewJournalInput {
   """
   ISSN
   """
-  issn: String
+  issn: String!
   
   # 收录情况
   """
@@ -3449,7 +3449,7 @@ input UpdateJournalInput {
   """
   ISSN
   """
-  issn: String
+  issn: String!
   
   # 收录情况
   """
