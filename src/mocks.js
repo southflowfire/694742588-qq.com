@@ -54,7 +54,10 @@ module.exports = {
   Author: () => ({
     id: casual.integer(1, 99999999),
     isA: 'AUTHOR',
-    fullname: casual.full_name
+    fullname: casual.full_name,
+    institutions: () => ({
+      edges: () => []
+    })
   }),
   Journal: () => ({
     id: casual.integer(1, 99999999),
