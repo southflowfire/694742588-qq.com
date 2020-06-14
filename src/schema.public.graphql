@@ -1032,7 +1032,7 @@ type Mutation {
   """
   申请创建或修改思维导图
   """
-  requestCreateOrUpdateMindMap(input: MindMapInput!): CreateMutationResult!
+  requestCreateOrUpdateMindMap(input: MindMapInput!): CommonMutationResult!
   
   # 添加笔记 (DEPRECATED)
   """
