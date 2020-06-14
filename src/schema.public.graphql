@@ -925,13 +925,7 @@ type Mutation {
   """
   创建教程
   """
-  createCourse(input: NewCourseInput!): CreateMutationResult!
-  
-  # 修改教程
-  """
-  修改教程
-  """
-  updateCourse(input: UpdateCourseInput!): CommonMutationResult!
+  saveCourseDraft(input: CourseInput!): CreateMutationResult!
   
   # 删除教程
   """
@@ -943,7 +937,7 @@ type Mutation {
   """
   发布教程
   """
-  publishCourse(id: BigInt!): CommonMutationResult!
+  publishCourse(input: PublishInput!): CommonMutationResult!
   
   # 下架教程
   """
@@ -1394,6 +1388,12 @@ type Author implements TypedObject {
   """
   institutions(pageParam: PageParam): InstitutionConnection
   
+  # 当前所属机构
+  """
+  当前所属机构
+  """
+  currentInstitution: Institution
+  
   # 创作的教程
   """
   创作的教程
@@ -1409,6 +1409,12 @@ type Author implements TypedObject {
   分页参数
   """
   pageParam: PageParam): CourseConnection
+  
+  # 教程草稿列表
+  """
+  教程草稿列表
+  """
+  courseDrafts(pageParam: PageParam!): CourseDraftFeed
   
   # 提出的问题
   """
@@ -2533,12 +2539,6 @@ enum CourseType {
 
 enum CourseStatus {
   
-  # 教程草稿，尚未发布
-  """
-  教程草稿，尚未发布
-  """
-  DRAFT
-  
   # 教程已发布，非购买者可以看到教程预览
   """
   教程已发布，非购买者可以看到教程预览
@@ -2616,12 +2616,58 @@ type Course implements TypedObject {
   教程状态
   """
   status: CourseStatus!
+  currentUserState: CourseCurrentUserState!
+}
+
+type CourseCurrentUserState {
+  isAuthor: Boolean!
+  isBuyer: Boolean!
+  isCommenter: Boolean!
   
   # 当前用户是否关注教程
   """
   当前用户是否关注教程
   """
-  isSubscribed: Boolean!
+  isSubscriber: Boolean!
+}
+
+type CourseDraft {
+  id: BigInt!
+  title: String!
+  brief: String!
+  contentTable: String!
+  content: String!
+  type: CourseType!
+  price: Currency!
+  articles: [Article!]
+  researches: [Research!]
+  updatedAt: DateTime!
+}
+
+
+# 教程草稿，用于 CourseDraftFeed
+"""
+教程草稿，用于 CourseDraftFeed
+"""
+type CourseDraftEdge {
+  node: CourseDraft!
+  
+  # base64 编码的字符串
+  """
+  base64 编码的字符串
+  """
+  cursor: String!
+}
+
+
+# 教程草稿列表，以流的方式组织
+"""
+教程草稿列表，以流的方式组织
+"""
+type CourseDraftFeed {
+  edges: [CourseDraftEdge!]!
+  pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 type CourseStatistics {
@@ -2885,11 +2931,17 @@ type CourseFeed {
 }
 
 
-# 新建教程 输入参数
+# 教程 参数
 """
-新建教程 输入参数
+教程 参数
 """
-input NewCourseInput {
+input CourseInput {
+  
+  # 创建时 id 传 null, 更新时传入有效 id
+  """
+  创建时 id 传 null, 更新时传入有效 id
+  """
+  id: BigInt
   title: String!
   brief: String!
   contentTable: String!
@@ -2900,27 +2952,14 @@ input NewCourseInput {
   researches: [BigInt!]
 }
 
-
-# 更新教程 输入参数
-"""
-更新教程 输入参数
-"""
-input UpdateCourseInput {
-  courseId: BigInt!
-  title: String
-  brief: String
-  contentTable: String
-  content: String
-  type: CourseType
-  price: Currency
+input PublishInput {
   
-  # 该参数对于未发布的教程是可选的，对于已发布的教程是必填的
+  # 教程 Id
   """
-  该参数对于未发布的教程是可选的，对于已发布的教程是必填的
+  教程 Id
   """
-  updateLog: String
-  articles: [BigInt!]
-  researches: [BigInt!]
+  id: BigInt!
+  updateLog: String!
 }
 
 input PurchaseCourseInput {
@@ -5394,7 +5433,7 @@ type UserFeedback {
   """
   处理时间
   """
-  handledAt: DateTime!
+  handledAt: DateTime
   
   # 创建时间
   """
