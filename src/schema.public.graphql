@@ -484,6 +484,12 @@ type Query {
   """
   course(id: BigInt!): Course
   
+  # 教程草稿
+  """
+  教程草稿
+  """
+  courseDraft(id: BigInt!): CourseDraft
+  
   # 获取教程列表
   """
   获取教程列表
