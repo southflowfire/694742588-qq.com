@@ -70,19 +70,19 @@ type Article implements TypedObject {
   """
   关联课题
   """
-  researches(pageParam: PageParam): ResearchConnection
+  researches(pageParam: PageParam): ResearchConnection!
   
   # 关联教程
   """
   关联教程
   """
-  courses(pageParam: PageParam): CourseConnection
+  courses(pageParam: PageParam): CourseConnection!
   
   # 关联问答
   """
   关联问答
   """
-  questionAnswers(pageParam: PageParam): QuestionAnswerConnection
+  questionAnswers(pageParam: PageParam): QuestionAnswerConnection!
   
   # 行为统计
   """
@@ -382,7 +382,7 @@ type Query {
   """
   查询文章列表
   """
-  articles(input: ArticleConnectionInput): ArticleConnection
+  articles(input: ArticleConnectionInput): ArticleConnection!
   
   # 首页推荐 - 文章
   """
@@ -615,7 +615,7 @@ type Query {
   """
   获取课题列表
   """
-  researches(pageParam: PageParam!): ResearchConnection
+  researches(pageParam: PageParam!): ResearchConnection!
   
   # 首页推荐 - 课题
   """
@@ -1386,13 +1386,13 @@ type Author implements TypedObject {
   """
   发表的文章
   """
-  articles(pageParam: PageParam): ArticleConnection
+  articles(pageParam: PageParam): ArticleConnection!
   
   # 所属的机构
   """
   所属的机构
   """
-  institutions(pageParam: PageParam): InstitutionConnection
+  institutions(pageParam: PageParam): InstitutionConnection!
   
   # 当前所属机构
   """
@@ -1414,31 +1414,31 @@ type Author implements TypedObject {
   """
   分页参数
   """
-  pageParam: PageParam): CourseConnection
+  pageParam: PageParam): CourseConnection!
   
   # 教程草稿列表
   """
   教程草稿列表
   """
-  courseDrafts(pageParam: PageParam!): CourseDraftFeed
+  courseDrafts(pageParam: PageParam!): CourseDraftFeed!
   
   # 提出的问题
   """
   提出的问题
   """
-  myQuestions(pageParam: PageParam): QuestionAnswerFeed
+  myQuestions(pageParam: PageParam): QuestionAnswerFeed!
   
   # 完成的问答
   """
   完成的问答
   """
-  myAnswers(pageParam: PageParam): QuestionAnswerFeed
+  myAnswers(pageParam: PageParam): QuestionAnswerFeed!
   
   # 我的问答草稿
   """
   我的问答草稿
   """
-  myQuestionAnswerDrafts(pageParam: PageParam): QuestionAnswerFeed
+  myQuestionAnswerDrafts(pageParam: PageParam): QuestionAnswerFeed!
   
   # 显示作者研究领域关联关系的思维导图
   """
@@ -1637,7 +1637,7 @@ type Collection {
   """
   论文集中的文章
   """
-  articles(pageParam: PageParam): ArticleConnection
+  articles(pageParam: PageParam): ArticleConnection!
 }
 
 input CreateCollectionInput {
@@ -2293,7 +2293,7 @@ type AuthorEdge {
 作者关联项
 """
 type AuthorConnection {
-  edges: [AuthorEdge]
+  edges: [AuthorEdge!]!
   pageInfo: PageInfo!
   totalCount: Int!
 }
@@ -2314,7 +2314,7 @@ type ArticleEdge {
 文章关联项
 """
 type ArticleConnection {
-  edges: [ArticleEdge]
+  edges: [ArticleEdge!]!
   pageInfo: PageInfo!
   totalCount: Int!
 }
@@ -2335,7 +2335,7 @@ type ResearchEdge {
 研究课题关联项
 """
 type ResearchConnection {
-  edges: [ResearchEdge]
+  edges: [ResearchEdge!]!
   pageInfo: PageInfo!
   totalCount: Int!
 }
@@ -2356,7 +2356,7 @@ type JournalEdge {
 期刊关联项
 """
 type JournalConnection {
-  edges: [JournalEdge]!
+  edges: [JournalEdge!]!
   pageInfo: PageInfo!
   totalCount: Int!
 }
@@ -2377,7 +2377,7 @@ type ConferenceEdge {
 会议关联项
 """
 type ConferenceConnection {
-  edges: [ConferenceEdge]
+  edges: [ConferenceEdge!]!
   pageInfo: PageInfo!
   totalCount: Int!
 }
@@ -2398,7 +2398,7 @@ type InstitutionEdge {
 机构关联项
 """
 type InstitutionConnection {
-  edges: [InstitutionEdge]
+  edges: [InstitutionEdge!]!
   pageInfo: PageInfo!
   totalCount: Int!
 }
@@ -2426,7 +2426,7 @@ type QuestionAnswerEdge {
 问答关联项
 """
 type QuestionAnswerConnection {
-  edges: [QuestionAnswerEdge]
+  edges: [QuestionAnswerEdge!]!
   pageInfo: PageInfo!
   totalCount: Int!
 }
@@ -2454,7 +2454,7 @@ type CourseEdge {
 教程关联项
 """
 type CourseConnection {
-  edges: [CourseEdge]
+  edges: [CourseEdge!]!
   pageInfo: PageInfo!
   totalCount: Int!
 }
@@ -2475,7 +2475,7 @@ type CollectionEdge {
 论文集关联项
 """
 type CollectionConnection {
-  edges: [CollectionEdge]
+  edges: [CollectionEdge!]!
   pageInfo: PageInfo!
   totalCount: Int!
 }
@@ -2934,6 +2934,7 @@ input CourseCollectionInput {
 type CourseFeed {
   edges: [CourseEdge!]!
   pageInfo: PageInfo!
+  totalCount: Int!
 }
 
 
@@ -4768,37 +4769,37 @@ type Research implements TypedObject {
   """
   关联教程
   """
-  courses(pageParam: PageParam!): CourseConnection
+  courses(pageParam: PageParam!): CourseConnection!
   
   # 关联问答
   """
   关联问答
   """
-  questionAnswers(pageParam: PageParam!): QuestionAnswerConnection
+  questionAnswers(pageParam: PageParam!): QuestionAnswerConnection!
   
   # 关联文章
   """
   关联文章
   """
-  articles(pageParam: PageParam!): ArticleConnection
+  articles(pageParam: PageParam!): ArticleConnection!
   
   # 关联会议
   """
   关联会议
   """
-  conferences(pageParam: PageParam!): ConferenceConnection
+  conferences(pageParam: PageParam!): ConferenceConnection!
   
   # 关联期刊
   """
   关联期刊
   """
-  journals(pageParam: PageParam!): JournalConnection
+  journals(pageParam: PageParam!): JournalConnection!
   
   # 关联作者
   """
   关联作者
   """
-  authors(pageParam: PageParam!): AuthorConnection
+  authors(pageParam: PageParam!): AuthorConnection!
   
   # 行为统计
   """
@@ -5162,19 +5163,19 @@ type User {
   """
   购买的教程
   """
-  purchasedCourses(pageParam: PageParam): CourseConnection
+  purchasedCourses(pageParam: PageParam): CourseConnection!
   
   # 购买的完整问答
   """
   购买的完整问答
   """
-  purchasedQuestionAnswers(pageParam: PageParam): QuestionAnswerFeed
+  purchasedQuestionAnswers(pageParam: PageParam): QuestionAnswerFeed!
   
   # 创建的论文收藏夹列表
   """
   创建的论文收藏夹列表
   """
-  collections(pageParam: PageParam): CollectionConnection
+  collections(pageParam: PageParam): CollectionConnection!
   
   # 我的建议列表
   """
@@ -5204,13 +5205,13 @@ type User {
   """
   查询审批集合(我发起的)
   """
-  requestsAsCreator(input: RequestFeedInput!): RequestFeed
+  requestsAsCreator(input: RequestFeedInput!): RequestFeed!
   
   # 查询审批集合(发给我的)
   """
   查询审批集合(发给我的)
   """
-  requestsAsReviewer(input: RequestFeedInput!): RequestFeed
+  requestsAsReviewer(input: RequestFeedInput!): RequestFeed!
 }
 
 type UserSubscriptionAndFollowship {
