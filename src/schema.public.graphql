@@ -143,6 +143,17 @@ type Article implements TypedObject {
   基本信息 - 存在不足
   """
   drawback: String
+  
+  # 检查是否属于文集
+  """
+  检查是否属于文集
+  """
+  isInCollections(collectionIds: [BigInt!]!): [CollectionCheckResult!]!
+}
+
+type CollectionCheckResult {
+  id: BigInt!
+  result: Boolean!
 }
 
 type ArticleStatistics {
@@ -827,17 +838,17 @@ type Mutation {
   """
   deleteCollection(collectionId: BigInt!): CommonMutationResult!
   
-  # 将文章加入论文集
+  # 将文章加入论文集，
   """
-  将文章加入论文集
+  将文章加入论文集，
   """
-  storeArticleInCollection(articleId: BigInt!, collectionId: BigInt!): CommonMutationResult!
+  storeArticleInCollections(articleId: BigInt!, collectionIds: [BigInt!]!): CommonMutationResult!
   
   # 将文章从论文集中移除
   """
   将文章从论文集中移除
   """
-  removeArticleFromCollection(articleId: BigInt!, collectionId: BigInt!): CommonMutationResult!
+  removeArticlesFromCollection(articleIds: [BigInt!]!, collectionId: BigInt!): CommonMutationResult!
   
   # 评论 (DEPRECATED)
   """
