@@ -395,6 +395,12 @@ type Query {
   """
   articles(input: ArticleConnectionInput): ArticleConnection!
   
+  # 根据文章 Id 数据返回文章对象数组
+  """
+  根据文章 Id 数据返回文章对象数组
+  """
+  articlesByIds(ids: [BigInt!]!): [Article!]
+  
   # 首页推荐 - 文章
   """
   首页推荐 - 文章
