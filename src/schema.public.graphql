@@ -287,7 +287,7 @@ input UpdateArticleInput {
   """
   文章doi（唯一数字标识）
   """
-  doi: String!
+  doi: String
   
   # 文章链接
   """
@@ -520,12 +520,6 @@ type Query {
   target Id
   """
   targetId: BigInt!, type: MindMapType!): MindMapLog
-  
-  # 生成交易码
-  """
-  生成交易码
-  """
-  generateTradeNumber: String!
   
   # 查看问答详情
   """
@@ -891,7 +885,7 @@ type Mutation {
   """
   申请创建或修改思维导图
   """
-  requestCreateOrUpdateMindMap(input: MindMapInput!): CommonMutationResult!
+  requestCreateOrUpdateMindMap(input: MindMapRequestInput!): CommonMutationResult!
   
   # 快速发布或高级编辑页面中的发布，返回对象中的 id 是该问题所属的 QuestionAnswer 对象的 id
   """
@@ -2741,12 +2735,6 @@ input PurchaseCourseInput {
   """
   paymentType: PaymentType!
   
-  # 交易码，需要先通过 generateTradeNumber 接口获取
-  """
-  交易码，需要先通过 generateTradeNumber 接口获取
-  """
-  tradeNumber: String!
-  
   # 回调URL
   """
   回调URL
@@ -3344,6 +3332,12 @@ type MindMap implements TypedObject {
   关联文章，用来返回 content 中引用的全部文章
   """
   articles: [Article!]
+  
+  # 当导图正在审核时，该字段返回用于展示diff的内容；不在审核时，该字段为null
+  """
+  当导图正在审核时，该字段返回用于展示diff的内容；不在审核时，该字段为null
+  """
+  patch: String
   status: MindMapStatus!
 }
 
@@ -3409,6 +3403,33 @@ input MindMapInput {
   content: String!
 }
 
+input MindMapRequestInput {
+  
+  # MindMap 所描述的目标对象的类型
+  """
+  MindMap 所描述的目标对象的类型
+  """
+  type: MindMapType!
+  
+  # MindMap 所描述的目标对象的 Id
+  """
+  MindMap 所描述的目标对象的 Id
+  """
+  targetId: BigInt!
+  
+  # 修改后的 MindMap 新对象的全量序列化内容
+  """
+  修改后的 MindMap 新对象的全量序列化内容
+  """
+  newContent: String!
+  
+  # 修改后的 MindMap 对象相对于当前对象的差异记录
+  """
+  修改后的 MindMap 对象相对于当前对象的差异记录
+  """
+  patch: String!
+}
+
 enum PaymentType {
   
   # 支付宝
@@ -3435,7 +3456,8 @@ type PaymentInfo {
   """
   支付服务商返回的支付页面 URL
   """
-  paymentUrl: URL!
+  paymentUrl: URL
+  success: Boolean!
 }
 
 
@@ -4017,12 +4039,6 @@ input SelectAndPayInput {
   支付方式
   """
   paymentType: PaymentType!
-  
-  # 交易码，需要先通过 generateTradeNumber 接口获取
-  """
-  交易码，需要先通过 generateTradeNumber 接口获取
-  """
-  tradeNumber: String!
 }
 
 
@@ -4083,12 +4099,6 @@ input BuyQuestionAnswerInput {
   支付方式
   """
   paymentType: PaymentType!
-  
-  # 交易码，需要先通过 generateTradeNumber 接口获取
-  """
-  交易码，需要先通过 generateTradeNumber 接口获取
-  """
-  tradeNumber: String!
 }
 
 
